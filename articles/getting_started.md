@@ -95,7 +95,7 @@ ch = conn.create_channel
 q  = ch.queue("bunny.examples.hello_world", :auto_delete => true)
 x  = ch.default_exchange
 
-q.subscribe do |metadata, payload|
+q.subscribe do |delivery_info, metadata, payload|
   puts "Received #{payload}"
 end
 
@@ -152,7 +152,7 @@ In this particular example, there are no explicitly defined bindings. The exchan
 bindings to all queues. Before we get into that, let us see how we define a handler for incoming messages
 
 ``` ruby
-q.subscribe do |metadata, payload|
+q.subscribe do |delivery_info, metadata, payload|
   puts "Received #{payload}"
 end
 ```
@@ -194,15 +194,15 @@ conn.start
 ch  = conn.create_channel
 x   = ch.fanout("nba.scores")
 
-ch.queue("joe",   :auto_delete => true).bind(x).subscribe do |properties, payload|
+ch.queue("joe",   :auto_delete => true).bind(x).subscribe do |delivery_info, metadata, payload|
   puts "#{payload} => joe"
 end
 
-ch.queue("aaron", :auto_delete => true).bind(x).subscribe do |properties, payload|
+ch.queue("aaron", :auto_delete => true).bind(x).subscribe do |delivery_info, metadata, payload|
   puts "#{payload} => aaron"
 end
 
-ch.queue("bob",   :auto_delete => true).bind(x).subscribe do |properties, payload|
+ch.queue("bob",   :auto_delete => true).bind(x).subscribe do |delivery_info, metadata, payload|
   puts "#{payload} => bob"
 end
 
@@ -226,7 +226,7 @@ A fanout exchange delivers messages to all of the queues that are bound to it: e
 This piece of code
 
 ``` ruby
-ch.queue("joe",   :auto_delete => true).bind(x).subscribe do |properties, payload|
+ch.queue("joe",   :auto_delete => true).bind(x).subscribe do |delivery_info, metadata, payload|
   puts "#{payload} => joe"
 end
 ```
@@ -284,23 +284,23 @@ channel  = connection.create_channel
 exchange = channel.topic("weathr", :auto_delete => true)
 
 # Subscribers.
-channel.queue("", :exclusive => true).bind(exchange, :routing_key => "americas.north.#").subscribe do |properties, payload|
-  puts "An update for North America: #{payload}, routing key is #{properties.routing_key}"
+channel.queue("", :exclusive => true).bind(exchange, :routing_key => "americas.north.#").subscribe do |delivery_info, metadata, payload|
+  puts "An update for North America: #{payload}, routing key is #{delivery_info.routing_key}"
 end
-channel.queue("americas.south").bind(exchange, :routing_key => "americas.south.#").subscribe do |properties, payload|
-  puts "An update for South America: #{payload}, routing key is #{properties.routing_key}"
+channel.queue("americas.south").bind(exchange, :routing_key => "americas.south.#").subscribe do |delivery_info, metadata, payload|
+  puts "An update for South America: #{payload}, routing key is #{delivery_info.routing_key}"
 end
-channel.queue("us.california").bind(exchange, :routing_key => "americas.north.us.ca.*").subscribe do |properties, payload|
-  puts "An update for US/California: #{payload}, routing key is #{properties.routing_key}"
+channel.queue("us.california").bind(exchange, :routing_key => "americas.north.us.ca.*").subscribe do |delivery_info, metadata, payload|
+  puts "An update for US/California: #{payload}, routing key is #{delivery_info.routing_key}"
 end
-channel.queue("us.tx.austin").bind(exchange, :routing_key => "#.tx.austin").subscribe do |properties, payload|
-  puts "An update for Austin, TX: #{payload}, routing key is #{properties.routing_key}"
+channel.queue("us.tx.austin").bind(exchange, :routing_key => "#.tx.austin").subscribe do |delivery_info, metadata, payload|
+  puts "An update for Austin, TX: #{payload}, routing key is #{delivery_info.routing_key}"
 end
-channel.queue("it.rome").bind(exchange, :routing_key => "europe.italy.rome").subscribe do |properties, payload|
-  puts "An update for Rome, Italy: #{payload}, routing key is #{properties.routing_key}"
+channel.queue("it.rome").bind(exchange, :routing_key => "europe.italy.rome").subscribe do |delivery_info, metadata, payload|
+  puts "An update for Rome, Italy: #{payload}, routing key is #{delivery_info.routing_key}"
 end
-channel.queue("asia.hk").bind(exchange, :routing_key => "asia.southeast.hk.#").subscribe do |properties, payload|
-  puts "An update for Hong Kong: #{payload}, routing key is #{properties.routing_key}"
+channel.queue("asia.hk").bind(exchange, :routing_key => "asia.southeast.hk.#").subscribe do |delivery_info, metadata, payload|
+  puts "An update for Hong Kong: #{payload}, routing key is #{delivery_info.routing_key}"
 end
 
 exchange.publish("San Diego update", :routing_key => "americas.north.us.ca.sandiego").
@@ -331,8 +331,8 @@ your favourite blog as opposed to the full feed). Routing with a topic exchange 
 on binding, for example:
 
 ``` ruby
-channel.queue("americas.south").bind(exchange, :routing_key => "americas.south.#").subscribe do |properties, payload|
-  puts "An update for South America: #{payload}, routing key is #{properties.routing_key}"
+channel.queue("americas.south").bind(exchange, :routing_key => "americas.south.#").subscribe do |delivery_info, metadata, payload|
+  puts "An update for South America: #{payload}, routing key is #{delivery_info.routing_key}"
 end
 ```
 Here we bind a queue with the name of "americas.south" to the topic exchange declared earlier using the {% yard_link AMQP::Queue#bind %} method.  This means that only messages with a routing key matching "americas.south.#" will be routed to that queue. A routing pattern consists of several words separated by dots, in a similar way to URI path segments joined by slashes. Here are a few examples:
@@ -387,8 +387,8 @@ and so on.
 As the following binding demonstrates, `"#"` and `"*"` can also appear at the beginning of routing patterns:
 
 ``` ruby
-channel.queue("us.tx.austin").bind(exchange, :routing_key => "#.tx.austin").subscribe do |properties, payload|
-  puts "An update for Austin, TX: #{payload}, routing key is #{properties.routing_key}"
+channel.queue("us.tx.austin").bind(exchange, :routing_key => "#.tx.austin").subscribe do |delivery_info, metadata, payload|
+  puts "An update for Austin, TX: #{payload}, routing key is #{delivery_info.routing_key}"
 end
 ```
 
@@ -397,8 +397,8 @@ a message published with a routing key of `"americas.north.us.ca.berkeley"` woul
 that we declared by passing a blank string as the name:
 
 ``` ruby
-channel.queue("", :exclusive => true).bind(exchange, :routing_key => "americas.north.#").subscribe do |properties, payload|
-  puts "An update for North America: #{payload}, routing key is #{properties.routing_key}"
+channel.queue("", :exclusive => true).bind(exchange, :routing_key => "americas.north.#").subscribe do |delivery_info, metadata, payload|
+  puts "An update for North America: #{payload}, routing key is #{delivery_info.routing_key}"
 end
 ```
 
