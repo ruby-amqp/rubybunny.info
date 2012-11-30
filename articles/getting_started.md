@@ -335,7 +335,7 @@ channel.queue("americas.south").bind(exchange, :routing_key => "americas.south.#
   puts "An update for South America: #{payload}, routing key is #{delivery_info.routing_key}"
 end
 ```
-Here we bind a queue with the name of "americas.south" to the topic exchange declared earlier using the {% yard_link AMQP::Queue#bind %} method.  This means that only messages with a routing key matching "americas.south.#" will be routed to that queue. A routing pattern consists of several words separated by dots, in a similar way to URI path segments joined by slashes. Here are a few examples:
+Here we bind a queue with the name of "americas.south" to the topic exchange declared earlier using the `Bunny::Queue#bind` method.  This means that only messages with a routing key matching "americas.south.#" will be routed to that queue. A routing pattern consists of several words separated by dots, in a similar way to URI path segments joined by slashes. Here are a few examples:
 
  * asia.southeast.thailand.bangkok
  * sports.basketball
