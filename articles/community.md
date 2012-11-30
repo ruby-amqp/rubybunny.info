@@ -6,7 +6,7 @@ layout: article
 ## Mailing List
 
 [Bunny a mailing list](groups.google.com/group/ruby-amqp). We encourage you
-to also join the [rabbitmq-discuss](https://lists.rabbitmq.com/cgi-bin/mailman/listinfo/rabbitmq-discuss) mailing list. Feel free to ask any questions you may have.
+to also join the [rabbitmq-discuss](https://lists.rabbitmq.com/cgi-bin/mailman/listinfo/rabbitmq-discuss) mailing list. Feel free to ask any questions that you may have.
 
 
 ## IRC
@@ -22,7 +22,7 @@ To subscribe for announcements of releases, important changes and so on, please 
 ## Reporting Issues
 
 If you find a bug, poor default, missing feature or find any part of the API inconvenient, please [file an issue](http://github.com/ruby-amqp/bunny/issues) on GitHub.
-When filing an issue, please specify Bunny and RabbitMQ version you use, recent RabbitMQ log file contents
+When filing an issue, please specify which Bunny and RabbitMQ versions you are using, provide recent RabbitMQ log file contents if possible,
 and try to explain what behavior you expected and why. Bonus points for contributing failing test cases.
 
 
