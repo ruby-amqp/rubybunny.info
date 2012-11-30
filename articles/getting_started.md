@@ -37,7 +37,7 @@ On Debian and Ubuntu, you can either [download the RabbitMQ .deb package](http:/
 
 For RPM-based distributions like RedHat or CentOS, the RabbitMQ team provides an [RPM package](http://www.rabbitmq.com/install.html#rpm).
 
-<div class="alert alert-error"><strong>Note:</strong> The RabbitMQ package that ships with Ubuntu versions earlier than 11.10
+<div class="alert alert-error"><strong>Note:</strong> The RabbitMQ packages that ship with Ubuntu versions earlier than 11.10
 are outdated and <strong>will not work with Bunny 0.9.0 and later versions</strong> (you will need at least RabbitMQ v2.0 for use with this guide).</div>
 
 ## Installing Bunny
