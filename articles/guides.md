@@ -27,7 +27,7 @@ This guide covers:
  * What are AMQP bindings
  * What are AMQP 0.9.1 classes and methods
 
-### [Conneciting To The Broker](/articles/connecting.html)
+### [Connecting To The Broker](/articles/connecting.html)
 
 This guide covers:
 
