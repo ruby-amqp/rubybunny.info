@@ -87,7 +87,7 @@ Here are some examples of valid AMQP URIs:
 
 The URI scheme should be "amqp", or "amqps" if SSL is required.
 
-The host, port, username and password are represented in the authority component of the URI in the same way as in http URIs.
+The host, port, username and password are represented in the authority component of the URI in the same way as in HTTP URIs.
 
 The vhost is obtained from the first segment of the path, with the leading slash removed.  The path should contain only a single segment (i.e, the only slash in it should be the leading one). If the vhost is to include slashes or other reserved URI characters, these should be percent-escaped.
 
