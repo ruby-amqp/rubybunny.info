@@ -55,14 +55,14 @@ This guide assumes that you have installed one of the following supported Ruby i
 
 ### You can use Rubygems to install Bunny
 
-    gem install amqp
+    gem install bunny --pre
 
 ### Adding Bunny as a dependency with Bundler
 
 ``` ruby
 source :rubygems
 
-gem "bunny", "~> 0.9.0.pre1"
+gem "bunny", "~> 0.9.0.pre2"
 ```
 
 ### Verifying your installation
@@ -74,7 +74,7 @@ irb -rubygems
 :001 > require "bunny"
 => true
 :002 > Bunny::VERSION
-=> "0.9.0"
+=> "0.9.0.pre2"
 ```
 
 ## "Hello, world" example
