@@ -151,6 +151,16 @@ ch.close
 ```
 
 
+## Connecting in Web applications (Ruby on Rails, Sinatra, etc)
+
+When connecting in Web apps, the rule of thumb is: do it in an initializer, not controller
+actions or request handlers.
+
+### Ruby on Rails
+
+Currently Bunny does not have integration points for Rails (e.g. a rail tie).
+
+
 ## Disconnecting
 
 To close a connection, use the `Bunny::Session#close` function. This will automatically
