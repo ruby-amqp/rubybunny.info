@@ -437,3 +437,10 @@ We recommend that you read the following guides next, if possible, in this order
  * [Error Handling and Recovery](/articles/error_handling/). This guide explains how to handle protocol errors, network failures and other things that may go wrong in real world projects.
 
 If you are migrating your application from earlier versions of Bunny (0.7.x and 0.8.x), to 0.9.x and later, there is the [Bunny 0.9 migration guide](/articles/09_migration) to help you.
+
+
+## Tell Us What You Think!
+
+Please take a moment to tell us what you think about this guide [on Twitter](http://twitter.com/rubyamqp) or the [Bunny mailing list](https://groups.google.com/forum/#!forum/ruby-amqp)
+
+Let us know what was unclear or what has not been covered. Maybe you do not like the guide style or grammar or discover spelling mistakes. Reader feedback is key to making the documentation better.
