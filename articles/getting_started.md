@@ -62,7 +62,7 @@ This guide assumes that you have installed one of the following supported Ruby i
 ``` ruby
 source :rubygems
 
-gem "bunny", "~> 0.9.0.pre2"
+gem "bunny", "~> 0.9.0.pre4"
 ```
 
 ### Verifying your installation
@@ -74,7 +74,7 @@ irb -rubygems
 :001 > require "bunny"
 => true
 :002 > Bunny::VERSION
-=> "0.9.0.pre2"
+=> "0.9.0.pre4"
 ```
 
 ## "Hello, world" example
