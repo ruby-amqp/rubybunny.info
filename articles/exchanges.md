@@ -5,8 +5,8 @@ layout: article
 
 ## About this guide
 
-This guide covers the use of exchanges according to the AMQP 0.9.1 specification including message publishing,
-common usage scenarios and how to accomplish typical operations using the Bunny.
+This guide covers the use of exchanges according to the AMQP 0.9.1 specification, including broader topics
+related to message publishing, common usage scenarios and how to accomplish typical operations using Bunny.
 
 This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>
 (including images and stylesheets). The source is available [on Github](https://github.com/ruby-amqp/rubybunny.info).
