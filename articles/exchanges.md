@@ -307,7 +307,7 @@ exchanges, they are *not shared across vhosts* for obvious reasons.
 The default exchange is a direct exchange with no name (the amqp gem refers to it using an empty string) pre-declared by the broker. It has one special
 property that makes it very useful for simple applications, namely that *every queue is automatically bound to it with a routing key which is the same as the queue name*.
 
-For example, when you declare a queue with the name of "search.indexing.online", the AMQP broker will bind it to the default exchange using "search.indexing.online"
+For example, when you declare a queue with the name of "search.indexing.online", the RabbitMQ will bind it to the default exchange using "search.indexing.online"
 as the routing key. Therefore a message published to the default exchange with routing key = "search.indexing.online" will be routed to the queue "search.indexing.online".
 In other words, the default exchange makes it *seem like it is possible to deliver messages directly to queues*, even though that is not technically what is happening.
 
@@ -567,7 +567,7 @@ x.publish("hello",
   <dd>Used for routing messages depending on the exchange type and configuration.</dd>
 
   <dt>:persistent</dt>
-  <dd>When set to true, AMQP broker will persist message to disk.</dd>
+  <dd>When set to true, RabbitMQ will persist message to disk.</dd>
 
   <dt>:mandatory</dt>
   <dd>
@@ -807,21 +807,58 @@ attributes (headers) rather than a routing key string.
 Headers exchanges route messages based on message header matching. Headers exchanges ignore the routing key attribute. Instead, the attributes used for
 routing are taken from the "headers" attribute. When a queue is bound to a headers exchange, the `:arguments` attribute is used to define matching rules:
 
-{% gist 0ac3c7ef455ac0fd12a6 %}
 ``` ruby
+q = ch.queue("hosts.ip-172-37-11-56")
+x = ch.headers("requests")
+
+q.bind(x, :arguments => {"os" => "linux"})
 ```
 
 When matching on one header, a message is considered matching if the value of the header equals the value specified upon binding. An example
 that demonstrates headers routing:
 
-{% gist 7373f4ace4ca5d713186 %}
 ``` ruby
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+require "rubygems"
+require "bunny"
+
+puts "=> Direct exchange routing"
+puts
+
+conn = Bunny.new
+conn.start
+
+ch   = conn.create_channel
+x    = ch.headers("headers")
+
+q1   = ch.queue("", :exclusive => true).bind(x, :arguments => {"os" => "linux", "cores" => 8, "x-match" => "all"})
+q2   = ch.queue("", :exclusive => true).bind(x, :arguments => {"os" => "osx",   "cores" => 4, "x-match" => "any"})
+
+q1.subscribe do |delivery_info, properties, content|
+  puts "#{q1.name} received #{content}"
+end
+q2.subscribe do |delivery_info, properties, content|
+  puts "#{q2.name} received #{content}"
+end
+
+x.publish("8 cores/Linux", :headers => {"os" => "linux", "cores" => 8})
+x.publish("8 cores/OS X",  :headers => {"os" => "osx",   "cores" => 8})
+x.publish("4 cores/Linux", :headers => {"os" => "linux", "cores" => 4})
+
+sleep 0.5
+conn.close
 ```
 
 When executed, it outputs
 
-{% gist b4359dbf7d91d93440cb %}
 ``` ruby
+=> Headers exchange routing
+
+amq.gen-xhIzykDAjfcC4orMsi0O6Q received 8 cores/Linux
+amq.gen-6O1oKjVd8QbKr7zyy7ssbg received 8 cores/OS X
+amq.gen-6O1oKjVd8QbKr7zyy7ssbg received 4 cores/Linux
 ```
 
 
@@ -837,10 +874,10 @@ When the `"x-match"` argument is set to `"any"`, just one matching header value 
 
 ### Declaring a Headers Exchange
 
-To declare a headers exchange, use `Bunny::Exchange#declare` and specify the exchange type as `"headers"`:
+To declare a headers exchange, instantiate `Bunny::Exchange` directly and specify the exchange type as `"headers"`:
 
-{% gist 72ba6603a246199854dd %}
 ``` ruby
+x = Bunny::Exchange.new(ch, :headers, "matching")
 ```
 
 ### Headers Exchange Routing
@@ -862,16 +899,42 @@ Some specific use cases:
 
 ### Pre-declared Headers Exchanges
 
-AMQP 0.9.1 brokers [should](http://www.ietf.org/rfc/rfc2119.txt) implement a headers exchange type and pre-declare one instance with
+RabbitMQ implements a headers exchange type and pre-declare one instance with
 the name of `"amq.match"`. RabbitMQ also pre-declares one instance with the name of `"amq.headers"`. Applications can rely on that exchange always being available to them.
 Each vhost has a separate instance of those exchanges and they are *not shared across vhosts* for obvious reasons.
 
 ## Custom Exchange Types
 
+### consistent-hash
+
+The [consistent hashing AMQP exchange type](https://github.com/rabbitmq/rabbitmq-consistent-hash-exchange) is a custom exchange type
+developed as a RabbitMQ plugin. It uses [consistent hashing](http://michaelnielsen.org/blog/consistent-hashing/) to route messages
+to queues. This helps distribute messages between queues more or less evenly.
+
+A quote from the proejct README:
+
+> In various scenarios, you may wish to ensure that messages sent to an exchange are consistently and equally distributed across a number of different queues based on
+> the routing key of the message. You could arrange for this to occur yourself by using a direct or topic exchange, binding queues to that exchange and then publishing
+> messages to that exchange that match the various binding keys.
+> 
+> However, arranging things this way can be problematic:
+> 
+> It is difficult to ensure that all queues bound to the exchange will receive a (roughly) equal number of messages without baking in to the publishers quite a lot of
+> knowledge about the number of queues and their bindings.
+> 
+> If the number of queues changes, it is not easy to ensure that the new topology still distributes messages between the different queues evenly.
+> 
+> Consistent Hashing is a hashing technique whereby each bucket appears at multiple points throughout the hash space, and the bucket selected is the nearest
+> higher (or lower, it doesn't matter, provided it's consistent) bucket to the computed hash (and the hash space wraps around). The effect of this is that when a new
+> bucket is added or an existing bucket removed, only a very few hashes change which bucket they are routed to.
+> 
+> In the case of Consistent Hashing as an exchange type, the hash is calculated from the hash of the routing key of each message received. Thus messages that have
+> the same routing key will have the same hash computed, and thus will be routed to the same queue, assuming no bindings have changed.
+
 ### x-random
 
 The [x-random AMQP exchange type](https://github.com/jbrisbin/random-exchange) is a custom exchange type developed as a RabbitMQ plugin by Jon Brisbin.
-To quote from the project README:
+A quote from the project README:
 
 > It is basically a direct exchange, with the exception that, instead of each consumer bound to that exchange with the same routing key
 > getting a copy of the message, the exchange type randomly selects a queue to route to.
@@ -886,7 +949,7 @@ Please refer to [RabbitMQ Extensions guide](/articles/rabbitmq_extensions.html)
 ### Message Acknowledgements and Their Relationship to Transactions and Publisher Confirms
 
 Consumer applications (applications that receive and process messages) may occasionally fail to process individual messages, or might just crash. Additionally,
-network issues might be experienced. This raises a question - "when should the AMQP broker remove messages from queues?" This topic is covered
+network issues might be experienced. This raises a question - "when should the RabbitMQ remove messages from queues?" This topic is covered
 in depth in the [Queues guide](/articles/queues.html), including prefetching and examples.
 
 In this guide, we will only mention how message acknowledgements are related to AMQP transactions and the Publisher Confirms extension. Let us consider
@@ -909,12 +972,12 @@ lightweight Publisher Confirms, a RabbitMQ-specific extension.
 
 ## Binding Queues to Exchanges
 
-Queues are bound to exchanges using the `langohr.queue/bind`. This topic is described in detail in the [Queues guide](/articles/queues.html).
+Queues are bound to exchanges using `Bunny::Queue#bind`. This topic is described in detail in the [Queues and Consumers guide](/articles/queues.html).
 
 
 ## Unbinding Queues from Exchanges
 
-Queues are unbound from exchanges using the `langohr.queue/unbind`. This topic is described in detail in the [Queues guide](/articles/queues.html).
+Queues are unbound from exchanges using `Bunny::Queue#unbind`. This topic is described in detail in the [Queues and Consumers guide](/articles/queues.html).
 
 ## Deleting Exchange
 
