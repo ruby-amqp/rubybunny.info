@@ -27,18 +27,18 @@ This guide covers:
  * What are AMQP bindings
  * What are AMQP 0.9.1 classes and methods
 
-### [Connecting To The Broker](/articles/connecting.html)
+### [Connecting To RabbitMQ](/articles/connecting.html)
 
 This guide covers:
 
- * How to connect to RabbitMQ with Bunny
- * How to use connection URI to connect to RabbitMQ (also: in PaaS environments such as Heroku)
+ * How to connect to RabbitMQ with Bunny 0.9+
+ * How to use connection URI to connect to RabbitMQ (also: in PaaS environments such as Heroku and CloudFoundry)
  * How to open a channel
  * How to close a channel
  * How to disconnect
 
 
-### [Queues and Consumers](/articles/queues.html) (TBD)
+### [Queues and Consumers](/articles/queues.html) (WIP)
 
 This guide covers:
 
@@ -55,7 +55,7 @@ This guide covers:
  * Other topics related to queues
 
 
-### [Exchanges and Publishing](/articles/exchanges.html) (TBD)
+### [Exchanges and Publishing](/articles/exchanges.html) (WIP)
 
 This guide covers:
 
