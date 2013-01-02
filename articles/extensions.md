@@ -3,7 +3,7 @@ title: "Working with RabbitMQ extensions from Ruby with Bunny"
 layout: article
 ---
 
-## About this guide
+## About This Guide
 
 Bunny 0.9 supports all [RabbitMQ extensions to AMQP 0.9.1](http://www.rabbitmq.com/extensions.html):
 
