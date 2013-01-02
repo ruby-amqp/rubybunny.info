@@ -15,16 +15,16 @@ We recommend that you read these guides, if possible, in this order:
 An overview of Bunny with a quick tutorial that helps you to get started with it. It should take about
 20 minutes to read and study the provided code examples.
 
-### [AMQP Concepts](http://www.rabbitmq.com/tutorials/amqp-concepts.html)
+### [AMQP 0.9.1 Model Concepts](http://www.rabbitmq.com/tutorials/amqp-concepts.html)
 
 This guide covers:
 
  * AMQP 0.9.1 model overview
- * What are AMQP channels
- * What are AMQP vhosts
- * What are AMQP queues
- * What are AMQP exchanges
- * What are AMQP bindings
+ * What are channels
+ * What are vhosts
+ * What are queues
+ * What are exchanges
+ * What are bindings
  * What are AMQP 0.9.1 classes and methods
 
 ### [Connecting To RabbitMQ](/articles/connecting.html)
@@ -55,7 +55,7 @@ This guide covers:
  * Other topics related to queues
 
 
-### [Exchanges and Publishing](/articles/exchanges.html) (WIP)
+### [Exchanges and Publishing](/articles/exchanges.html)
 
 This guide covers:
 
@@ -108,7 +108,7 @@ This guide covers:
 
 
 
-### [RabbitMQ Extensions to AMQP 0.9.1](/articles/rabbitmq_extensions.html) (TBD)
+### [RabbitMQ Extensions to AMQP 0.9.1](/articles/extensions.html) (WIP)
 
 This guide covers [RabbitMQ extensions](http://www.rabbitmq.com/extensions.html) and how they are used in Bunny:
 
