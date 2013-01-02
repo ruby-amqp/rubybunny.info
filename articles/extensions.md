@@ -346,13 +346,138 @@ See also rabbitmq.com section on [Exchange-to-Exchange Bindings](http://www.rabb
 
 ## Consumer Cancellation Notifications
 
-TBD
+### How To Use It With Bunny 0.9+
+
+In order to use consumer cancellation notifications, you need to use consumer objects (documented in the [Queues and Consumers guide](/articles/queues.html)).
+When a consumer is cancelled, the `#handle_cancellation` method will be called on it. To register a consumer that is an object
+and not just message handler block, use `Bunny::Queue#subscribe_with` instead of `Bunny::Queue#subscribe`:
+
+``` ruby
+ch   = conn.create_channel
+
+module Bunny
+  module Examples
+    class ExampleConsumer < Bunny::Consumer
+      def cancelled?
+        @cancelled
+      end
+
+      def handle_cancellation(basic_cancel)
+        puts "#{@consumer_tag} was cancelled"
+        @cancelled = true
+      end
+    end
+  end
+end
+
+q    = ch.queue("", :exclusive => true)
+c    = Bunny::Examples::ExampleConsumer.new(ch, q)
+q.subscribe_with(c)
+```
+
+### Example
+
+``` ruby
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+require "rubygems"
+require "bunny"
+
+puts "=> Using dead letter exchange"
+puts
+
+conn = Bunny.new
+conn.start
+
+ch   = conn.create_channel
+
+module Bunny
+  module Examples
+    class ExampleConsumer < Bunny::Consumer
+      def cancelled?
+        @cancelled
+      end
+
+      def handle_cancellation(basic_cancel)
+        puts "#{@consumer_tag} was cancelled"
+        @cancelled = true
+      end
+    end
+  end
+end
+
+q    = ch.queue("", :exclusive => true)
+c    = Bunny::Examples::ExampleConsumer.new(ch, q)
+q.subscribe_with(c)
+
+sleep 0.1
+q.delete
+
+sleep 0.1
+puts "Disconnecting..."
+conn.close
+```
+
+### Learn More
+
+See also rabbitmq.com section on [Consumer Cancellation Notifications](http://www.rabbitmq.com/consumer-cancel.html)
 
 
 
 ## Queue Leases
 
-TBD
+Queue Leases is a RabbitMQ feature that lets you set for how long a queue is allowed to be *unused*. After that moment,
+it will be deleted. *Unused* here means that the queue
+
+ * has no consumers
+ * is not redeclared
+ * no message fetches happened (using `basic.get` AMQP 0.9.1 method, that is, `Bunny::Queue#pop` in Bunny)
+
+### How To Use It With Bunny 0.9+
+
+Use the `"x-expires"` optional queue argument to set how long the queue will be allowed to be unused in milliseconds. After that time,
+the queue will be removed by RabbitMQ.
+
+``` ruby
+ch.queue("", :exclusive => true, :arguments => {"x-expires" => 300})
+```
+
+### Example
+
+``` ruby
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+require "rubygems"
+require "bunny"
+
+puts "=> Demonstrating queue TTL (queue leases)"
+puts
+
+conn = Bunny.new
+conn.start
+
+ch   = conn.create_channel
+q    = ch.queue("", :exclusive => true, :arguments => {"x-expires" => 300})
+
+sleep 0.4
+begin
+  # this will raise because the queue is already deleted
+  q.message_count
+rescue Bunny::NotFound => nfe
+  puts "Got a 404 response: the queue has already been removed"
+end
+
+sleep 0.7
+puts "Closing..."
+conn.close
+```
+
+### Learn More
+
+See also rabbitmq.com section on [Queue Leases](http://www.rabbitmq.com/ttl.html#queue-ttl)
+
 
 
 ## Per-Message Time-to-Live
