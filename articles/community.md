@@ -1,5 +1,5 @@
 ---
-title: "Bunny: Community"
+title: "Bunny: Community and Getting Help"
 layout: article
 ---
 
