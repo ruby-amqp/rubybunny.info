@@ -113,11 +113,13 @@ This guide covers:
 This guide covers [RabbitMQ extensions](http://www.rabbitmq.com/extensions.html) and how they are used in Bunny:
 
  * How to use Publishing Confirms with Bunny
- * How to set per-queue message TTL
  * How to use exchange-to-exchange bindings
  * How to the alternate exchange extension
+ * How to set per-queue message TTL
+ * How to set per-message TTL
  * What are consumer cancellation notifications and how to use them
  * Message *dead lettering* and the dead letter exchange
+ * How to use sender-selected routing (`CC` and `BCC` headers)
 
 
 ### [Troubleshooting](/articles/troubleshooting.html) (TBD)
