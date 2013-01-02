@@ -110,7 +110,7 @@ a publisher and a RabbitMQ node instead of a consumer and a RabbitMQ node.
 
 ![RabbitMQ Publisher Confirms](https://github.com/ruby-amqp/amqp/raw/master/docs/diagrams/007_rabbitmq_publisher_confirms.png)
 
-### Public API
+### How To Use It With Bunny 0.9+
 
 To use publisher confirmations, first put the channel into confirmation mode using `Bunny::Channel#confirm_select`:
 
@@ -175,7 +175,7 @@ discard them or requeue them. Unfortunately, basic.reject provides no support fo
 
 To solve this, RabbitMQ supports the basic.nack method that provides all of the functionality of basic.reject whilst also allowing for bulk processing of messages.
 
-### Public API
+### How To Use It With Bunny 0.9+
 
 Bunny exposes `basic.nack` via the `Bunny::Channel#nack` method, similar to `Bunny::Channel#ack` and `Bunny::Channel#reject`:
 
@@ -237,7 +237,7 @@ See also rabbitmq.com section on [basic.nack](http://www.rabbitmq.com/nack.html)
 Alternate Exchanges is a RabbitMQ extension to AMQP 0.9.1 that allows developers to define "fallback" exchanges
 where unroutable messages will be sent.
 
-### Public API
+### How To Use It With Bunny 0.9+
 
 To specify exchange A as an alternate exchange to exchange B, specify the 'alternate-exchange' argument on declaration of B:
 
@@ -294,7 +294,7 @@ RabbitMQ supports [exchange-to-exchange bindings](http://www.rabbitmq.com/e2e.ht
 some other features (e.g. tracing).
 
 
-### Public API
+### How To Use It With Bunny 0.9+
 
 Bunny 0.9 exposes it via `Bunny::Exchange#bind` which is semantically the same as `Bunny::Queue#bind` but binds
 two exchanges:
@@ -357,22 +357,200 @@ TBD
 
 ## Per-Message Time-to-Live
 
-TBD
+A TTL can be specified on a per-message basis, by setting the `:expiration` property when publishing.
+
+### How To Use It With Bunny 0.9+
+
+`Bunny::Exchange#publish` recognizes the `:expiration` option that is message time-to-live (TTL) in milliseconds:
+
+``` ruby
+# 1 second
+x.publish("", :expiration => 1000)
+
+# 5 minutes
+x.publish("", :expiration => (5 * 60 * 1000))
+```
 
 
-## Sender-Selected Routing
+### Example
 
-TBD
+``` ruby
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+require "rubygems"
+require "bunny"
+
+puts "=> Using per-message TTL"
+puts
+
+conn = Bunny.new
+conn.start
+
+ch   = conn.create_channel
+x    = ch.fanout("amq.fanout")
+q    = ch.queue("", :exclusive => true).bind(x)
+
+10.times do |i|
+  x.publish("Message #{i}", :expiration => 1000)
+end
+
+sleep 0.7
+_, _, content1 = q.pop
+puts "Fetched #{content1.inspect} after 0.7 second"
+
+sleep 0.8
+_, _, content2 = q.pop
+msg = if content2
+        content2.inspect
+      else
+        "nothing"
+      end
+puts "Fetched #{msg} after 1.5 second"
+
+sleep 0.7
+puts "Closing..."
+conn.close
+```
+
+### Learn More
+
+See also rabbitmq.com section on [Per-message TTL](http://www.rabbitmq.com/ttl.html#per-message-ttl)
+
+
+
+## Sender-Selected Distribution
+
+Generally, RabbitMQ model assumes the broker will do the routing work. At times, however, it is useful
+for routing to happen in the publisher application. Sender-Selected Routing is a RabbitMQ feature
+that lets clients have extra control over routing.
+
+The values associated with the `"CC"` and `"BCC"` header keys will be added to the routing key if they are present.
+If none of those headers is present, this extension has no effect.
+
+### How To Use It With Bunny 0.9+
+
+To use sender-selected distribution, set the `"CC"` and `"BCC"` headers like you would any other header:
+
+``` ruby
+x.publish("Message #{i}", :routing_key => "one", :headers => {"CC" => ["two", "three"]})
+```
+
+### Example
+
+``` ruby
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+require "rubygems"
+require "bunny"
+
+puts "=> Using sender-selected distribution"
+puts
+
+conn = Bunny.new
+conn.start
+
+ch   = conn.create_channel
+x    = ch.direct("bunny.examples.ssd.exchange")
+q1   = ch.queue("", :exclusive => true).bind(x, :routing_key => "one")
+q2   = ch.queue("", :exclusive => true).bind(x, :routing_key => "two")
+q3   = ch.queue("", :exclusive => true).bind(x, :routing_key => "three")
+q4   = ch.queue("", :exclusive => true).bind(x, :routing_key => "four")
+
+10.times do |i|
+  x.publish("Message #{i}", :routing_key => "one", :headers => {"CC" => ["two", "three"]})
+end
+
+sleep 0.2
+puts "Queue #{q1.name} now has #{q1.message_count} messages in it"
+puts "Queue #{q2.name} now has #{q2.message_count} messages in it"
+puts "Queue #{q3.name} now has #{q3.message_count} messages in it"
+puts "Queue #{q4.name} now has #{q4.message_count} messages in it"
+
+sleep 0.7
+puts "Closing..."
+conn.close
+```
+
+### Learn More
+
+See also rabbitmq.com section on [Sender-Selected Distribution](http://www.rabbitmq.com/sender-selected.html)
+
 
 
 ## Dead Letter Exchange (DLX)
 
-TBD
+The x-dead-letter-exchange argument to queue.declare controls the exchange to which messages from that queue are 'dead-lettered'.
+A message is dead-lettered when any of the following events occur:
+
+The message is rejected (basic.reject or basic.nack) with requeue=false; or
+The TTL for the message expires.
+
+### How To Use It With Bunny 0.9+
+
+Dead-letter Exchange is a feature that is used by specifying additional queue arguments:
+
+ * `"x-dead-letter-exchange"` controls what exchange should dead lettered messages be published to by RabbitMQ
+ * `"x-dead-letter-routing-key"` controls what routing key should be used (has to be a constant value)
+
+``` ruby
+dlx  = ch.fanout("bunny.examples.dlx.exchange")
+q    = ch.queue("", :exclusive => true, :arguments => {"x-dead-letter-exchange" => dlx.name}).bind(x)
+```
+
+### Example
+
+``` ruby
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+require "rubygems"
+require "bunny"
+
+puts "=> Using dead letter exchange"
+puts
+
+conn = Bunny.new
+conn.start
+
+ch   = conn.create_channel
+x    = ch.fanout("amq.fanout")
+dlx  = ch.fanout("bunny.examples.dlx.exchange")
+q    = ch.queue("", :exclusive => true, :arguments => {"x-dead-letter-exchange" => dlx.name}).bind(x)
+# dead letter queue
+dlq  = ch.queue("", :exclusive => true).bind(dlx)
+
+x.publish("")
+sleep 0.2
+
+delivery_info, _, _ = q.pop(:ack => true)
+puts "#{dlq.message_count} messages dead lettered so far"
+puts "Rejecting a message"
+ch.nack(delivery_info.delivery_tag, false)
+sleep 0.2
+puts "#{dlq.message_count} messages dead lettered so far"
+
+dlx.delete
+puts "Disconnecting..."
+conn.close
+```
+
+### Learn More
+
+See also rabbitmq.com section on [Dead Letter Exchange](http://www.rabbitmq.com/dlx.html)
+
+
 
 
 ## Wrapping Up
 
-TBD
+RabbitMQ provides a number of useful extension to AMQP 0.9.1.
+
+Bunny 0.9 and later releases have RabbitMQ extensions support built into the core. Some features are based on optional arguments
+for queues, exchanges or messages, some are Bunny public API features. Any future argument-based extensions will likely be
+useful with Bunny immediately, without any library modifications.
+
 
 ## What to Read Next
 
