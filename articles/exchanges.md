@@ -943,7 +943,7 @@ This plugin is licensed under [Mozilla Public License 1.1](http://www.mozilla.or
 
 ## Using the Publisher Confirms Extension
 
-Please refer to [RabbitMQ Extensions guide](/articles/rabbitmq_extensions.html)
+Please refer to [RabbitMQ Extensions guide](/articles/extensions.html)
 
 
 ### Message Acknowledgements and Their Relationship to Transactions and Publisher Confirms
