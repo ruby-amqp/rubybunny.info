@@ -15,24 +15,24 @@ We recommend that you read these guides, if possible, in this order:
 An overview of Bunny with a quick tutorial that helps you to get started with it. It should take about
 20 minutes to read and study the provided code examples.
 
-### [AMQP Concepts](http://www.rabbitmq.com/tutorials/amqp-concepts.html)
+### [AMQP 0.9.1 Model Concepts](http://www.rabbitmq.com/tutorials/amqp-concepts.html)
 
 This guide covers:
 
  * AMQP 0.9.1 model overview
- * What are AMQP channels
- * What are AMQP vhosts
- * What are AMQP queues
- * What are AMQP exchanges
- * What are AMQP bindings
+ * What are channels
+ * What are vhosts
+ * What are queues
+ * What are exchanges
+ * What are bindings
  * What are AMQP 0.9.1 classes and methods
 
-### [Connecting To The Broker](/articles/connecting.html)
+### [Connecting To RabbitMQ](/articles/connecting.html)
 
 This guide covers:
 
- * How to connect to RabbitMQ with Bunny
- * How to use connection URI to connect to RabbitMQ (also: in PaaS environments such as Heroku)
+ * How to connect to RabbitMQ with Bunny 0.9+
+ * How to use connection URI to connect to RabbitMQ (also: in PaaS environments such as Heroku and CloudFoundry)
  * How to open a channel
  * How to close a channel
  * How to disconnect
@@ -55,14 +55,14 @@ This guide covers:
  * Other topics related to queues
 
 
-### [Exchanges and Publishing](/articles/exchanges.html) (TBD)
+### [Exchanges and Publishing](/articles/exchanges.html)
 
 This guide covers:
 
  * Exchange types
  * How to declare AMQP exchanges with Bunny
  * How to publish messages
- * Exchange properties
+ * Exchange propreties
  * Fanout exchanges
  * Direct exchanges
  * Topic exchanges
@@ -108,16 +108,18 @@ This guide covers:
 
 
 
-### [RabbitMQ Extensions to AMQP 0.9.1](/articles/rabbitmq_extensions.html) (TBD)
+### [RabbitMQ Extensions to AMQP 0.9.1](/articles/extensions.html) (WIP)
 
 This guide covers [RabbitMQ extensions](http://www.rabbitmq.com/extensions.html) and how they are used in Bunny:
 
  * How to use Publishing Confirms with Bunny
- * How to set per-queue message TTL
  * How to use exchange-to-exchange bindings
  * How to the alternate exchange extension
+ * How to set per-queue message TTL
+ * How to set per-message TTL
  * What are consumer cancellation notifications and how to use them
  * Message *dead lettering* and the dead letter exchange
+ * How to use sender-selected routing (`CC` and `BCC` headers)
 
 
 ### [Troubleshooting](/articles/troubleshooting.html) (TBD)
