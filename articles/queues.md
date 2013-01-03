@@ -21,9 +21,9 @@ This guide covers Bunny 0.9.0
 ### What are AMQP Queues?
 
 *Queues* store and forward messages to consumers. They are similar to mailboxes in SMTP. Messages flow from producing applications to [exchanges](/articles/exchanges.html)
-that route them to queues and finally queues deliver the messages to consumer applications (or consumer applications fetch messages as needed).
+that route them to queues and finally, queues deliver the messages to consumer applications (or consumer applications fetch messages as needed).
 
-Note that unlike some other messaging protocols/systems, messages are not delivered directly to queues. They are delivered to exchanges that route
+**Note** that unlike some other messaging protocols/systems, messages are not delivered directly to queues. They are delivered to exchanges that route
 messages to queues using rules known as *bindings*.
 
 AMQP is a programmable protocol, so queues and bindings alike are declared by applications.
@@ -43,7 +43,7 @@ Queues have several attributes associated with them:
  * Whether the queue is auto-deleted when no longer used
  * Other metadata (sometimes called *X-arguments*)
 
-These attributes define how queues can be used, what their life-cycle is like and other aspects of queue behavior.
+These attributes define how queues can be used, their life-cycle, and other aspects of queue behavior.
 
 ## Queue Names and Declaring Queues
 
@@ -76,8 +76,8 @@ q    = ch.queue("images.resize", :exclusive => false, :auto_delete => true)
 
 ### Server-named queues
 
-To ask an AMQP broker to generate a unique queue name for you, pass an *empty string* as the queue name argument. A generated queue name
-will be assigned to the `Bunny::Queue` instance the method returns:
+To ask an AMQP broker to generate a unique queue name for you, pass an *empty string* as the queue name argument. A generated queue name (like *amq.gen-JZ46KgZEOZWg-pAScMhhig*)
+will be assigned to the `Bunny::Queue` instance that the method returns:
 
 ``` ruby
 ch.queue("", :exclusive => true)
@@ -95,12 +95,12 @@ ch   = conn.create_channel
 q    = ch.queue("", :exclusive => true)
 ```
 
-Note that, while it is common to declare server-named queues as `:exclusive`, it is not necessary.
+**Note** that, while it is common to declare server-named queues as `:exclusive`, it is not necessary.
 
 
 ### Reserved Queue Name Prefix
 
-Queue names starting with "amq." are reserved for internal use by the broker. Attempts to declare a queue with a name that violates this rule will
+Queue names starting with "amq." are reserved for server-named queues and queues for internal use by the broker. Attempts to declare a queue with a name that violates this rule will
 result in a channel-level exception with reply code `403 (ACCESS_REFUSED)` and a reply message similar to this:
 
     ACCESS_REFUSED - queue name 'amq.queue' contains reserved prefix 'amq.*'
@@ -195,7 +195,7 @@ Exclusive queues will be deleted when the connection they were declared on is cl
 
 ## Binding Queues to Exchanges
 
-In order to receive messages, a queue needs to be bound to at least one exchange. Most of the time binding is explcit (done by applications). **Please note:** All queues are automatically bound to the default unnamed RabbitMQ direct exchange with a routing key that is the same as the queue name.
+In order to receive messages, a queue needs to be bound to at least one exchange. Most of the time binding is explcit (done by applications). **Please note:** All queues are automatically bound to the default unnamed RabbitMQ direct exchange with a routing key that is the same as the queue name (see [Exchanges and Publishing](/articles/exchanges.html) guide for more details).
 
 To bind a queue to an exchange,
 use the `Bunny::Queue#bind` method:
@@ -225,15 +225,24 @@ q.bind(x)
 
 ## Subscribing to receive messages ("push API")
 
-To set up a queue subscription to enable an application to receive messages as they arrive in a queue, one uses the `Bunny::Queue#subscribe` method
-to request that the server starts a *consumer*. Consumer is the name for subscription that the AMQP 0.9.1 specification uses. Consumers last as long as the channel that they were declared on,
+To request that the server starts a *consumer* (queue subscription) to enable an application to process messages as they arrive in a queue, one uses the `Bunny::Queue#subscribe` or `Bunny::Queue#subscribe_with` methods.
+
+Consumers last as long as the channel that they were declared on,
 or until the client cancels them (unsubscribes).
 
-Consumers are identified by *consumer tags* and have a number of events that they can react to:
+Consumers have a number of events that they can react to:
 
  * Message delivery
  * Consumer registration confirmation
  * Consumer cancellation
+ 
+#### Consumer Tags
+
+Consumers are identified by unique strings called *consumer tags*. The `Bunny::Queue#subscribe` method can take a `:consumer_tag` argument or let RabbitMQ generate one
+
+```ruby
+q.subscribe(:consumer_tag => "unique_consumer_001")
+```
 
 ### Handling Messages With a Block
 
@@ -281,14 +290,9 @@ or
 delivery_info.delivery_tag
 ```
 
-
-#### Consumer Tags
-
-`Bunny::Queue#subscribe` can take a `:consumer_tag` argument (any unique string) or let RabbitMQ generate one.
-
 #### Blocking or Non-Blocking Behavior
 
-The subscribe method will not block the calling thread by default. If you want to block, pass `:block => true` to
+The subscribe method will not block the calling thread by default. If you want to block the thread, pass `:block => true` to
 `Bunny::Queue#subscribe`. In Bunny 0.9.0 and later, network activity and dispatch of delivered messages
 to consumers happens in separate threads that Bunny maintains internally, so it does not have to
 block the thread that calls `Bunny::Queue#subscribe`. However, it may be convenient to do so
@@ -419,19 +423,17 @@ The full list of properties (note that most of them are optional and may not be 
 
 Bunny 0.9.0 introduces a new `Bunny::Consumer` class which takes the following positional arguments when instantiated:
 
- * `channel`      *(mandatory)*
- * `queue`        *(mandatory)*
- * `consumer_tag` *(default = "")*
- * `no_ack`       *(default = false)*
- * `exclusive`    *(default = false)*
- * `arguments`    *(default = {})*
+ * `channel` _(mandatory)_
+ * `queue` _(mandatory)_
+ * `consumer_tag` _(default = "")_
+ * `no_ack` _(default = false)_
+ * `exclusive` _(default = false)_
+ * `arguments` _(default = {})_
  
 To create a consumer object:
 
 ```ruby
 class ExampleConsumer < Bunny::Consumer
-  attr_reader :cancelled
-  
   def cancelled?
     @cancelled
   end
@@ -456,7 +458,7 @@ or
 consumer = ExampleConsumer.new(ch, q)
 ```
 
-If the `consumer_tag` is empty then RabbitMQ will generate one, but it can also be set in the code:
+If the `consumer_tag` is empty then Bunny will generate one that looks something like *bunny-1357204208000-17043847598*, but it can also be set in the code:
 
 ```ruby
 consumer.consumer_tag = "another_example_consumer"
@@ -482,15 +484,16 @@ To handle these *consumer cancellation notification* events, consumers have a *c
 
 ### Registering Consumer Instances
 
-To register a consumer and start consuming messages, pass a consumer object to the `Bunny::Queue#subscribe_with` method. Here is an example:
+To register a consumer and start consuming messages, pass a consumer object to the `Bunny::Queue#subscribe_with` method. Here is a full example:
 
 ```ruby
+#!/usr/bin/env ruby
+# encoding: utf-8
+
 require 'bunny'
 
 # Define consumer subclass
-class ExampleConsumer < Bunny::Consumer
-  attr_reader :cancelled
-  
+class ExampleConsumer < Bunny::Consumer 
   def cancelled?
     @cancelled
   end
@@ -538,13 +541,13 @@ ch1.queue("testq").delete
 
 sleep 0.5
 
-puts 'Consumer has been cancelled' if consumer.cancelled
+puts 'Consumer has been cancelled' if consumer.cancelled?
 
 sleep 2
 connection.close
 ```
 
-As with the `Bunny::Queue#subscribe` method, the `Bunny::Queue#subscribe_with` method can take a `:block` argument to block the current thread:
+As with the `Bunny::Queue#subscribe` method, the `Bunny::Queue#subscribe_with` method can take a `:block` argument to block the calling thread:
 
 ```ruby
 q.subscribe_with(consumer, :block => true)
@@ -559,8 +562,8 @@ TCP connection to the broker, then the channel is closed and the exclusive consu
 To exclusively receive messages from the queue, pass the `:exclusive` option to `Bunny::Queue#subscribe`:
 
 ``` ruby
-q = ch.queue("", :exclusive => true)
-q.subscribe(:block => true, :ack => true) do |delivery_info, properties, payload|
+q = ch.queue("")
+q.subscribe(:block => true, :ack => true, :exclusive => true) do |delivery_info, properties, payload|
   # ...
 end
 ```
@@ -583,8 +586,10 @@ consumer = ExampleConsumer.new(ch, q, "", false, true)
 q.subscribe_with(consumer)
 ```
 
-If a queue has an exclusive consumer, attempts to register another consumer will fail with an [access refused](http://www.rabbitmq.com/amqp-0-9-1-reference.html#constant.access-refused)
-channel-level exception (code: 403).
+Attempts to register another consumer on a queue that already has an exclusive consumer will
+result in a channel-level exception with reply code `403 (ACCESS_REFUSED)` and a reply message similar to this: 
+
+    ACCESS_REFUSED - queue 'queue name' in vhost '/' in exclusive use (Bunny::AccessRefused)
 
 It is not possible to register an exclusive consumer on a queue that already has consumers.
 
@@ -593,13 +598,43 @@ It is not possible to register an exclusive consumer on a queue that already has
 
 It is possible to have multiple non-exclusive consumers on queues. In that case, messages will be
 distributed between them according to prefetch levels of their channels (more on this later in this
-guide). If prefetch values are equal for all consumers, each consumer will get about the same # of messages.
+guide). If prefetch values are equal for all consumers, each consumer will get about the same number of messages.
 
 
 ### Cancelling a Consumer
 
-TBD
+Sometimes there may be a requirement to cancel a consumer directly without deleting the queue that it is subscribed to. In AMQP 0.9.1 parlance, "cancelling a consumer" is often referred to as "unsubscribing". The `Bunny::Consumer#cancel` method can be used to do this. Here is a usage example :
 
+``` ruby
+require 'bunny'
+
+connection = Bunny.new
+connection.start
+
+ch         = connection.create_channel
+q          = ch.queue("", :auto_delete => true, :durable => false)
+
+consumer   = q.subscribe(:block => false) do |_, _, payload|
+  puts payload
+end
+
+puts "Consumer: #{consumer.consumer_tag} created"
+
+sleep 1
+
+# Cancel consumer
+cancel_ok = consumer.cancel
+
+puts "Consumer: #{cancel_ok.consumer_tag} cancelled"
+
+ch.close
+```
+
+In the above example, you can see that the `Bunny::Consumer#cancel` method returns a *cancel_ok* reply from RabbitMQ which contains the consumer tag of the cancelled consumer.
+
+Once a consumer is cancelled, messages will
+no longer be delivered to it, however, due to the asynchronous nature of the protocol, it is possible for "in flight" messages to be received
+after this call completes.
 
 ### Message Acknowledgements
 
@@ -633,10 +668,6 @@ end
 To demonstrate how redelivery works, let us have a look at the following code example:
 
 ``` ruby
-#!/usr/bin/env ruby
-# encoding: utf-8
-
-require "rubygems"
 require "bunny"
 
 puts "=> Subscribing for messages using explicit acknowledgements model"
@@ -676,7 +707,7 @@ q1.bind(x).subscribe(:ack => true, :block => false) do |delivery_info, propertie
   else
     # some messages are not ack-ed and will remain in the queue for redelivery
     # when app #1 connection is closed (either properly or due to a crash)
-    puts "[consumer1] Got message ##{properties.headers['i']}, SKIPPPED"
+    puts "[consumer1] Got message ##{properties.headers['i']}, SKIPPED"
   end
 end
 
@@ -717,12 +748,12 @@ connection3.close
 So what is going on here? This example uses three AMQP connections to imitate three applications, one producer and two consumers.
 Each AMQP connection opens a single channel. The consumers share a queue and the producer publishes messages to the queue periodically using an `amq.direct` exchange.
 
-Both "applications" subscribe to receive messages using the explicit acknowledgement model. The AMQP broker by default will send each message to
+Both "applications" subscribe to receive messages using the explicit acknowledgement model. The RabbitMQ broker by default will send each message to
 the next consumer in sequence (this kind of load balancing is known as *round-robin*). This means that some messages will be delivered
 to consumer #1 and some to consumer #2.
 
 To demonstrate message redelivery we make consumer #1 randomly select which messages to acknowledge. After 4 seconds we disconnect it (to imitate a crash).
-When that happens, the AMQP broker redelivers unacknowledged messages to consumer #2 which acknowledges them unconditionally. After 10 seconds, this example
+When that happens, the RabbitMQ broker redelivers unacknowledged messages to consumer #2 which acknowledges them unconditionally. After 10 seconds, this example
 closes all outstanding connections and exits.
 
 An extract of output produced by this example:
@@ -734,12 +765,11 @@ An extract of output produced by this example:
 [consumer2] Got message #1, redelivered?: false, ack-ed
 [consumer1] Got message #2, redelivered?: false, ack-ed
 [consumer2] Got message #3, redelivered?: false, ack-ed
-[consumer1] Got message #4, SKIPPPED
+[consumer1] Got message #4, SKIPPED
 [consumer2] Got message #5, redelivered?: false, ack-ed
-[consumer1] Got message #6, SKIPPPED
+[consumer2] Got message #6, redelivered?: false, ack-ed
 ----- Connection 1 is now closed (we pretend that it has crashed) -----
 [consumer2] Got message #4, redelivered?: true, ack-ed
-[consumer2] Got message #6, redelivered?: true, ack-ed
 [consumer2] Got message #7, redelivered?: false, ack-ed
 [consumer2] Got message #8, redelivered?: false, ack-ed
 [consumer2] Got message #9, redelivered?: false, ack-ed
@@ -748,41 +778,40 @@ An extract of output produced by this example:
 [consumer2] Got message #12, redelivered?: false, ack-ed
 ```
 
-As we can see, consumer #1 did not acknowledge two messages (labelled 4 and 6):
+As we can see, consumer #1 did not acknowledge one message (labelled 4):
 
 ```
-[consumer1] Got message #4, SKIPPPED
+[consumer1] Got message #4, SKIPPED
 ...
-[consumer1] Got message #6, SKIPPPED
+
 ```
 
-and then, once consumer #1 had "crashed", those messages were immediately redelivered to the consumer #2:
+and then, once consumer #1 had "crashed", the message was immediately redelivered to the consumer #2:
 
 ```
 ----- Connection 1 is now closed (we pretend that it has crashed) -----
 [consumer2] Got message #4, redelivered?: true, ack-ed
-[consumer2] Got message #6, redelivered?: true, ack-ed
 ```
 
-To acknowledge a message use `Bunny::Channel#ack`:
+To acknowledge a message use `Bunny::Channel#acknowledge`:
 
 ```
 # FYI: there is a shortcut, Bunny::Channel.ack
 ch1.acknowledge(delivery_info.delivery_tag, false)
 ```
 
-`Bunny::Channel#ack` takes two arguments: a message *delivery tag* and a flag that indicates whether or not we want to acknowledge multiple messages at once.
+`Bunny::Channel#acknowledge` takes two arguments: a message *delivery tag* and a flag that indicates whether or not we want to acknowledge multiple messages at once.
 Delivery tag is simply a channel-specific increasing number that the server uses to identify deliveries.
 
 When acknowledging multiple messages at once, the delivery tag is treated as "up to and including". For example, if delivery tag = 5 that would mean "acknowledge messages 1, 2, 3, 4 and 5".
 
-<p class="alert alert-error">
-Acknowledgements are channel-specific. Applications must not receive messages on one channel and acknowledge them on another.
-</p>
+**Please Note:** Acknowledgements are channel-specific. Applications MUST NOT receive messages on one channel and acknowledge them on another.
 
-<p class="alert alert-error">
-A message MUST not be acknowledged more than once. Doing so will result in a channel-level exception (PRECONDITION_FAILED) with an error message like this: "PRECONDITION_FAILED - unknown delivery tag"
-</p>
+Also, a message MUST NOT be acknowledged more than once. Doing so will result in a channel-level exception with code `406 (PRECONDITION_FAILED)`
+being raised. The reply text will be similar to this:
+
+    PRECONDITION_FAILED - unknown delivery tag
+
 
 ### Rejecting messages
 
@@ -799,12 +828,12 @@ in the example above, messages are rejected without requeueing (broker will simp
 that `Bunny::Queue#reject` takes:
 
 ``` ruby
-ch1.reject(delivery_info.delivery_tag)
+ch1.reject(delivery_info.delivery_tag, true)
 ```
 
 ### Negative acknowledgements
 
-Messages are rejected with the `basic.reject` AMQP method. There is one limitation that `basic.reject` has:
+Messages are rejected with the `basic.reject` AMQP method. However, there is one notable limitation that `basic.reject` has:
 there is no way to reject multiple messages, as you can do with acknowledgements. However, if you are using [RabbitMQ](http://rabbitmq.com), then there is a solution.
 RabbitMQ provides an AMQP 0.9.1 extension known as [negative acknowledgements](http://www.rabbitmq.com/extensions.html#negative-acknowledgements) (nacks) and
 Bunny supports this extension. For more information, please refer to the [RabbitMQ Extensions guide](/articles/rabbitmq_extensions.html).
@@ -815,8 +844,8 @@ For cases when multiple consumers share a queue, it is useful to be able to spec
 This can be used as a simple load balancing technique  to improve throughput if messages tend to be published in batches. For example, if a producing application
 sends messages every minute because of the nature of the work it is doing.
 
-Imagine a website that takes data from social media sources like Twitter or Facebook during the Champions League final (or the Superbowl),
-and then calculates how many tweets mention a particular team during the last minute. The site could be structured as 3 applications:
+Imagine a website that takes data from social media sources like Twitter or Facebook during the Champions League (european soccer) final (or the Superbowl),
+and then calculates how many tweets mentioned a particular team during the last minute. The site could be structured as 3 applications:
 
  * A crawler that uses streaming APIs to fetch tweets/statuses, normalizes them and sends them in JSON for processing by other applications ("app A").
  * A calculator that detects what team is mentioned in a message, updates statistics and pushes an update to the Web UI once a minute ("app B").
@@ -827,26 +856,14 @@ that the AMQP broker has to hold in memory at once, applications can be designed
 receives 5000 messages and then acknowledges them all at once. The broker will not send message 5001 unless it receives an acknowledgement.
 
 In AMQP parlance this is know as *QoS* or *message prefetching*. Prefetching is configured on a per-channel (typically) or per-connection (rarely used) basis.
-To configure prefetching per channel, use the `Bunny::Channel#prefetch` method. Let us return to the example we used in the earlier example:
+To configure prefetching per channel, use the `Bunny::Channel#prefetch` method like so:
 
 ``` ruby
 ch1 = connection1.create_channel
 ch1.prefetch(1)
 ```
 
-In that example, one consumer prefetches three messages and another consumer prefetches just one. If we take a look at the output that the example produces,
-we will see that `consumer1` fetched four messages and acknowledged one. After that, all subsequent messages were delivered to `consumer2`:
-
-```
-[consumer1] Got message #4, SKIPPPED
-[consumer2] Got message #5, redelivered?: false, ack-ed
-[consumer1] Got message #6, SKIPPPED
------ Connection 1 is now closed (we pretend that it has crashed) -----
-[consumer2] Got message #4, redelivered?: true, ack-ed
-[consumer2] Got message #6, redelivered?: true, ack-ed
-```
-
-<span class="alert alert-error">The prefetching setting is ignored for consumers that do not use explicit acknowledgements.</span>
+**Note** that the prefetch setting is ignored for consumers that do not use explicit acknowledgements.
 
 
 ## How Message Acknowledgements Relate to Transactions and Publisher Confirms
@@ -870,7 +887,7 @@ Let us consider a publisher application (P) that communications with a consumer 
 -----       -----       -----
 </pre>
 
-We have two network segments, S1 and S2. Each of them may fail. P is concerned with making sure that messages cross S1, while broker (B) and C are concerned with ensuring
+We have two network segments, S1 and S2, either of which might fail. P is concerned with making sure that messages cross S1, while brokers B and C are concerned with ensuring
 that messages cross S2 and are only removed from the queue when they are processed successfully.
 
 Message acknowledgements cover reliable delivery over S2 as well as successful processing. For S1, P has to use transactions (a heavyweight solution) or the more lightweight
@@ -889,29 +906,33 @@ delivery_info, properties, payload = q.pop
 The same example in context:
 
 ``` ruby
-# TBD
+require "bunny"
+
+conn = Bunny.new
+conn.start
+
+chann = conn.create_channel
+
+q = chann.queue("test1")
+
+exch = chann.default_exchange
+
+exch.publish("Hello, everybody!", :routing_key => 'test1')
+
+delivery_info, properties, payload = q.pop
+
+puts "This is the message: " + payload + "\n\n"
+
+conn.close
 ```
 
-The metadata map has the same keys as for delivery handlers (see the "Push API" section above).
+The message properties are the same as those provided for delivery handlers (see the "Push API" section above).
 
-If the queue is empty, then `nil` will be returned.
+If the queue is empty, then `[nil, nil, nil]` will be returned.
 
-## Unsubscribing From Messages
+There is another method, `Bunny::Queue#pop_as_hash`, that returns the message attributes as a hash -
 
-Sometimes it is necessary to unsubscribe from messages without deleting a queue. To do so, use the `Bunny::Consumer#cancel` method:
-
-``` ruby
-# TBD
-```
-
-The consumer tag is either known to your application ahead of time or generated by the broker and can be obtained from
-the consumer returned by `Bunny::Queue#subscribe` (only makes sense with the non-blocking version, that is, when `:block => false` is used).
-
-In AMQP 0.9.1 parlance, unsubscribing from messages is often referred to as "cancelling a consumer". Once a consumer is cancelled, messages will
-no longer be delivered to it, however, due to the asynchronous nature of the protocol, it is possible for "in flight" messages to be received
-after this call completes.
-
-Fetching messages with `Bunny::Queue#get` is still possible even after a consumer is cancelled.
+`{:header => properties, :payload => content, :delivery_details => delivery_info}`
 
 
 ## Unbinding Queues From Exchanges
@@ -925,36 +946,69 @@ q.unbind(x)
 Note that trying to unbind a queue from an exchange that the queue was never bound to will
 result in a channel-level exception.
 
-## Querying the Number of Messages in a Queue
+## Querying the Number of Messages and Consumers for a Queue
 
-It is possible to query the number of messages sitting in the queue by declaring the queue
+It is possible to query the number of messages in a queue and the number of consumers it has by declaring the queue
 with the `:passive` attribute set.
 The response (`queue.declare-ok` AMQP method) will include the number of messages along with
-other attributes. However, Bunny provides a convenience function `langohr.queue/status`:
+the number of consumers. However, Bunny provides a convenience method, `Bunny::Queue#status`, that returns a hash containing `:message_count` and `:consumer_count`. There are two further convenience methods that provide both pieces of information individually -
 
-{% gist 7703ef627a4234b2cabe %}
+ * `Bunny::Queue#message_count`
+ * `Bunny::Queue#consumer_count`
 
-## Querying the Number of Consumers On a Queue
+``` ruby
+require "bunny"
 
-It is possible to query the number of consumers on a queue by declaring the queue with the ":passive" attribute set. The response (`queue.declare-ok` AMQP method)
-will include the number of consumers along with other attributes. However, Bunny provides a convenience function `langohr.queue/status`:
+conn = Bunny.new
+conn.start
 
-{% gist adb53fc1201630a5199c %}
+ch = conn.channel
+
+q = ch.queue("testq")
+
+# Display message count
+puts q.message_count
+
+# Display consumer count
+puts q.consumer_count
+```
 
 ## Purging queues
 
-It is possible to purge a queue (remove all of the messages from it) using the `langohr.queues/purge` function:
+It is possible to purge a queue (remove all of the messages from it) using the `Bunny::Queue#purge` method:
 
-{% gist be4b2501a72874e6d214 %}
+``` ruby
+require "bunny"
 
-Note that this example purges a newly declared queue with a unique server-generated name. When a queue is declared,
+conn = Bunny.new
+conn.start
+
+ch = conn.channel
+
+q = ch.queue("")
+
+q.purge
+```
+
+**Note** that this example purges a newly declared queue with a unique server-generated name. When a queue is declared,
 it is empty, so for server-named queues, there is no need to purge them before they are used.
 
 ## Deleting Queues
 
-To delete a queue, use the `langohr.queue/delete` function:
+To delete a queue, use the `Bunny::Queue#delete` method:
 
-{% gist dd6a06ac1e50e4c142eb %}
+``` ruby
+require "bunny"
+
+conn = Bunny.new
+conn.start
+
+ch = conn.channel
+
+q = ch.queue("")
+
+q.delete
+```
 
 When a queue is deleted, all of the messages in it are deleted as well.
 
@@ -969,7 +1023,6 @@ See [Durability guide](/articles/durability.html)
 See [RabbitMQ Extensions guide](/articles/rabbitmq_extensions.html)
 
 
-
 ## Wrapping Up
 
 AMQP queues can be client-named or server-named. It is possible to either subscribe for
@@ -978,10 +1031,11 @@ as needed. Consumers are identified by consumer tags.
 
 For messages to be routed to queues, queues need to be bound to exchanges.
 
-Most functions related to queues are found in two Bunny namespaces:
+Most methods related to queues are found in three Bunny namespaces:
 
- * `langohr.queue`
- * `langohr.basic`
+ * `Bunny::Channel`
+ * `Bunny::Consumer`
+ * `Bunny::Queue`
 
 
 ## What to Read Next
