@@ -74,7 +74,7 @@ This guide covers:
  * Other topics related to exchanges and publishing
 
 
-### [Bindings](/articles/bindings.html) (TBD)
+### [Bindings](/articles/bindings.html)
 
 This guide covers:
 
