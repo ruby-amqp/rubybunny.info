@@ -38,7 +38,7 @@ This guide covers:
  * How to disconnect
 
 
-### [Queues and Consumers](/articles/queues.html) (WIP)
+### [Queues and Consumers](/articles/queues.html)
 
 This guide covers:
 
