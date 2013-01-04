@@ -19,6 +19,10 @@ Bunny 0.9 supports all [RabbitMQ extensions to AMQP 0.9.1](http://www.rabbitmq.c
   * [Dead Letter Exchanges](http://www.rabbitmq.com/dlx.html)
   * [Validated user_id](http://www.rabbitmq.com/validated-user-id.html)
 
+This guide briefly describes how to use these extensions with Bunny.
+
+This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>
+(including images and stylesheets). The source is available [on Github](https://github.com/ruby-amqp/rubybunny.info).
 
 ## What version of Bunny does this guide cover?
 
