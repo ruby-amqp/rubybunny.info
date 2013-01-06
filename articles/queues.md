@@ -487,9 +487,6 @@ To handle these *consumer cancellation notification* events, consumers have a *c
 To register a consumer and start consuming messages, pass a consumer object to the `Bunny::Queue#subscribe_with` method. Here is a full example:
 
 ```ruby
-#!/usr/bin/env ruby
-# encoding: utf-8
-
 require 'bunny'
 
 # Define consumer subclass
@@ -659,7 +656,7 @@ the broker will wait until at least one consumer is registered for the same queu
 The acknowledgement model is chosen when a new consumer is registered for a queue. By default, `Bunny::Queue#subscribe` will use the *automatic* model.
 To switch to the *explicit* model, the `:ack` option should be used:
 
-``` rub
+``` ruby
 q = ch.queue("", :exclusive => true).subscribe(:ack => true) do |delivery_info, properties, payload|
   # ...
 end
@@ -683,13 +680,10 @@ connection3 = Bunny.new
 connection3.start
 
 ch1 = connection1.create_channel
-ch1.prefetch(1)
 
 ch2 = connection2.create_channel
-ch2.prefetch(1)
 
 ch3 = connection3.create_channel
-ch3.prefetch(1)
 
 x   = ch3.direct("amq.direct")
 q1  = ch1.queue("bunny.examples.acknowledgements.explicit", :auto_delete => false)
@@ -740,7 +734,7 @@ end
 t2.abort_on_exception = true
 
 
-sleep 7.0
+sleep 10.0
 connection2.close
 connection3.close
 ```
@@ -767,9 +761,10 @@ An extract of output produced by this example:
 [consumer2] Got message #3, redelivered?: false, ack-ed
 [consumer1] Got message #4, SKIPPED
 [consumer2] Got message #5, redelivered?: false, ack-ed
-[consumer2] Got message #6, redelivered?: false, ack-ed
+[consumer1] Got message #6, SKIPPED
 ----- Connection 1 is now closed (we pretend that it has crashed) -----
 [consumer2] Got message #4, redelivered?: true, ack-ed
+[consumer2] Got message #6, redelivered?: true, ack-ed
 [consumer2] Got message #7, redelivered?: false, ack-ed
 [consumer2] Got message #8, redelivered?: false, ack-ed
 [consumer2] Got message #9, redelivered?: false, ack-ed
@@ -778,19 +773,21 @@ An extract of output produced by this example:
 [consumer2] Got message #12, redelivered?: false, ack-ed
 ```
 
-As we can see, consumer #1 did not acknowledge one message (labelled 4):
+As we can see, consumer #1 did not acknowledge two messages (labelled 4 and 6):
 
 ```
 [consumer1] Got message #4, SKIPPED
+[consumer1] Got message #6, SKIPPED
 ...
 
 ```
 
-and then, once consumer #1 had "crashed", the message was immediately redelivered to the consumer #2:
+and then, once consumer #1 had "crashed", the messages were immediately redelivered to the consumer #2:
 
 ```
 ----- Connection 1 is now closed (we pretend that it has crashed) -----
 [consumer2] Got message #4, redelivered?: true, ack-ed
+[consumer2] Got message #6, redelivered?: true, ack-ed
 ```
 
 To acknowledge a message use `Bunny::Channel#acknowledge`:
@@ -805,7 +802,7 @@ Delivery tag is simply a channel-specific increasing number that the server uses
 
 When acknowledging multiple messages at once, the delivery tag is treated as "up to and including". For example, if delivery tag = 5 that would mean "acknowledge messages 1, 2, 3, 4 and 5".
 
-**Please Note:** Acknowledgements are channel-specific. Applications MUST NOT receive messages on one channel and acknowledge them on another.
+**Please note:** Acknowledgements are channel-specific. Applications MUST NOT receive messages on one channel and acknowledge them on another.
 
 Also, a message MUST NOT be acknowledged more than once. Doing so will result in a channel-level exception with code `406 (PRECONDITION_FAILED)`
 being raised. The reply text will be similar to this:
@@ -855,12 +852,12 @@ In this imaginary example, the "tweets per second" rate will vary, but to improv
 that the AMQP broker has to hold in memory at once, applications can be designed in such a way that application "app B", the "calculator",
 receives 5000 messages and then acknowledges them all at once. The broker will not send message 5001 unless it receives an acknowledgement.
 
-In AMQP parlance this is know as *QoS* or *message prefetching*. Prefetching is configured on a per-channel (typically) or per-connection (rarely used) basis.
-To configure prefetching per channel, use the `Bunny::Channel#prefetch` method like so:
+In AMQP parlance this is known as *QoS* or *message prefetching*. Prefetching is configured on a per-channel basis.
+To configure prefetching use the `Bunny::Channel#prefetch` method like so:
 
 ``` ruby
 ch1 = connection1.create_channel
-ch1.prefetch(1)
+ch1.prefetch(10)
 ```
 
 **Note** that the prefetch setting is ignored for consumers that do not use explicit acknowledgements.
@@ -973,6 +970,8 @@ puts q.message_count
 puts q.consumer_count
 ```
 
+**Please note:** The message count DOES NOT include unacknowledged messages.
+
 ## Purging queues
 
 It is possible to purge a queue (remove all of the messages from it) using the `Bunny::Queue#purge` method:
@@ -995,7 +994,16 @@ it is empty, so for server-named queues, there is no need to purge them before t
 
 ## Deleting Queues
 
-To delete a queue, use the `Bunny::Queue#delete` method:
+Queues can be deleted either indirectly or directly. To delete a queue indirectly you can include either of the following two arguments in the queue declaration:
+
+  * `:exclusive => true`
+  * `:auto_delete => true`
+  
+If the *exclusive* flag is set to true then the queue will be deleted when the connection that was used to declare it is closed.
+
+If the *auto_delete* flag is set to true then the queue will be deleted when there are no more consumers subscribed to it. The queue will remain in existence until at least one consumer accesses it.
+
+To delete a queue directly, use the `Bunny::Queue#delete` method:
 
 ``` ruby
 require "bunny"
