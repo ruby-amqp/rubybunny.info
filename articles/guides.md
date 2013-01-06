@@ -91,6 +91,20 @@ This guide covers:
  * Durability of messages
 
 
+### [RabbitMQ Extensions to AMQP 0.9.1](/articles/extensions.html) (WIP)
+
+This guide covers [RabbitMQ extensions](http://www.rabbitmq.com/extensions.html) and how they are used in Bunny:
+
+ * How to use Publishing Confirms with Bunny
+ * How to use exchange-to-exchange bindings
+ * How to the alternate exchange extension
+ * How to set per-queue message TTL
+ * How to set per-message TTL
+ * What are consumer cancellation notifications and how to use them
+ * Message *dead lettering* and the dead letter exchange
+ * How to use sender-selected routing (`CC` and `BCC` headers)
+
+
 ### [Error Handling and Recovery](/articles/error_handling.html) (TBD)
 
 This guide covers:
@@ -106,20 +120,6 @@ This guide covers:
 
  * How to use TLS (SSL) connections to RabbitMQ with Bunny
 
-
-
-### [RabbitMQ Extensions to AMQP 0.9.1](/articles/extensions.html) (WIP)
-
-This guide covers [RabbitMQ extensions](http://www.rabbitmq.com/extensions.html) and how they are used in Bunny:
-
- * How to use Publishing Confirms with Bunny
- * How to use exchange-to-exchange bindings
- * How to the alternate exchange extension
- * How to set per-queue message TTL
- * How to set per-message TTL
- * What are consumer cancellation notifications and how to use them
- * Message *dead lettering* and the dead letter exchange
- * How to use sender-selected routing (`CC` and `BCC` headers)
 
 
 ### [Troubleshooting](/articles/troubleshooting.html) (TBD)
