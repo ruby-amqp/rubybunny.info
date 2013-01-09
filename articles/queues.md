@@ -13,7 +13,7 @@ This work is licensed under a <a rel="license" href="http://creativecommons.org/
 
 ## What version of Bunny does this guide cover?
 
-This guide covers Bunny 0.9.0
+This guide covers Bunny 0.9.0.
 
 
 ## Queues in AMQP 0.9.1: Overview
@@ -105,7 +105,7 @@ result in a channel-level exception with reply code `403 (ACCESS_REFUSED)` and a
 
     ACCESS_REFUSED - queue name 'amq.queue' contains reserved prefix 'amq.*'
     
-This error results in the channel that was used for the declaration being forcibly closed by RabbitMQ. If the program subsequently tries to communicate with RabbitMQ using the same channel then Bunny will raise a `Bunny::ChannelAlreadyClosed` error. In order to continue communications in the same program after such an error, a different channel would have to be used.
+This error results in the channel that was used for the declaration being forcibly closed by RabbitMQ. If the program subsequently tries to communicate with RabbitMQ using the same channel without re-opening it then Bunny will raise a `Bunny::ChannelAlreadyClosed` error.
 
 ### Queue Re-Declaration With Different Attributes
 
@@ -114,7 +114,7 @@ will be raised. The reply text will be similar to this:
 
     PRECONDITION_FAILED - parameters for queue 'bunny.examples.channel_exception' in vhost '/' not equivalent
 
-This error results in the channel that was used for the declaration being forcibly closed by RabbitMQ. If the program subsequently tries to communicate with RabbitMQ using the same channel then Bunny will raise a `Bunny::ChannelAlreadyClosed` error. In order to continue communications in the same program after such an error, a different channel would have to be used.
+This error results in the channel that was used for the declaration being forcibly closed by RabbitMQ. If the program subsequently tries to communicate with RabbitMQ using the same channel without re-opening it then Bunny will raise a `Bunny::ChannelAlreadyClosed` error. In order to continue communications in the same program after such an error, a different channel would have to be used.
 
 ## Queue Life-cycle Patterns
 
@@ -426,7 +426,7 @@ Bunny 0.9.0 introduces a new `Bunny::Consumer` class which takes the following p
  * `channel` _(mandatory)_
  * `queue` _(mandatory)_
  * `consumer_tag` _(default = "")_
- * `no_ack` _(default = false)_
+ * `no_ack` _(default = true)_
  * `exclusive` _(default = false)_
  * `arguments` _(default = {})_
  
