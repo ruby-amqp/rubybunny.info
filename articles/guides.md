@@ -91,7 +91,7 @@ This guide covers:
  * Durability of messages
 
 
-### [RabbitMQ Extensions to AMQP 0.9.1](/articles/extensions.html) (WIP)
+### [RabbitMQ Extensions to AMQP 0.9.1](/articles/extensions.html)
 
 This guide covers [RabbitMQ extensions](http://www.rabbitmq.com/extensions.html) and how they are used in Bunny:
 
@@ -105,7 +105,7 @@ This guide covers [RabbitMQ extensions](http://www.rabbitmq.com/extensions.html)
  * How to use sender-selected routing (`CC` and `BCC` headers)
 
 
-### [Error Handling and Recovery](/articles/error_handling.html) (TBD)
+### [Error Handling and Recovery](/articles/error_handling.html)
 
 This guide covers:
 
