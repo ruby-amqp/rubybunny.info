@@ -289,14 +289,14 @@ Disconnecting...
 Direct exchanges are often used to distribute tasks between multiple workers (instances of the same application) in a round robin manner.
 When doing so, it is important to understand that, in AMQP 0.9.1, *messages are load balanced between consumers and not between queues*.
 
-The [Queues and Consumers](/articles/queues.html) guide provide more information on this subject.
+The [Queues and Consumers](/articles/queues.html) guide provides more information on this subject.
 
 ### Pre-declared direct exchanges
 
 AMQP 0.9.1 brokers must implement a direct exchange type and pre-declare two instances:
 
  * `amq.direct`
- * *""* exchange known as *default exchange* (unnamed, referred to as an empty string by many clients including amqp Ruby gem)
+ * *""* exchange known as *default exchange* (unnamed, referred to as an empty string by many clients including Bunny)
 
 Applications can rely on those exchanges always being available to them. Each vhost has separate instances of those
 exchanges, they are *not shared across vhosts* for obvious reasons.
@@ -304,10 +304,10 @@ exchanges, they are *not shared across vhosts* for obvious reasons.
 
 ### Default exchange
 
-The default exchange is a direct exchange with no name (the amqp gem refers to it using an empty string) pre-declared by the broker. It has one special
+The default exchange is a direct exchange with no name (Bunny refers to it using an empty string) pre-declared by the broker. It has one special
 property that makes it very useful for simple applications, namely that *every queue is automatically bound to it with a routing key which is the same as the queue name*.
 
-For example, when you declare a queue with the name of "search.indexing.online", the RabbitMQ will bind it to the default exchange using "search.indexing.online"
+For example, when you declare a queue with the name of "search.indexing.online", RabbitMQ will bind it to the default exchange using "search.indexing.online"
 as the routing key. Therefore a message published to the default exchange with routing key = "search.indexing.online" will be routed to the queue "search.indexing.online".
 In other words, the default exchange makes it *seem like it is possible to deliver messages directly to queues*, even though that is not technically what is happening.
 
@@ -365,18 +365,18 @@ more efficient for this use case.
 
 Two classic examples of topic-based routing are stock price updates and location-specific data (for instance, weather broadcasts). Consumers indicate which
 topics they are interested in (think of it like subscribing to a feed for an individual tag of your favourite blog as opposed to the full feed). The routing is enabled
-by specifying a *routing pattern* to the `Bunny::Queue#bind` function, for example:
+by specifying a *routing pattern* to the `Bunny::Queue#bind` method, for example:
 
 ``` ruby
-x    = ch.direct("examples.imaging")
+x    = ch.topic("weathr", :auto_delete => true)
 
-q = ch.queue("", :auto_delete => true).bind(x, :routing_key => "resize")
+q = ch.queue("americas.south", :auto_delete => true).bind(x, :routing_key => "americas.south.#")
 q.subscribe do |delivery_info, properties, payload|
-  puts "[consumer] #{q.name} received a 'resize' message"
+  puts "An update for South America: #{payload}, routing key is #{delivery_info.routing_key}"
 end
 ```
 
-In the example above we bind a queue with the name of "americas.south" to the topic exchange declared earlier using the `langohr.queue/bind` function. This means that
+In the example above we bind a queue with the name of "americas.south" to the topic exchange declared earlier using the `Bunny::Queue#bind` method. This means that
 only messages with a routing key matching "americas.south.#" will be routed to the "americas.south" queue.
 
 A routing pattern consists of several words separated by dots, in a similar way to URI path segments being joined by slash. A few of examples:
@@ -426,7 +426,7 @@ channel  = connection.create_channel
 exchange = channel.topic("weathr", :auto_delete => true)
 
 # Subscribers.
-channel.queue("", :exclusive => true).bind(exchange, :routing_key => "americas.north.#").subscribe do |delivery_info, properties, payload|
+channel.queue("americas.north").bind(exchange, :routing_key => "americas.north.#").subscribe do |delivery_info, properties, payload|
   puts "An update for North America: #{payload}, routing key is #{delivery_info.routing_key}"
 end
 channel.queue("americas.south").bind(exchange, :routing_key => "americas.south.#").subscribe do |delivery_info, properties, payload|
@@ -507,7 +507,7 @@ A few popular options for data serialization are:
 
  * JSON: [json gem](https://rubygems.org/gems/json) (part of standard Ruby library on Ruby 1.9) or [yajl-ruby](https://rubygems.org/gems/yajl-ruby) (Ruby bindings to YAJL)
  * BSON: [bson gem](https://rubygems.org/gems/bson) for JRuby (implemented as a Java extension) or [bson_ext](https://rubygems.org/bson_ext) for C-based Rubies
- * [Message Pack](http://msgpack.org) has Ruby bindings but currently does not provide Java implementation for JRuby
+ * [Message Pack](http://msgpack.org) has Ruby bindings and provides a Java implementation for JRuby
  * XML: [Nokogiri](https://nokogiri.org) is a swiss army knife for XML processing with Ruby, built on top of libxml2
  * Protocol Buffers: [beefcake](https://github.com/bmizerany/beefcake)
 
@@ -572,7 +572,7 @@ x.publish("hello",
   <dt>:mandatory</dt>
   <dd>
   This flag tells the server how to react if the message cannot be routed to a queue. If this flag is set to true, the server will return an unroutable message
-  to the producer with a basic.return AMQP method. If this flag is set to false, the server silently drops the message.
+  to the producer with a `basic.return` AMQP method. If this flag is set to false, the server silently drops the message.
   </dd>
 
   <dt>:content-type</dt>
@@ -652,7 +652,7 @@ As you can see, "when data is sent" is a complicated issue and while methods to 
 was received by the broker because it might have crashed while data was travelling down the wire.
 
 The only way to reliably know whether data was received by the broker or a peer application is to use message acknowledgements. This is how TCP works and this
-approach is proven to work at  enormous scale of the modern Internet. AMQP 0.9.1 fully embraces this fact and Bunny follows.
+approach is proven to work at the enormous scale of the modern Internet. AMQP 0.9.1 fully embraces this fact and Bunny follows.
 </div>
 
 In cases when you cannot afford to lose a single message, AMQP 0.9.1 applications can use one (or a combination of) the following protocol features:
@@ -768,9 +768,7 @@ To publish a persistent message, use the `:persistent` option that `Bunny::Excha
 x.publish(data, :persistent => true)
 ```
 
-<div class="alert alert-error">
-Note that in order to survive a broker crash, both the message and the queue that it was routed to must be persistent/durable.
-</div>
+**Note** that in order to survive a broker crash, the messages MUST be persistent and the queue that they were routed to MUST be durable.
 
 [Durability and Message Persistence](/articles/durability.html) provides more information on the subject.
 
@@ -853,7 +851,7 @@ conn.close
 
 When executed, it outputs
 
-``` ruby
+```
 => Headers exchange routing
 
 amq.gen-xhIzykDAjfcC4orMsi0O6Q received 8 cores/Linux
@@ -874,10 +872,16 @@ When the `"x-match"` argument is set to `"any"`, just one matching header value 
 
 ### Declaring a Headers Exchange
 
-To declare a headers exchange, instantiate `Bunny::Exchange` directly and specify the exchange type as `"headers"`:
+There are two ways to declare a headers exchange, either instantiate `Bunny::Exchange` directly:
 
 ``` ruby
 x = Bunny::Exchange.new(ch, :headers, "matching")
+```
+
+Or use the `Bunny::Channel#headers` method:
+
+``` ruby
+x = ch.headers("matching")
 ```
 
 ### Headers Exchange Routing
@@ -899,8 +903,8 @@ Some specific use cases:
 
 ### Pre-declared Headers Exchanges
 
-RabbitMQ implements a headers exchange type and pre-declare one instance with
-the name of `"amq.match"`. RabbitMQ also pre-declares one instance with the name of `"amq.headers"`. Applications can rely on that exchange always being available to them.
+RabbitMQ implements a headers exchange type and pre-declares one instance with
+the name of `"amq.match"`. RabbitMQ also pre-declares one instance with the name of `"amq.headers"`. Applications can rely on those exchanges always being available to them.
 Each vhost has a separate instance of those exchanges and they are *not shared across vhosts* for obvious reasons.
 
 ## Custom Exchange Types
@@ -911,7 +915,7 @@ The [consistent hashing AMQP exchange type](https://github.com/rabbitmq/rabbitmq
 developed as a RabbitMQ plugin. It uses [consistent hashing](http://michaelnielsen.org/blog/consistent-hashing/) to route messages
 to queues. This helps distribute messages between queues more or less evenly.
 
-A quote from the proejct README:
+A quote from the project README:
 
 > In various scenarios, you may wish to ensure that messages sent to an exchange are consistently and equally distributed across a number of different queues based on
 > the routing key of the message. You could arrange for this to occur yourself by using a direct or topic exchange, binding queues to that exchange and then publishing
@@ -963,7 +967,7 @@ a publisher application (P) that communications with a consumer (C) using AMQP 0
 -----       -----       -----
 </pre>
 
-We have two network segments, S1 and S2. Each of them may fail. P is concerned with making sure that messages cross S1, while the broker (B) and C are concerned
+We have two network segments, S1 and S2. Each of them may fail. A publisher (P) is concerned with making sure that messages cross S1, while the broker (B) and consumer (C) are concerned
 with ensuring that messages cross S2 and are only removed from the queue when they are processed successfully.
 
 Message acknowledgements cover reliable delivery over S2 as well as successful processing. For S1, P has to use transactions (a heavyweight solution) or the more
@@ -979,7 +983,7 @@ Queues are bound to exchanges using `Bunny::Queue#bind`. This topic is described
 
 Queues are unbound from exchanges using `Bunny::Queue#unbind`. This topic is described in detail in the [Queues and Consumers guide](/articles/queues.html).
 
-## Deleting Exchange
+## Deleting Exchanges
 
 ### Explicitly Deleting an Exchange
 
