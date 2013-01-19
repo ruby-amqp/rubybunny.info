@@ -7,7 +7,7 @@ layout: article
 
 Bunny 0.9 supports all [RabbitMQ extensions to AMQP 0.9.1](http://www.rabbitmq.com/extensions.html):
 
-  * [Publisher confirmations](http://www.rabbitmq.com/confirms.html)
+  * [Publisher confirms](http://www.rabbitmq.com/confirms.html)
   * [Negative acknowledgements](http://www.rabbitmq.com/nack.html) (basic.nack)
   * [Exchange-to-Exchange Bindings](http://www.rabbitmq.com/e2e.html)
   * [Alternate Exchanges](http://www.rabbitmq.com/ae.html)
@@ -33,7 +33,6 @@ This guide covers Bunny 0.9.
 
 You don't need to require any additional files to make Bunny 0.9 support RabbitMQ extensions.
 The support is built into the core.
-
 
 ## Per-queue Message Time-to-Live
 
@@ -61,7 +60,6 @@ to fetch messages using the *basic.get* AMQP 0.9.1 method ({% yard_link Bunny::Q
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-require "rubygems"
 require "bunny"
 
 puts "=> Using per-queue message TTL"
@@ -100,14 +98,13 @@ conn.close
 
 See also rabbitmq.com section on [Per-queue Message TTL](http://www.rabbitmq.com/ttl.html#per-queue-message-ttl)
 
-
-
 ## Publisher Confirms (Publisher Acknowledgements)
 
-In some situations it is essential that no messages are lost. The only reliable way of ensuring this is by using confirmations.
-The [Publisher Confirms AMQP extension](http://www.rabbitmq.com/blog/2011/02/10/introducing-publisher-confirms/) was designed to solve the reliable publishing problem.
+In some situations it is essential that messages are reliably delivered to the RabbitMQ broker and not lost on the way. The only reliable ways of assuring message delivery are by using publisher confirms or [transactions](http://www.rabbitmq.com/semantics.html).
 
-Publisher confirms are similar to message acknowledgements documented in the [Queues and Consumers](/articles/queues/) guide but involve
+The [Publisher Confirms AMQP extension](http://www.rabbitmq.com/blog/2011/02/10/introducing-publisher-confirms/) was designed to solve the reliable publishing problem in a more lightweight way compared to transactions.
+
+Publisher confirms are similar to message acknowledgements (documented in the [Queues and Consumers](/articles/queues/) guide), but involve
 a publisher and a RabbitMQ node instead of a consumer and a RabbitMQ node.
 
 ![RabbitMQ Message Acknowledgements](https://github.com/ruby-amqp/amqp/raw/master/docs/diagrams/006_amqp_091_message_acknowledgements.png)
@@ -116,7 +113,7 @@ a publisher and a RabbitMQ node instead of a consumer and a RabbitMQ node.
 
 ### How To Use It With Bunny 0.9+
 
-To use publisher confirmations, first put the channel into confirmation mode using `Bunny::Channel#confirm_select`:
+To use publisher confirms, first put the channel into confirmation mode using the `Bunny::Channel#confirm_select` method:
 
 ```
 channel.confirm_select
@@ -124,7 +121,7 @@ channel.confirm_select
 
 From this moment on, every message published on this channel will cause the channel's _publisher index_ (message counter) to be incremented.
 It is possible to access the index using `Bunny::Channel#next_publish_seq_no` method. To check whether the channel is in confirmation mode,
-use the `Bunny::Channel#using_publisher_confirmations?` predicate.
+use the `Bunny::Channel#using_publisher_confirmations?` method:
 
 ``` ruby
 ch.using_publisher_confirmations? # => false
@@ -132,14 +129,12 @@ ch.confirm_select
 ch.using_publisher_confirmations? # => true
 ```
 
-
 ### Example
 
 ``` ruby
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-require "rubygems"
 require "bunny"
 
 puts "=> Using publisher confirms"
@@ -152,25 +147,35 @@ ch   = conn.create_channel
 x    = ch.fanout("amq.fanout")
 q    = ch.queue("", :exclusive => true).bind(x)
 
+# Put channel in confirmation mode
 ch.confirm_select
+
 1000.times do
   x.publish("")
 end
-ch.wait_for_confirms
+
+# Block until all messages have been confirmed
+success = ch.wait_for_confirms
+
+if !success
+  ch.nacked_set.each do |n|
+    # Do something with the nacked message ID
+  end
+end
 
 sleep 0.2
-puts "Received acks for all published messages. #{q.name} now has #{q.message_count} messages."
+puts "Processed all published messages. #{q.name} now has #{q.message_count} messages."
 
-sleep 0.7
+sleep 0.5
 puts "Closing..."
 conn.close
 ```
 
+In the example above, the `Bunny::Channel#wait_for_confirms` method blocks (waits) until all of the published messages are confirmed by the RabbitMQ broker. **Note** that a message may be nacked by the broker if, for some reason, it cannot take responsibility for the message. In that case, the `wait_for_confirms` method will return `false` and there is also a Ruby `Set` of nacked message IDs (`channel.nacked_set`) that can be inspected and dealt with as required.
+
 ### Learn More
 
 See also rabbitmq.com section on [Publisher Confirms](http://www.rabbitmq.com/confirms.html)
-
-
 
 ## basic.nack
 
@@ -197,7 +202,6 @@ subject.nack(delivery_info.delivery_tag, false)
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-require "rubygems"
 require "bunny"
 
 puts "=> Using publisher confirms"
@@ -233,12 +237,9 @@ conn.close
 
 See also rabbitmq.com section on [basic.nack](http://www.rabbitmq.com/nack.html)
 
-
-
-
 ## Alternate Exchanges
 
-Alternate Exchanges is a RabbitMQ extension to AMQP 0.9.1 that allows developers to define "fallback" exchanges
+The Alternate Exchanges RabbitMQ extension to AMQP 0.9.1 allows developers to define "fallback" exchanges
 where unroutable messages will be sent.
 
 ### How To Use It With Bunny 0.9+
@@ -259,7 +260,6 @@ x2   = ch.fanout("bunny.examples.ae.exchange2", :auto_delete => true, :durable =
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-require "rubygems"
 require "bunny"
 
 puts "=> Using alternate exchanges"
@@ -290,13 +290,10 @@ conn.close
 
 See also rabbitmq.com section on [Alternate Exchanges](http://www.rabbitmq.com/ae.html)
 
-
-
 ## Exchange-To-Exchange Bindings
 
 RabbitMQ supports [exchange-to-exchange bindings](http://www.rabbitmq.com/e2e.html) to allow even richer routing topologies as well as a backbone for
 some other features (e.g. tracing).
-
 
 ### How To Use It With Bunny 0.9+
 
@@ -314,7 +311,6 @@ x1.bind(x2, :routing_key => "americas.north.us.ca.*")
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-require "rubygems"
 require "bunny"
 
 puts "=> Using exchange-to-exchange bindings"
@@ -345,8 +341,6 @@ conn.close
 ### Learn More
 
 See also rabbitmq.com section on [Exchange-to-Exchange Bindings](http://www.rabbitmq.com/e2e.html)
-
-
 
 ## Consumer Cancellation Notifications
 
@@ -385,7 +379,6 @@ q.subscribe_with(c)
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-require "rubygems"
 require "bunny"
 
 puts "=> Using dead letter exchange"
@@ -427,8 +420,6 @@ conn.close
 
 See also rabbitmq.com section on [Consumer Cancellation Notifications](http://www.rabbitmq.com/consumer-cancel.html)
 
-
-
 ## Queue Leases
 
 Queue Leases is a RabbitMQ feature that lets you set for how long a queue is allowed to be *unused*. After that moment,
@@ -453,7 +444,6 @@ ch.queue("", :exclusive => true, :arguments => {"x-expires" => 300})
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-require "rubygems"
 require "bunny"
 
 puts "=> Demonstrating queue TTL (queue leases)"
@@ -482,8 +472,6 @@ conn.close
 
 See also rabbitmq.com section on [Queue Leases](http://www.rabbitmq.com/ttl.html#queue-ttl)
 
-
-
 ## Per-Message Time-to-Live
 
 A TTL can be specified on a per-message basis, by setting the `:expiration` property when publishing.
@@ -500,14 +488,12 @@ x.publish("", :expiration => 1000)
 x.publish("", :expiration => (5 * 60 * 1000))
 ```
 
-
 ### Example
 
 ``` ruby
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-require "rubygems"
 require "bunny"
 
 puts "=> Using per-message TTL"
@@ -546,16 +532,14 @@ conn.close
 
 See also rabbitmq.com section on [Per-message TTL](http://www.rabbitmq.com/ttl.html#per-message-ttl)
 
-
-
 ## Sender-Selected Distribution
 
-Generally, RabbitMQ model assumes the broker will do the routing work. At times, however, it is useful
+Generally, the RabbitMQ model assumes that the broker will do the routing work. At times, however, it is useful
 for routing to happen in the publisher application. Sender-Selected Routing is a RabbitMQ feature
 that lets clients have extra control over routing.
 
 The values associated with the `"CC"` and `"BCC"` header keys will be added to the routing key if they are present.
-If none of those headers is present, this extension has no effect.
+If neither of those headers is present, this extension has no effect.
 
 ### How To Use It With Bunny 0.9+
 
@@ -571,7 +555,6 @@ x.publish("Message #{i}", :routing_key => "one", :headers => {"CC" => ["two", "t
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-require "rubygems"
 require "bunny"
 
 puts "=> Using sender-selected distribution"
@@ -606,8 +589,6 @@ conn.close
 
 See also rabbitmq.com section on [Sender-Selected Distribution](http://www.rabbitmq.com/sender-selected.html)
 
-
-
 ## Dead Letter Exchange (DLX)
 
 The x-dead-letter-exchange argument to queue.declare controls the exchange to which messages from that queue are 'dead-lettered'.
@@ -620,8 +601,8 @@ The TTL for the message expires.
 
 Dead-letter Exchange is a feature that is used by specifying additional queue arguments:
 
- * `"x-dead-letter-exchange"` controls what exchange should dead lettered messages be published to by RabbitMQ
- * `"x-dead-letter-routing-key"` controls what routing key should be used (has to be a constant value)
+ * `"x-dead-letter-exchange"` specifies the exchange that dead lettered messages should be published to by RabbitMQ
+ * `"x-dead-letter-routing-key"` specifies the routing key that should be used (has to be a constant value)
 
 ``` ruby
 dlx  = ch.fanout("bunny.examples.dlx.exchange")
@@ -634,7 +615,6 @@ q    = ch.queue("", :exclusive => true, :arguments => {"x-dead-letter-exchange" 
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-require "rubygems"
 require "bunny"
 
 puts "=> Using dead letter exchange"
@@ -669,17 +649,13 @@ conn.close
 
 See also rabbitmq.com section on [Dead Letter Exchange](http://www.rabbitmq.com/dlx.html)
 
-
-
-
 ## Wrapping Up
 
-RabbitMQ provides a number of useful extension to AMQP 0.9.1.
+RabbitMQ provides a number of useful extensions to the AMQP 0.9.1 specification.
 
 Bunny 0.9 and later releases have RabbitMQ extensions support built into the core. Some features are based on optional arguments
-for queues, exchanges or messages, some are Bunny public API features. Any future argument-based extensions will likely be
+for queues, exchanges or messages, and some are Bunny public API features. Any future argument-based extensions are likely to be
 useful with Bunny immediately, without any library modifications.
-
 
 ## What to Read Next
 
@@ -691,7 +667,6 @@ We recommend that you read the following guides first, if possible, in this orde
  * [Error Handling and Recovery](/articles/error_handling.html)
  * [Troubleshooting](/articles/troubleshooting.html)
  * [Using TLS (SSL) Connections](/articles/tls.html)
-
 
 ## Tell Us What You Think!
 
