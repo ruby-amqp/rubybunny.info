@@ -396,7 +396,7 @@ sleep 1.0
 connection.close
 ```
 
-The full list of properties (note that most of them are optional and may not be present) is:
+The full list of properties (**note** that most of them are optional and may not be present) is:
 
  * `:delivery_tag`
  * `:redelivered`
@@ -940,7 +940,7 @@ To unbind a queue from an exchange use the `Bunny::Queue#unbind` function:
 q.unbind(x)
 ```
 
-Note that trying to unbind a queue from an exchange that the queue was never bound to will
+**Note** that trying to unbind a queue from an exchange that the queue was never bound to will
 result in a channel-level exception.
 
 ## Querying the Number of Messages and Consumers for a Queue
