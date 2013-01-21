@@ -518,17 +518,17 @@ others are specific to a particular application. Well-known attributes are liste
 
  * `:persistent`
  * `:mandatory`
- * `:content-type`
- * `:content-encoding`
- * `:priority`
- * `:message-id`
- * `:correlation-id`
- * `:reply-to`
- * `:type`
- * `:user-id`
- * `:app-id`
  * `:timestamp`
  * `:expiration`
+ * `:type`
+ * `:reply_to`
+ * `:content_type`
+ * `:content_encoding`
+ * `:correlation_id`
+ * `:priority`
+ * `:message_id`
+ * `:user_id`
+ * `:app_id`
 
 All other attributes can be added to a *headers table* (in Ruby, a hash) that `Bunny::Exchange#publish` accepts as the `:headers` option.
 
