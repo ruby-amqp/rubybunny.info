@@ -298,22 +298,40 @@ to consumers happens in separate threads that Bunny maintains internally, so it 
 block the thread that calls `Bunny::Queue#subscribe`. However, it may be convenient to do so
 in long-running consumer applications.
 
+### Accessing Message Delivery Information
 
+The *delivery_info* parameter in the example above provides access to message delivery information:
+
+ * Consumer tag this delivery is for
+ * Delivery tag
+ * Whether or not message is redelivered
+ * Name of exchange message came from
+ * Message routing key
+ 
+Message delivery information can be treated as a Hash-like object or structure.
+For example, to get routing key, you can use either
+
+``` ruby
+delivery_info[:routing_key]
+```
+
+or
+
+``` ruby
+delivery_info.routing_key
+```
+  
 ### Accessing Message Properties (Metadata)
 
-The *properties* parameter in the example above provides access to message metadata and delivery information:
+The *properties* parameter in the example above provides access to message metadata:
 
  * Message content type
  * Message content encoding
- * Message routing key
  * Message delivery mode (persistent or not)
- * Consumer tag this delivery is for
- * Delivery tag
  * Message priority
- * Whether or not message is redelivered
  * Producer application id
 
-Message properties can be treated as Hash-like objects or structures.
+Message properties can be treated as a Hash-like object or structure.
 For example, to get message type, you can use either
 
 ``` ruby
@@ -326,7 +344,7 @@ or
 properties.type
 ```
 
-and so on. An example to demonstrate how to access some of those attributes:
+An example to demonstrate how to access some of those attributes:
 
 ``` ruby
 require 'bunny'
@@ -395,18 +413,21 @@ x.publish("hello",
 sleep 1.0
 connection.close
 ```
+The full list of message delivery information parameters is:
 
-The full list of properties (**note** that most of them are optional and may not be present) is:
-
+ * `:consumer_tag`
  * `:delivery_tag`
  * `:redelivered`
  * `:exchange`
  * `:routing_key`
- * `:content_type`
+ 
+The full list of message properties parameters (**note** that most of them are optional and may not be present) is:
+
+ * `:content_type` _(always present)_
  * `:content_encoding`
  * `:headers`
- * `:delivery_mode`
- * `:priority`
+ * `:delivery_mode` _(always present)_
+ * `:priority` _(always present)_
  * `:correlation_id`
  * `:reply_to`
  * `:expiration`
