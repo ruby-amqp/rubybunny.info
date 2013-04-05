@@ -430,13 +430,10 @@ We recommend that you read the following guides next, if possible, in this order
 
  * [AMQP 0.9.1 Model Explained](http://www.rabbitmq.com/tutorials/amqp-concepts.html). A simple 2 page long introduction to the AMQP Model concepts and features. Understanding the AMQP 0.9.1 Model
    will make a lot of other documentation, both for Bunny and RabbitMQ itself, easier to follow. With this guide, you don't have to waste hours of time reading the whole specification.
- * [Connecting to the broker](/articles/connecting_to_broker/). This guide explains how to connect to an RabbitMQ and how to integrate Bunny into standalone and Web applications.
- * [Queues and Consumers](/articles/queues/). This guide focuses on features that consumer applications use heavily.
- * [Exchanges and Publishers](/articles/exchanges/). This guide focuses on features that producer applications use heavily.
- * [Patterns and Use Cases](/articles/patterns_and_use_cases/). This guide focuses implementation of [common messaging patterns](http://www.eaipatterns.com/) using AMQP 0.9.1 Model features as building blocks.
- * [Error Handling and Recovery](/articles/error_handling/). This guide explains how to handle protocol errors, network failures and other things that may go wrong in real world projects.
-
-If you are migrating your application from earlier versions of Bunny (0.7.x and 0.8.x), to 0.9.x and later, there is the [Bunny 0.9 migration guide](/articles/09_migration) to help you.
+ * [Connecting to the broker](/articles/connecting.html). This guide explains how to connect to an RabbitMQ and how to integrate Bunny into standalone and Web applications.
+ * [Queues and Consumers](/articles/queues.html). This guide focuses on features that consumer applications use heavily.
+ * [Exchanges and Publishers](/articles/exchanges.html). This guide focuses on features that producer applications use heavily.
+ * [Error Handling and Recovery](/articles/error_handling.html). This guide explains how to handle protocol errors, network failures and other things that may go wrong in real world projects.
 
 
 ## Tell Us What You Think!
