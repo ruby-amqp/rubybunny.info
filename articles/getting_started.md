@@ -48,6 +48,7 @@ This guide assumes that you have installed one of the following supported Ruby i
 
  * Ruby v1.9.3
  * Ruby v1.9.2
+ * Ruby v2.0
  * JRuby v1.7.0 or higher
  * Rubinius v2.0 or higher
  * Ruby Enterprise Edition
@@ -62,7 +63,7 @@ This guide assumes that you have installed one of the following supported Ruby i
 ``` ruby
 source :rubygems
 
-gem "bunny", "~> 0.9.0.pre4"
+gem "bunny", "~> 0.9.0.pre9"
 ```
 
 ### Verifying your installation
@@ -74,7 +75,7 @@ irb -rubygems
 :001 > require "bunny"
 => true
 :002 > Bunny::VERSION
-=> "0.9.0.pre4"
+=> "0.9.0.pre9"
 ```
 
 ## "Hello, world" example
