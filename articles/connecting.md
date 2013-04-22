@@ -35,7 +35,7 @@ Map options that Bunny will recognize are
  * `:pass` or `:password`
  * `:vhost` or `virtual_host`
  * `:tls` or `:ssl`
- * `:heartbeat` or `:heartbeat_interval`, in seconds, default is 0 (no heartbeats)
+ * `:heartbeat` or `:heartbeat_interval`, in seconds, default is 0 (no heartbeats). `:server` means "use the value from RabbitMQ config"
  * `:timeout`
 
 To connect to RabbitMQ with a map of parameters, pass them to `Bunny.new`. The connection
@@ -60,10 +60,25 @@ Default connection parameters are
   :vhost     => "/",
   :user      => "guest",
   :pass      => "guest",
-  :heartbeat => 0,
+  :heartbeat => :server, # will use RabbitMQ setting
   :frame_max => 131072
 }
 ```
+
+### Single-Threaded Mode
+
+Bunny 0.9+ uses a separate thread for network (I/O) activity. In some cases, developers may want to disable it and
+handle network failure issues manually. This is possible by passing the `:threaded` option as `false`.
+
+
+### Reconnection Interval
+
+When Bunny detects a network issue, it will by default try to reconnect. This behavior can be tweaked using two options:
+
+ * `:network_recovery_interval` controls for how long Bunny will wait between reconnection attempts (including the first one). The value is in seconds, `5.0` is the default.
+ * `:automatically_recover` can be set to `false` to completely disable network recovery. In such case, Bunny will raise
+    exceptions on the thread `Bunny::Session` was instantiated on.
+
 
 ### Using Connection Strings
 
@@ -177,7 +192,7 @@ conn.close
 ## Troubleshooting
 
 If you have read this guide and still have issues with connecting, check our [Troubleshooting guide](/articles/troubleshooting.html)
-and feel free to ask [on the mailing list](https://groups.google.com/forum/#!forum/clojure-rabbitmq).
+and feel free to ask [on the mailing list](https://groups.google.com/forum/#!forum/ruby-amqp).
 
 
 ## Wrapping Up
