@@ -15,21 +15,16 @@ To install dependencies with Bundler:
 
     bundle install --binstubs
 
-Then install Pygments via your OS-specific package installer, or else using `pip` (assuming you've installed pip):
-
-    pip install pygments
-
 
 ## How to run a development server
 
-    ./bin/jekyll --auto --server
+    ./bin/jekyll serve --watch
 
+then navigate to [localhost:4000](http://localhost:4000)
 
 ## How to regenerate the site
 
-In order to modify contents and launch dev environment, run:
-
-    ./bin/jekyll
+    ./bin/jekyll build
 
 
 ## License & Copyright
