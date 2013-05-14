@@ -34,9 +34,12 @@ Map options that Bunny will recognize are
  * `:user` or `:username`
  * `:pass` or `:password`
  * `:vhost` or `virtual_host`
- * `:tls` or `:ssl`
  * `:heartbeat` or `:heartbeat_interval`, in seconds, default is 0 (no heartbeats). `:server` means "use the value from RabbitMQ config"
- * `:timeout`
+ * `:log_level` (symbol or integer, default: `Logger::WARN`): log level to use.
+ * `:log_file` (string or `IO`): log file or `IO` object to use. Defaults to `STDOUT`.
+ * `:automatically_recover` (boolean, default: `true`): when `false`, will disable automatic network failure recovery
+ * `:network_recovery_interval` (number, default: ``): interval between reconnection attempts
+ * `:threaded` (boolean): switches to single-threaded connections when set to `false`. Only recommended for apps that only publish messages.
 
 To connect to RabbitMQ with a map of parameters, pass them to `Bunny.new`. The connection
 will be established when `Bunny::Session#start` is called:
