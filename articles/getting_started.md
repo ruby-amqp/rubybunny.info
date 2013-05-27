@@ -5,7 +5,7 @@ layout: article
 
 ## About this guide
 
-This guide is a quick tutorial that helps you to get started with the AMQP 0.9.1 specification in general and [Bunny](http://github.com/ruby-amqp/bunny) in particular.
+This guide is a quick tutorial that helps you to get started with RabbitMQ and [Bunny](http://github.com/ruby-amqp/bunny).
 It should take about 20 minutes to read and study the provided code examples. This guide covers:
 
  * Installing RabbitMQ, a mature popular messaging broker server.
