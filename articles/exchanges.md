@@ -563,7 +563,7 @@ x.publish("hello",
 ```
 
 <dl>
-  <dt>:routing-key</dt>
+  <dt>:routing_key</dt>
   <dd>Used for routing messages depending on the exchange type and configuration.</dd>
 
   <dt>:persistent</dt>
@@ -575,28 +575,28 @@ x.publish("hello",
   to the producer with a `basic.return` AMQP method. If this flag is set to false, the server silently drops the message.
   </dd>
 
-  <dt>:content-type</dt>
+  <dt>:content_type</dt>
   <dd>MIME content type of message payload. Has the same purpose/semantics as HTTP Content-Type header.</dd>
 
-  <dt>:content-encoding</dt>
+  <dt>:content_encoding</dt>
   <dd>MIME content encoding of message payload. Has the same purpose/semantics as HTTP Content-Encoding header.</dd>
 
   <dt>:priority</dt>
   <dd>Message priority, from 0 to 9.</dd>
 
-  <dt>:message-id</dt>
+  <dt>:message_id</dt>
   <dd>
     Message identifier as a string. If applications need to identify messages, it is recommended that they use this attribute instead of putting it
     into the message payload.
   </dd>
 
-  <dt>:reply-to</dt>
+  <dt>:reply_to</dt>
   <dd>
     Commonly used to name a reply queue (or any other identifier that helps a consumer application to direct its response).
     Applications are encouraged to use this attribute instead of putting this information into the message payload.
   </dd>
 
-  <dt>:correlation-id</dt>
+  <dt>:correlation_id</dt>
   <dd>
     ID of the message that this message is a reply to. Applications are encouraged to use this attribute instead of putting this information
     into the message payload.
@@ -605,12 +605,12 @@ x.publish("hello",
   <dt>:type</dt>
   <dd>Message type as a string. Recommended to be used by applications instead of including this information into the message payload.</dd>
 
-  <dt>:user-id</dt>
+  <dt>:user_id</dt>
   <dd>
   Sender's identifier. Note that RabbitMQ will check that the [value of this attribute is the same as username AMQP connection was authenticated with](http://www.rabbitmq.com/extensions.html#validated-user-id), it SHOULD NOT be used to transfer, for example, other application user ids or be used as a basis for some kind of Single Sign-On solution.
   </dd>
 
-  <dt>:app-id</dt>
+  <dt>:app_id</dt>
   <dd>Application identifier string, for example, "eventoverse" or "webcrawler"</dd>
 
   <dt>:timestamp</dt>
@@ -822,7 +822,7 @@ that demonstrates headers routing:
 require "rubygems"
 require "bunny"
 
-puts "=> Direct exchange routing"
+puts "=> Headers exchange routing"
 puts
 
 conn = Bunny.new
