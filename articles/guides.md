@@ -114,7 +114,7 @@ This guide covers:
  * Other things that may go wrong
 
 
-### [Using TLS (SSL) Connections](/articles/tls.html) (TBD)
+### [Using TLS (SSL) Connections](/articles/tls.html)
 
 This guide covers:
 
