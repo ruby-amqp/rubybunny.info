@@ -56,14 +56,14 @@ This guide assumes that you have installed one of the following supported Ruby i
 
 ### You can use Rubygems to install Bunny
 
-    gem install bunny --pre
+    gem install bunny
 
 ### Adding Bunny as a dependency with Bundler
 
 ``` ruby
 source :rubygems
 
-gem "bunny", "~> 0.9.0.rc2"
+gem "bunny"
 ```
 
 ### Verifying your installation
@@ -75,7 +75,7 @@ irb -rubygems
 :001 > require "bunny"
 => true
 :002 > Bunny::VERSION
-=> "0.9.0.rc2"
+=> "0.9.0"
 ```
 
 ## "Hello, world" example
