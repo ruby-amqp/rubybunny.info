@@ -31,7 +31,12 @@ To use TLS with RabbitMQ, you need a few things:
 
 ## Generating Certificates For Development
 
-TBD
+The easiest way to generate a CA, server and client keys and certificates is by using
+[tls-gen](https://github.com/ruby-amqp/tls-gen/). It requires `openssl` and `make` to be
+available.
+
+See [RabbitMQ TLS/SSL guide](http://www.rabbitmq.com/ssl.html) for more information
+about TLS support on various platforms.
 
 
 ## Enabling TLS/SSL Support in RabbitMQ
@@ -56,7 +61,10 @@ TLS/SSL support is enabled using two arguments:
 ].
 ```
 
-Learn more in the [RabbitMQ SSL guide](http://www.rabbitmq.com/ssl.html).
+Note that all paths must be absolute (no `~` and other shell-isms) and be readable
+by the OS user RabbitMQ uses.
+
+Learn more in the [RabbitMQ TLS/SSL guide](http://www.rabbitmq.com/ssl.html).
 
 ## Connecting to RabbitMQ from Bunny Using TLS/SSL
 
@@ -78,6 +86,9 @@ conn = Bunny.new(:tls                   => true,
 
 If you configure RabbitMQ to accept TLS connections on a separate port, you need to
 specify both `:tls` and `:port` options.
+
+Paths can be relative but it's recommended to use absolute paths and no symlinks
+to avoid issues with path expansion.
 
 
 ## What to Read Next
