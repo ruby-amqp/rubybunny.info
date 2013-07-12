@@ -122,7 +122,7 @@ This guide covers:
 
 
 
-### [Troubleshooting](/articles/troubleshooting.html) (TBD)
+### [Troubleshooting](/articles/troubleshooting.html)
 
 This guide covers:
 
