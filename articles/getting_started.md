@@ -46,11 +46,11 @@ are outdated and <strong>will not work with Bunny 0.9.0 and later versions</stro
 
 This guide assumes that you have installed one of the following supported Ruby implementations:
 
+ * Ruby v2.0.0
  * Ruby v1.9.3
  * Ruby v1.9.2
- * Ruby v2.0
- * JRuby v1.7.0 or higher
- * Rubinius v2.0 or higher
+ * JRuby v1.7+
+ * Rubinius v2.0+
  * Ruby Enterprise Edition
  * Ruby v1.8.7
 
