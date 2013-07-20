@@ -61,7 +61,7 @@ This guide assumes that you have installed one of the following supported Ruby i
 ### Adding Bunny as a dependency with Bundler
 
 ``` ruby
-source :rubygems
+source "https://rubygems.org"
 
 gem "bunny"
 ```
@@ -75,7 +75,7 @@ irb -rubygems
 :001 > require "bunny"
 => true
 :002 > Bunny::VERSION
-=> "0.9.0"
+=> "0.9.2"
 ```
 
 ## "Hello, world" example
