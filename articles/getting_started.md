@@ -75,7 +75,7 @@ irb -rubygems
 :001 > require "bunny"
 => true
 :002 > Bunny::VERSION
-=> "0.9.2"
+=> "0.9.7"
 ```
 
 ## "Hello, world" example
