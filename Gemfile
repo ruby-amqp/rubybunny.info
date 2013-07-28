@@ -8,3 +8,4 @@ gem "redcarpet", "~> 2.2.2"
 #
 # gem install iconv -- --with-iconv-dir=~/.rvm/usr
 gem "iconv"
+gem "albino"
