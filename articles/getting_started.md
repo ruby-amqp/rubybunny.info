@@ -20,7 +20,7 @@ The source is available [on GitHub](https://github.com/ruby-amqp/rubybunny.info)
 
 ## Which versions of Bunny does this guide cover?
 
-This guide covers Bunny 0.9.0 and later.
+This guide covers Bunny 0.10.x and later versions.
 
 ## Installing RabbitMQ
 
@@ -75,7 +75,7 @@ irb -rubygems
 :001 > require "bunny"
 => true
 :002 > Bunny::VERSION
-=> "0.9.7"
+=> "0.10.0"
 ```
 
 ## "Hello, world" example

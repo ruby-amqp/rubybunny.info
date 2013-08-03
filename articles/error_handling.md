@@ -31,7 +31,7 @@ Github](https://github.com/ruby-amqp/rubybunny.info).
 
 ## What version of Bunny does this guide cover?
 
-This guide covers Bunny 0.9.0.
+This guide covers Bunny 0.10.x and later versions.
 
 
 ## Initial RabbitMQ Connection Failures
