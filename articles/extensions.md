@@ -54,7 +54,7 @@ it has no effect on copies of the message in other queues.
 ### Example
 
 The example below sets the message TTL for a new server-named queue to be 1000 milliseconds. It then publishes several messages that are routed to the queue and tries
-to fetch messages using the *basic.get* AMQP 0.9.1 method ({% yard_link Bunny::Queue#pop %} after 0.7 and 1.5 seconds:
+to fetch messages using the *basic.get* AMQP 0.9.1 method (`Bunny::Queue#pop` after 0.7 and 1.5 seconds:
 
 ``` ruby
 #!/usr/bin/env ruby
