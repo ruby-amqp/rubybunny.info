@@ -594,8 +594,7 @@ See also rabbitmq.com section on [Sender-Selected Distribution](http://www.rabbi
 The x-dead-letter-exchange argument to queue.declare controls the exchange to which messages from that queue are 'dead-lettered'.
 A message is dead-lettered when any of the following events occur:
 
-The message is rejected (basic.reject or basic.nack) with requeue=false; or
-The TTL for the message expires.
+The message is rejected (basic.reject or basic.nack) with requeue=false; or the TTL for the message expires.
 
 ### How To Use It With Bunny 0.9+
 
