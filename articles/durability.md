@@ -97,7 +97,7 @@ We recommend that you read the following guides first, if possible, in this orde
  * [Queues and Consumers](/articles/queues.html)
  * [Exchanges and Publishing](/articles/exchanges.html)
  * [Bindings](/articles/bindings.html)
- * [RabbitMQ Extensions to AMQP 0.9.1](/articles/rabbitmq_extensions.html)
+ * [RabbitMQ Extensions to AMQP 0.9.1](/articles/extensions.html)
 
 ## Tell Us What You Think!
 
