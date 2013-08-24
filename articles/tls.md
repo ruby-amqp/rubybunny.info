@@ -91,13 +91,44 @@ Paths can be relative but it's recommended to use absolute paths and no symlinks
 to avoid issues with path expansion.
 
 
+### Providing Certificates & Keys When Using amqps:// URIs
+
+It is possible to use `amqps://` URIs in combination with additional
+options, e.g. to provide TLS certificate and key paths:
+
+``` ruby
+c = Bunny.new("amqps://bunny_gem:bunny_password@127.0.0.1/bunny_testbed",
+        :tls_cert              => "spec/tls/client_cert.pem",
+        :tls_key               => "spec/tls/client_key.pem",
+        :tls_ca_certificates   => ["./spec/tls/cacert.pem"])
+c.start
+```
+
+## Default Paths for TLS/SSL CA's on Linux
+
+Bunny now will use the following TLS/SSL CA's paths on Linux by default:
+
+ * `/etc/ssl/certs/ca-certificates.crt` on Ubuntu/Debian
+ * `/etc/ssl/certs/ca-bundle.crt` on Amazon Linux
+ * `/etc/ssl/ca-bundle.pem` on OpenSUSE
+ * `/etc/pki/tls/certs/ca-bundle.crt` on Fedora/RHEL
+
+and will log a warning if no CA files are available via default paths
+or `:tls_ca_certificates`.
+
+
 ## What to Read Next
 
-The documentation is organized as [a number of guides](/articles/guides.html), covering various topics.
+The documentation is organized as [a number of
+guides](/articles/guides.html), covering various topics.
 
 
 ## Tell Us What You Think!
 
-Please take a moment to tell us what you think about this guide [on Twitter](http://twitter.com/rubyamqp) or the [Bunny mailing list](https://groups.google.com/forum/#!forum/ruby-amqp)
+Please take a moment to tell us what you think about this guide [on
+Twitter](http://twitter.com/rubyamqp) or the [Bunny mailing
+list](https://groups.google.com/forum/#!forum/ruby-amqp)
 
-Let us know what was unclear or what has not been covered. Maybe you do not like the guide style or grammar or discover spelling mistakes. Reader feedback is key to making the documentation better.
+Let us know what was unclear or what has not been covered. Maybe you
+do not like the guide style or grammar or discover spelling
+mistakes. Reader feedback is key to making the documentation better.
