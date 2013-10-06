@@ -5,8 +5,10 @@ layout: article
 
 ## About this guide
 
-This guide is a quick tutorial that helps you to get started with RabbitMQ and [Bunny](http://github.com/ruby-amqp/bunny).
-It should take about 20 minutes to read and study the provided code examples. This guide covers:
+This guide is a quick tutorial that helps you to get started with
+RabbitMQ and [Bunny](http://github.com/ruby-amqp/bunny).  It should
+take about 20 minutes to read and study the provided code
+examples. This guide covers:
 
  * Installing RabbitMQ, a mature popular messaging broker server.
  * Installing Bunny via [Rubygems](http://rubygems.org) and [Bundler](http://gembundler.com).
@@ -14,8 +16,11 @@ It should take about 20 minutes to read and study the provided code examples. Th
  * Creating a "Twitter-like" publish/subscribe example with one publisher and four subscribers that demonstrates 1:n communication.
  * Creating a topic routing example with two publishers and eight subscribers showcasing n:m communication when subscribers only receive messages that they are interested in.
 
-This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a> (including images and stylesheets).
-The source is available [on GitHub](https://github.com/ruby-amqp/rubybunny.info).
+This work is licensed under a <a rel="license"
+href="http://creativecommons.org/licenses/by/3.0/">Creative Commons
+Attribution 3.0 Unported License</a> (including images and
+stylesheets).  The source is available [on
+GitHub](https://github.com/ruby-amqp/rubybunny.info).
 
 
 ## Which versions of Bunny does this guide cover?
