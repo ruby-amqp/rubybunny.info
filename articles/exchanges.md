@@ -26,17 +26,24 @@ This guide covers Bunny 0.10.x and later versions.
 
 ### What are AMQP exchanges?
 
-An *exchange* accepts messages from a producer application and routes them to message queues. They can be thought of as the
-"mailboxes" of the AMQP world. Unlike some other messaging middleware products and protocols, in AMQP, messages are *not* published directly to queues.
-Messages are published to exchanges that route them to queue(s) using pre-arranged criteria called *bindings*.
+An *exchange* accepts messages from a producer application and routes
+them to message queues. They can be thought of as the "mailboxes" of
+the AMQP world. Unlike some other messaging middleware products and
+protocols, in AMQP, messages are *not* published directly to queues.
+Messages are published to exchanges that route them to queue(s) using
+pre-arranged criteria called *bindings*.
 
-There are multiple exchange types in the AMQP 0.9.1 specification, each with its own routing semantics. Custom exchange types can be created to deal with
-sophisticated routing scenarios (e.g. routing based on geolocation data or edge cases) or just for convenience.
+There are multiple exchange types in the AMQP 0.9.1 specification,
+each with its own routing semantics. Custom exchange types can be
+created to deal with sophisticated routing scenarios (e.g. routing
+based on geolocation data or edge cases) or just for convenience.
 
 ### Concept of Bindings
 
-A *binding* is an association between a queue and an exchange. A queue must be bound to at least one exchange in order to receive
-messages from publishers. Learn more about bindings in the [Bindings guide](/articles/bindings.html).
+A *binding* is an association between a queue and an exchange. A queue
+must be bound to at least one exchange in order to receive messages
+from publishers. Learn more about bindings in the [Bindings
+guide](/articles/bindings.html).
 
 ### Exchange attributes
 
@@ -58,27 +65,41 @@ There are four built-in exchange types in AMQP v0.9.1:
  * Topic
  * Headers
 
-As stated previously, each exchange type has its own routing semantics and new exchange types can be added by extending brokers with plugins. Custom exchange types
-begin with "x-", much like custom HTTP headers, e.g. [x-consistent-hash exchange](https://github.com/rabbitmq/rabbitmq-consistent-hash-exchange) or [x-random exchange](https://github.com/jbrisbin/random-exchange).
+As stated previously, each exchange type has its own routing semantics
+and new exchange types can be added by extending brokers with
+plugins. Custom exchange types begin with "x-", much like custom HTTP
+headers, e.g. [x-consistent-hash
+exchange](https://github.com/rabbitmq/rabbitmq-consistent-hash-exchange)
+or [x-random exchange](https://github.com/jbrisbin/random-exchange).
 
 ## Message attributes
 
-Before we start looking at various exchange types and their routing semantics, we need to introduce message attributes. Every AMQP message has a number
-of *attributes*. Some attributes are important and used very often, others are rarely used. AMQP message attributes are metadata
-and are similar in purpose to HTTP request and response headers.
+Before we start looking at various exchange types and their routing
+semantics, we need to introduce message attributes. Every AMQP message
+has a number of *attributes*. Some attributes are important and used
+very often, others are rarely used. AMQP message attributes are
+metadata and are similar in purpose to HTTP request and response
+headers.
 
-Every AMQP 0.9.1 message has an attribute called *routing key*. The routing key is an "address" that the exchange may use to decide
-how to route the message . This is similar to, but more generic than, a URL in HTTP. Most exchange types use the routing key to implement routing logic,
-but some ignore it and use other criteria (e.g. message content).
+Every AMQP 0.9.1 message has an attribute called *routing key*. The
+routing key is an "address" that the exchange may use to decide how to
+route the message. This is similar to, but more generic than, a URL in
+HTTP. Most exchange types use the routing key to implement routing
+logic, but some ignore it and use other criteria (e.g. message
+content).
 
 
 ## Fanout exchanges
 
 ### How fanout exchanges route messages
 
-A fanout exchange routes messages to all of the queues that are bound to it and the routing key is ignored. If N queues are bound to a fanout exchange,
-when a new message is published to that exchange a *copy of the message* is delivered to all N queues. Fanout exchanges are ideal for the
-[broadcast routing](http://en.wikipedia.org/wiki/Broadcasting_%28computing%29) of messages.
+A fanout exchange routes messages to all of the queues that are bound
+to it and the routing key is ignored. If N queues are bound to a
+fanout exchange, when a new message is published to that exchange a
+*copy of the message* is delivered to all N queues. Fanout exchanges
+are ideal for the [broadcast
+routing](http://en.wikipedia.org/wiki/Broadcasting_%28computing%29) of
+messages.
 
 Graphically this can be represented as:
 
@@ -115,7 +136,8 @@ x    = Bunny::Exchange.new(ch, :fanout, "activity.events")
 
 ### Fanout routing example
 
-To demonstrate fanout routing behavior we can declare ten server-named exclusive queues, bind them all to one fanout exchange and then
+To demonstrate fanout routing behavior we can declare ten server-named
+exclusive queues, bind them all to one fanout exchange and then
 publish a message to the exchange:
 
 ``` ruby
@@ -167,7 +189,8 @@ When run, this example produces the following output:
 Disconnecting...
 </pre>
 
-Each of the queues bound to the exchange receives a *copy* of the message.
+Each of the queues bound to the exchange receives a *copy* of the
+message.
 
 
 ### Fanout use cases
@@ -181,23 +204,29 @@ Because a fanout exchange delivers a copy of a message to every queue bound to i
 
 ### Pre-declared fanout exchanges
 
-AMQP 0.9.1 brokers must implement a fanout exchange type and pre-declare one instance with the name of `"amq.fanout"`.
+AMQP 0.9.1 brokers must implement a fanout exchange type and
+pre-declare one instance with the name of `"amq.fanout"`.
 
-Applications can rely on that exchange always being available to them. Each vhost has a separate instance of that exchange, it is *not shared across vhosts* for obvious reasons.
+Applications can rely on that exchange always being available to
+them. Each vhost has a separate instance of that exchange, it is *not
+shared across vhosts* for obvious reasons.
 
 ## Direct exchanges
 
 ### How direct exchanges route messages
 
-A direct exchange delivers messages to queues based on a *message routing key*, an attribute that every AMQP v0.9.1 message contains.
+A direct exchange delivers messages to queues based on a *message
+routing key*, an attribute that every AMQP v0.9.1 message contains.
 
 Here is how it works:
 
  * A queue binds to the exchange with a routing key K
  * When a new message with routing key R arrives at the direct exchange, the exchange routes it to the queue if K = R
 
-A direct exchange is ideal for the [unicast routing](http://en.wikipedia.org/wiki/Unicast) of messages (although they can be used
-for [multicast routing](http://en.wikipedia.org/wiki/Multicast) as well).
+A direct exchange is ideal for the [unicast
+routing](http://en.wikipedia.org/wiki/Unicast) of messages (although
+they can be used for [multicast
+routing](http://en.wikipedia.org/wiki/Multicast) as well).
 
 Here is a graphical representation:
 
@@ -234,7 +263,8 @@ x    = Bunny::Exchange.new(ch, :direct, "imaging")
 
 ### Direct routing example
 
-Since direct exchanges use the *message routing key* for routing, message producers need to specify it:
+Since direct exchanges use the *message routing key* for routing,
+message producers need to specify it:
 
 ``` ruby
 #!/usr/bin/env ruby
@@ -275,8 +305,9 @@ puts "Disconnecting..."
 conn.close
 ```
 
-The routing key will then be compared for equality with routing keys on bindings, and consumers that subscribed with
-the same routing key each get a copy of the message.
+The routing key will then be compared for equality with routing keys
+on bindings, and consumers that subscribed with the same routing key
+each get a copy of the message.
 
 Output for the example looks like this:
 
@@ -291,30 +322,43 @@ Disconnecting...
 
 ### Direct Exchanges and Load Balancing of Messages
 
-Direct exchanges are often used to distribute tasks between multiple workers (instances of the same application) in a round robin manner.
-When doing so, it is important to understand that, in AMQP 0.9.1, *messages are load balanced between consumers and not between queues*.
+Direct exchanges are often used to distribute tasks between multiple
+workers (instances of the same application) in a round robin manner.
+When doing so, it is important to understand that, in AMQP 0.9.1,
+*messages are load balanced between consumers and not between queues*.
 
-The [Queues and Consumers](/articles/queues.html) guide provides more information on this subject.
+The [Queues and Consumers](/articles/queues.html) guide provides more
+information on this subject.
 
 ### Pre-declared direct exchanges
 
-AMQP 0.9.1 brokers must implement a direct exchange type and pre-declare two instances:
+AMQP 0.9.1 brokers must implement a direct exchange type and
+pre-declare two instances:
 
  * `amq.direct`
  * *""* exchange known as *default exchange* (unnamed, referred to as an empty string by many clients including Bunny)
 
-Applications can rely on those exchanges always being available to them. Each vhost has separate instances of those
-exchanges, they are *not shared across vhosts* for obvious reasons.
+Applications can rely on those exchanges always being available to
+them. Each vhost has separate instances of those exchanges, they are
+*not shared across vhosts* for obvious reasons.
 
 
 ### Default exchange
 
-The default exchange is a direct exchange with no name (Bunny refers to it using an empty string) pre-declared by the broker. It has one special
-property that makes it very useful for simple applications, namely that *every queue is automatically bound to it with a routing key which is the same as the queue name*.
+The default exchange is a direct exchange with no name (Bunny refers
+to it using an empty string) pre-declared by the broker. It has one
+special property that makes it very useful for simple applications,
+namely that *every queue is automatically bound to it with a routing
+key which is the same as the queue name*.
 
-For example, when you declare a queue with the name of "search.indexing.online", RabbitMQ will bind it to the default exchange using "search.indexing.online"
-as the routing key. Therefore a message published to the default exchange with routing key = "search.indexing.online" will be routed to the queue "search.indexing.online".
-In other words, the default exchange makes it *seem like it is possible to deliver messages directly to queues*, even though that is not technically what is happening.
+For example, when you declare a queue with the name of
+"search.indexing.online", RabbitMQ will bind it to the default
+exchange using "search.indexing.online" as the routing key. Therefore
+a message published to the default exchange with routing key =
+"search.indexing.online" will be routed to the queue
+"search.indexing.online".  In other words, the default exchange makes
+it *seem like it is possible to deliver messages directly to queues*,
+even though that is not technically what is happening.
 
 The default exchange is used by the "Hello, World" example:
 
@@ -356,21 +400,30 @@ Direct exchanges can be used in a wide variety of cases:
 
 ### How Topic Exchanges Route Messages
 
-Topic exchanges route messages to one or many queues based on matching between a message routing key and the pattern that was used to bind a queue to an exchange.
-The topic exchange type is often used to implement various [publish/subscribe pattern](http://en.wikipedia.org/wiki/Publish/subscribe) variations.
+Topic exchanges route messages to one or many queues based on matching
+between a message routing key and the pattern that was used to bind a
+queue to an exchange.  The topic exchange type is often used to
+implement various [publish/subscribe
+pattern](http://en.wikipedia.org/wiki/Publish/subscribe) variations.
 
-Topic exchanges are commonly used for the [multicast routing](http://en.wikipedia.org/wiki/Multicast) of messages.
+Topic exchanges are commonly used for the [multicast
+routing](http://en.wikipedia.org/wiki/Multicast) of messages.
 
 ![](http://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Multicast.svg/500px-Multicast.svg.png)
 
-Topic exchanges can be used for [broadcast routing](http://en.wikipedia.org/wiki/Broadcasting_%28computing%29), but fanout exchanges are usually
-more efficient for this use case.
+Topic exchanges can be used for [broadcast
+routing](http://en.wikipedia.org/wiki/Broadcasting_%28computing%29),
+but fanout exchanges are usually more efficient for this use case.
 
 ### Topic Exchange Routing Example
 
-Two classic examples of topic-based routing are stock price updates and location-specific data (for instance, weather broadcasts). Consumers indicate which
-topics they are interested in (think of it like subscribing to a feed for an individual tag of your favourite blog as opposed to the full feed). The routing is enabled
-by specifying a *routing pattern* to the `Bunny::Queue#bind` method, for example:
+Two classic examples of topic-based routing are stock price updates
+and location-specific data (for instance, weather
+broadcasts). Consumers indicate which topics they are interested in
+(think of it like subscribing to a feed for an individual tag of your
+favourite blog as opposed to the full feed). The routing is enabled by
+specifying a *routing pattern* to the `Bunny::Queue#bind` method, for
+example:
 
 ``` ruby
 x    = ch.topic("weathr", :auto_delete => true)
@@ -384,7 +437,9 @@ end
 In the example above we bind a queue with the name of "americas.south" to the topic exchange declared earlier using the `Bunny::Queue#bind` method. This means that
 only messages with a routing key matching "americas.south.#" will be routed to the "americas.south" queue.
 
-A routing pattern consists of several words separated by dots, in a similar way to URI path segments being joined by slash. A few of examples:
+A routing pattern consists of several words separated by dots, in a
+similar way to URI path segments being joined by slash. A few of
+examples:
 
  * asia.southeast.thailand.bangkok
  * sports.basketball
