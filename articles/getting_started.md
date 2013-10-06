@@ -196,15 +196,18 @@ Finally, we publish our message
 x.publish("Hello!", :routing_key => q.name)
 ```
 
-Routing key is one of the **message properties**. The default exchange will route the message to a queue that has the same name as the message's routing key.
-This is how our message ends up in the "bunny.examples.hello_world" queue.
+Routing key is one of the **message properties**. The default exchange
+will route the message to a queue that has the same name as the
+message's routing key.  This is how our message ends up in the
+"bunny.examples.hello_world" queue.
 
 This diagram demonstrates the "Hello, world" example data flow:
 
 ![Hello, World AMQP example data flow](http://github.com/ruby-amqp/amqp/raw/master/docs/diagrams/001_hello_world_example_routing.png)
 
-For the sake of simplicity, both the message producer (publisher) and the consumer are running in the same Ruby process.
-Now let us move on to a little bit more sophisticated example.
+For the sake of simplicity, both the message producer (publisher) and
+the consumer are running in the same Ruby process. Now let us move on
+to a little bit more sophisticated example.
 
 ## Blabblr: one-to-many publish/subscribe (pubsub) example
 
