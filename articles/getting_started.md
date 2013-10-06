@@ -254,14 +254,18 @@ conn.close
 Unlike the "Hello, world" example above, here we use a connection URI instead of
 the default arguments.
 
-In this example, opening a channel is no different to opening a channel in the previous example, however, the exchange is declared differently:
+In this example, opening a channel is no different to opening a
+channel in the previous example, however, the exchange is declared
+differently:
 
 ``` ruby
 x   = ch.fanout("nba.scores")
 ```
 
-The exchange that we declare above using `Bunny::Channel#fanout` is a **fanout exchange**.
-A fanout exchange delivers messages to all of the queues that are bound to it: exactly what we want in the case of Blabbr!
+The exchange that we declare above using `Bunny::Channel#fanout` is a
+**fanout exchange**.  A fanout exchange delivers messages to all of
+the queues that are bound to it: exactly what we want in the case of
+Blabbr!
 
 This piece of code
 
@@ -271,10 +275,11 @@ ch.queue("joe",   :auto_delete => true).bind(x).subscribe do |delivery_info, met
 end
 ```
 
-is similar to the subscription code that we used for message delivery previously,
-but what does that `Bunny::Queue#bind` method do? It sets up a binding between the queue and
-the exchange that you pass to it. We need to do this to make sure that our fanout exchange
-routes messages to the queues of any subscribed followers.
+is similar to the subscription code that we used for message delivery
+previously, but what does that `Bunny::Queue#bind` method do? It sets
+up a binding between the queue and the exchange that you pass to
+it. We need to do this to make sure that our fanout exchange routes
+messages to the queues of any subscribed followers.
 
 ``` ruby
 x.publish("BOS 101, NYK 89").publish("ORL 85, ALT 88")
@@ -295,17 +300,27 @@ but it does a pretty good job of demonstrating how one can use RabbitMQ fanout e
 
 ## Weathr: many-to-many topic routing example
 
-So far, we have seen point-to-point communication and broadcasting. Those two communication styles are possible with many protocols, for instance, HTTP handles these scenarios just fine.
-You may ask "what differentiates RabbitMQ?" Well, next we are going to introduce you to **topic exchanges** and routing with patterns, one of the features that makes RabbitMQ very powerful.
+So far, we have seen point-to-point communication and
+broadcasting. Those two communication styles are possible with many
+protocols, for instance, HTTP handles these scenarios just fine.  You
+may ask "what differentiates RabbitMQ?" Well, next we are going to
+introduce you to **topic exchanges** and routing with patterns, one of
+the features that makes RabbitMQ very powerful.
 
-Our third example involves weather condition updates. What makes it different from the previous two examples is that not all of the consumers are interested in all of the messages.
-People who live in Portland usually do not care about the weather in Hong Kong (unless they are visiting soon). They are much more interested in weather conditions around Portland,
-possibly all of Oregon and sometimes a few neighbouring states.
+Our third example involves weather condition updates. What makes it
+different from the previous two examples is that not all of the
+consumers are interested in all of the messages.  People who live in
+Portland usually do not care about the weather in Hong Kong (unless
+they are visiting soon). They are much more interested in weather
+conditions around Portland, possibly all of Oregon and sometimes a few
+neighbouring states.
 
-Our example features multiple consumer applications monitoring updates for different regions.
-Some are interested in updates for a specific city, others for a specific state and so on,
-all the way up to continents. Updates may overlap so that an update for San Diego, CA
-appears as an update for California, but also should show up on the North America updates list.
+Our example features multiple consumer applications monitoring updates
+for different regions.  Some are interested in updates for a specific
+city, others for a specific state and so on, all the way up to
+continents. Updates may overlap so that an update for San Diego, CA
+appears as an update for California, but also should show up on the
+North America updates list.
 
 Here is the code:
 
