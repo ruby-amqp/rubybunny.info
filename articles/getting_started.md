@@ -119,7 +119,11 @@ sleep 1.0
 conn.close
 ```
 
-This example demonstrates a very common communication scenario: *application A* wants to publish a message that will end up in a queue that *application B* listens on. In this case, the queue name is "bunny.examples.hello_world". Let us go through the code step by step:
+This example demonstrates a very common communication scenario:
+*application A* wants to publish a message that will end up in a queue
+that *application B* listens on. In this case, the queue name is
+`"bunny.examples.hello_world"`. Let us go through the code step by
+step:
 
 ``` ruby
 require "rubygems"
