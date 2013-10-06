@@ -130,14 +130,18 @@ require "rubygems"
 require "bunny"
 ```
 
-is the simplest way to load Bunny if you have installed it with RubyGems, but remember that you can omit the rubygems line if your environment does not need it. The following piece of code
+is the simplest way to load Bunny if you have installed it with
+RubyGems, but remember that you can omit the rubygems line if your
+environment does not need it. The following piece of code
 
 ``` ruby
 conn = Bunny.new
 conn.start
 ```
 
-connects to RabbitMQ running on localhost, with the default port (5672), username (guest), password (guest) and virtual host ('/').
+connects to RabbitMQ running on localhost, with the default port
+(`5672`), username (`"guest"`), password (`"guest"`) and virtual host
+(`"/"`).
 
 The next line
 
