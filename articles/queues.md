@@ -207,7 +207,8 @@ messaging patterns in depth and the RabbitMQ FAQ also has a section on
 
 ## Declaring a Durable Shared Queue
 
-To declare a durable shared queue, you pass a queue name that is a non-blank string and use the `:durable` option:
+To declare a durable shared queue, you pass a queue name that is a
+non-blank string and use the `:durable` option:
 
 ``` ruby
 ch.queue("images.resize", :durable => true, :auto_delete => false)
@@ -252,7 +253,8 @@ are deleted when that connection closes. The declaration of an
 exclusive queue by other connections is not allowed and will result in
 a channel-level exception with the code `405 (RESOURCE_LOCKED)`
 
-Exclusive queues will be deleted when the connection they were declared on is closed.
+Exclusive queues will be deleted when the connection they were
+declared on is closed.
 
 
 ## Binding Queues to Exchanges
@@ -292,7 +294,10 @@ q.bind(x)
 
 ## Subscribing to receive messages ("push API")
 
-To request that the server starts a *consumer* (queue subscription) to enable an application to process messages as they arrive in a queue, one uses the `Bunny::Queue#subscribe` or `Bunny::Queue#subscribe_with` methods.
+To request that the server starts a *consumer* (queue subscription) to
+enable an application to process messages as they arrive in a queue,
+one uses the `Bunny::Queue#subscribe` or `Bunny::Queue#subscribe_with`
+methods.
 
 Consumers last as long as the channel that they were declared on,
 or until the client cancels them (unsubscribes).
@@ -305,7 +310,9 @@ Consumers have a number of events that they can react to:
  
 #### Consumer Tags
 
-Consumers are identified by unique strings called *consumer tags*. The `Bunny::Queue#subscribe` method can take a `:consumer_tag` argument or let RabbitMQ generate one
+Consumers are identified by unique strings called *consumer tags*. The
+`Bunny::Queue#subscribe` method can take a `:consumer_tag` argument or
+let RabbitMQ generate one
 
 ```ruby
 q.subscribe(:consumer_tag => "unique_consumer_001")
