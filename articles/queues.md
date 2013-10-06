@@ -654,6 +654,15 @@ As with the `Bunny::Queue#subscribe` method, the `Bunny::Queue#subscribe_with` m
 q.subscribe_with(consumer, :block => true)
 ```
 
+
+### Using Multiple Consumers Per Queue
+
+It is possible to have multiple non-exclusive consumers on queues. In that case, messages will be
+distributed between them according to prefetch levels of their channels (more on this later in this
+guide). If prefetch values are equal for all consumers, each consumer will get about the same number of messages.
+
+
+
 ### Exclusive Consumers
 
 Consumers can request exclusive access to the queue (meaning only this
@@ -697,13 +706,6 @@ result in a channel-level exception with reply code `403 (ACCESS_REFUSED)` and a
     ACCESS_REFUSED - queue 'queue name' in vhost '/' in exclusive use (Bunny::AccessRefused)
 
 It is not possible to register an exclusive consumer on a queue that already has consumers.
-
-
-### Using Multiple Consumers Per Queue
-
-It is possible to have multiple non-exclusive consumers on queues. In that case, messages will be
-distributed between them according to prefetch levels of their channels (more on this later in this
-guide). If prefetch values are equal for all consumers, each consumer will get about the same number of messages.
 
 
 ### Cancelling a Consumer
