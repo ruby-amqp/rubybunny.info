@@ -24,18 +24,25 @@ This guide covers Bunny 0.10.x and later versions.
 
 ### What are AMQP Queues?
 
-*Queues* store and forward messages to consumers. They are similar to mailboxes in SMTP. Messages flow from producing applications to [exchanges](/articles/exchanges.html)
-that route them to queues and finally, queues deliver the messages to consumer applications (or consumer applications fetch messages as needed).
+*Queues* store and forward messages to consumers. They are similar to
+mailboxes in SMTP. Messages flow from producing applications to
+[exchanges](/articles/exchanges.html) that route them to queues and
+finally, queues deliver the messages to consumer applications (or
+consumer applications fetch messages as needed).
 
-**Note** that unlike some other messaging protocols/systems, messages are not delivered directly to queues. They are delivered to exchanges that route
-messages to queues using rules known as *bindings*.
+**Note** that unlike some other messaging protocols/systems, messages
+are not delivered directly to queues. They are delivered to exchanges
+that route messages to queues using rules known as *bindings*.
 
-AMQP is a programmable protocol, so queues and bindings alike are declared by applications.
+AMQP 0.9.1 is a programmable protocol, so queues and bindings alike are
+declared by applications.
 
 ### Concept of Bindings
 
-A *binding* is an association between a queue and an exchange. Queues must be bound to at least one exchange in order to receive messages from publishers. Learn more
-about bindings in the [Bindings guide](/articles/bindings.html).
+A *binding* is an association between a queue and an exchange. Queues
+must be bound to at least one exchange in order to receive messages
+from publishers. Learn more about bindings in the [Bindings
+guide](/articles/bindings.html).
 
 ### Queue Attributes
 
@@ -47,19 +54,32 @@ Queues have several attributes associated with them:
  * Whether the queue is auto-deleted when no longer used
  * Other metadata (sometimes called *X-arguments*)
 
-These attributes define how queues can be used, their life-cycle, and other aspects of queue behavior.
+These attributes define how queues can be used, their life-cycle, and
+other aspects of queue behavior.
 
 ## Queue Names and Declaring Queues
 
-Every AMQP queue has a name that identifies it. Queue names often contain several segments separated by a dot ".", in a similar fashion to URI path segments being separated by a slash "/", although almost any string can represent a segment (with some limitations - see below).
+Every AMQP queue has a name that identifies it. Queue names often
+contain several segments separated by a dot ".", in a similar fashion
+to URI path segments being separated by a slash "/", although almost
+any string can represent a segment (with some limitations - see
+below).
 
-Before a queue can be used, it has to be *declared*. Declaring a queue will cause it to be created if it does not already exist. The declaration will have no effect if the queue does already exist and its attributes are the *same as those in the declaration*. When the existing queue attributes are not the same as those in the declaration a channel-level exception is raised. This case is explained later in this guide.
+Before a queue can be used, it has to be *declared*. Declaring a queue
+will cause it to be created if it does not already exist. The
+declaration will have no effect if the queue does already exist and
+its attributes are the *same as those in the declaration*. When the
+existing queue attributes are not the same as those in the declaration
+a channel-level exception is raised. This case is explained later in
+this guide.
 
 ### Explicitly Named Queues
 
-Applications may pick queue names or ask the broker to generate a name for them.
+Applications may pick queue names or ask the broker to generate a name
+for them.
 
-To declare a queue with a particular name, for example, "images.resize", use the `Bunny::Channel#queue` method:
+To declare a queue with a particular name, for example,
+"images.resize", use the `Bunny::Channel#queue` method:
 
 ``` ruby
 ch.queue("images.resize", :exclusive => false, :auto_delete => true)
@@ -80,8 +100,10 @@ q    = ch.queue("images.resize", :exclusive => false, :auto_delete => true)
 
 ### Server-named queues
 
-To ask an AMQP broker to generate a unique queue name for you, pass an *empty string* as the queue name argument. A generated queue name (like *amq.gen-JZ46KgZEOZWg-pAScMhhig*)
-will be assigned to the `Bunny::Queue` instance that the method returns:
+To ask an AMQP broker to generate a unique queue name for you, pass an
+*empty string* as the queue name argument. A generated queue name
+(like *amq.gen-JZ46KgZEOZWg-pAScMhhig*) will be assigned to the
+`Bunny::Queue` instance that the method returns:
 
 ``` ruby
 ch.queue("", :exclusive => true)
@@ -99,22 +121,31 @@ ch   = conn.create_channel
 q    = ch.queue("", :exclusive => true)
 ```
 
-**Note** that, while it is common to declare server-named queues as `:exclusive`, it is not necessary.
+**Note** that, while it is common to declare server-named queues as
+  `:exclusive`, it is not necessary.
 
 
 ### Reserved Queue Name Prefix
 
-Queue names starting with "amq." are reserved for server-named queues and queues for internal use by the broker. Attempts to declare a queue with a name that violates this rule will
-result in a channel-level exception with reply code `403 (ACCESS_REFUSED)` and a reply message similar to this:
+Queue names starting with "amq." are reserved for server-named queues
+and queues for internal use by the broker. Attempts to declare a queue
+with a name that violates this rule will result in a channel-level
+exception with reply code `403 (ACCESS_REFUSED)` and a reply message
+similar to this:
 
     ACCESS_REFUSED - queue name 'amq.queue' contains reserved prefix 'amq.*'
     
-This error results in the channel that was used for the declaration being forcibly closed by RabbitMQ. If the program subsequently tries to communicate with RabbitMQ using the same channel without re-opening it then Bunny will raise a `Bunny::ChannelAlreadyClosed` error.
+This error results in the channel that was used for the declaration
+being forcibly closed by RabbitMQ. If the program subsequently tries
+to communicate with RabbitMQ using the same channel without re-opening
+it then Bunny will raise a `Bunny::ChannelAlreadyClosed` error.
 
 ### Queue Re-Declaration With Different Attributes
 
-When queue declaration attributes are different from those that the queue already has, a channel-level exception with code `406 (PRECONDITION_FAILED)`
-will be raised. The reply text will be similar to this:
+When queue declaration attributes are different from those that the
+queue already has, a channel-level exception with code `406
+(PRECONDITION_FAILED)` will be raised. The reply text will be similar
+to this:
 
     PRECONDITION_FAILED - parameters for queue 'bunny.examples.channel_exception' in vhost '/' not equivalent
 
@@ -129,10 +160,11 @@ error, a different channel would have to be used.
 
 According to the AMQP 0.9.1 specification, there are two common message queue life-cycle patterns:
 
- * Durable message queues that are shared by many consumers and have an independent existence: i.e. they will continue to exist and collect messages whether or not there are consumers to receive them.
- * Temporary message queues that are private to one consumer and are tied to that consumer. When the consumer disconnects, the message queue is deleted.
+ * Durable queues that are shared by many consumers and have an independent existence: i.e. they will continue to exist and collect messages whether or not there are consumers to receive them.
+ * Temporary queues that are private to one consumer and are tied to that consumer. When the consumer disconnects, the message queue is deleted.
 
-There are some variations of these, such as shared message queues that are deleted when the last of many consumers disconnects.
+There are some variations of these, such as shared message queues that
+are deleted when the last of many consumers disconnects.
 
 Let us examine the example of a well-known service like an event
 collector (event logger). A logger is usually up and running
