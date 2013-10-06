@@ -1242,9 +1242,11 @@ Most methods related to queues are found in three Bunny namespaces:
 
 ## What to Read Next
 
-The documentation is organized as [a number of guides](/articles/guides.html), covering various topics.
+The documentation is organized as [a number of
+guides](/articles/guides.html), covering various topics.
 
-We recommend that you read the following guides first, if possible, in this order:
+We recommend that you read the following guides first, if possible, in
+this order:
 
  * [Exchanges and Publishing](/articles/exchanges.html)
  * [Bindings](/articles/bindings.html)
