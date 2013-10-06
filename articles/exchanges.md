@@ -523,8 +523,10 @@ connection.close
 
 ### Topic Exchange Use Cases
 
-Topic exchanges have a very broad set of use cases. Whenever a problem involves multiple consumers/applications that selectively choose which type of messages
-they want to receive, the use of topic exchanges should be considered. To name a few examples:
+Topic exchanges have a very broad set of use cases. Whenever a problem
+involves multiple consumers/applications that selectively choose which
+type of messages they want to receive, the use of topic exchanges
+should be considered. To name a few examples:
 
  * Distributing data relevant to specific geographic location, for example, points of sale
  * Background task processing done by multiple workers, each capable of handling specific set of tasks
@@ -536,7 +538,9 @@ they want to receive, the use of topic exchanges should be considered. To name a
 
 ## Declaring/Instantiating Exchanges
 
-With Bunny, exchanges can be declared in two ways: by instantiating `Bunny::Exchange` or by using a number of convenience methods on `Bunny::Channel`:
+With Bunny, exchanges can be declared in two ways: by instantiating
+`Bunny::Exchange` or by using a number of convenience methods on
+`Bunny::Channel`:
 
   * `Bunny::Channel#default_exchange`
   * `Bunny::Channel#direct`
@@ -544,7 +548,9 @@ With Bunny, exchanges can be declared in two ways: by instantiating `Bunny::Exch
   * `Bunny::Channel#fanout`
   * `Bunny::Channel#headers`
 
-The previous sections on specific exchange types (direct, fanout, headers, etc.) provide plenty of examples of how these methods can be used.
+The previous sections on specific exchange types (direct, fanout,
+headers, etc.) provide plenty of examples of how these methods can be
+used.
 
 ## Publishing messages
 
@@ -573,8 +579,11 @@ A few popular options for data serialization are:
 
 ### Message metadata
 
-AMQP messages have various metadata attributes that can be set when a message is published. Some of the attributes are well-known and mentioned in the AMQP 0.9.1 specification,
-others are specific to a particular application. Well-known attributes are listed here as options that `Bunny::Exchange#publish` takes:
+RabbitMQ messages have various metadata attributes that can be set
+when a message is published. Some of the attributes are well-known and
+mentioned in the AMQP 0.9.1 specification, others are specific to a
+particular application. Well-known attributes are listed here as
+options that `Bunny::Exchange#publish` takes:
 
  * `:persistent`
  * `:mandatory`
@@ -590,7 +599,8 @@ others are specific to a particular application. Well-known attributes are liste
  * `:user_id`
  * `:app_id`
 
-All other attributes can be added to a *headers table* (in Ruby, a hash) that `Bunny::Exchange#publish` accepts as the `:headers` option.
+All other attributes can be added to a *headers table* (in Ruby, a
+hash) that `Bunny::Exchange#publish` accepts as the `:headers` option.
 
 An example:
 
@@ -683,21 +693,30 @@ x.publish("hello",
   <dd>A map of any additional attributes that the application needs. Nested hashes are supported. Keys must be strings.</dd>
 </dl>
 
-It is recommended that application authors use well-known message attributes when applicable instead of relying on custom headers or placing information in the message body.
-For example, if your application messages have priority, publishing timestamp, type and content type, you should use the respective AMQP message attributes
+It is recommended that application authors use well-known message
+attributes when applicable instead of relying on custom headers or
+placing information in the message body.  For example, if your
+application messages have priority, publishing timestamp, type and
+content type, you should use the respective AMQP message attributes
 instead of reinventing the wheel.
 
 
 ### Validated User ID
 
-In some scenarios it is useful for consumers to be able to know the identity of the user who published a message. RabbitMQ implements a feature known as [validated User ID](http://www.rabbitmq.com/extensions.html#validated-user-id).
-If this property is set by a publisher, its value must be the same as the name of the user used to open the connection. If the user-id property is not set, the publisher's
-identity is not validated and remains private.
+In some scenarios it is useful for consumers to be able to know the
+identity of the user who published a message. RabbitMQ implements a
+feature known as [validated User
+ID](http://www.rabbitmq.com/extensions.html#validated-user-id).  If
+this property is set by a publisher, its value must be the same as the
+name of the user used to open the connection. If the user-id property
+is not set, the publisher's identity is not validated and remains
+private.
 
 
 ### Publishing Callbacks and Reliable Delivery in Distributed Environments
 
-A commonly asked question about RabbitMQ clients is "how to execute a piece of code after a message is received".
+A commonly asked question about RabbitMQ clients is "how to execute a
+piece of code after a message is received".
 
 Message publishing with Bunny happens in several steps:
 
@@ -707,30 +726,40 @@ Message publishing with Bunny happens in several steps:
  * OS kernel buffers data before sending it
  * Network driver may also employ buffering
 
-<div class="alert alert-error">
-As you can see, "when data is sent" is a complicated issue and while methods to flush buffers exist, flushing buffers does not guarantee that the data
-was received by the broker because it might have crashed while data was travelling down the wire.
+<div class="alert alert-error"> As you can see, "when data is sent" is
+a complicated issue and while methods to flush buffers exist, flushing
+buffers does not guarantee that the data was received by the broker
+because it might have crashed while data was travelling down the wire.
 
 The only way to reliably know whether data was received by the broker or a peer application is to use message acknowledgements. This is how TCP works and this
 approach is proven to work at the enormous scale of the modern Internet. AMQP 0.9.1 fully embraces this fact and Bunny follows.
 </div>
 
-In cases when you cannot afford to lose a single message, AMQP 0.9.1 applications can use one (or a combination of) the following protocol features:
+In cases when you cannot afford to lose a single message, AMQP 0.9.1
+applications can use one (or a combination of) the following protocol
+features:
 
  * Publisher confirms (a RabbitMQ-specific extension to AMQP 0.9.1)
  * Publishing messages as mandatory
  * Transactions (these introduce noticeable overhead and have a relatively narrow set of use cases)
 
-A more detailed overview of the pros and cons of each option can be found in a [blog post that introduces Publisher Confirms extension](http://bit.ly/rabbitmq-publisher-confirms)
-by the RabbitMQ team. The next sections of this guide will describe how the features above can be used with Bunny.
+A more detailed overview of the pros and cons of each option can be
+found in a [blog post that introduces Publisher Confirms
+extension](http://bit.ly/rabbitmq-publisher-confirms) by the RabbitMQ
+team. The next sections of this guide will describe how the features
+above can be used with Bunny.
 
 
 ### Publishing messages as mandatory
 
-When publishing messages, it is possible to use the `:mandatory` option to publish a message as "mandatory". When a mandatory message cannot be *routed*
-to any queue (for example, there are no bindings or none of the bindings match), the message is returned to the producer.
+When publishing messages, it is possible to use the `:mandatory`
+option to publish a message as "mandatory". When a mandatory message
+cannot be *routed* to any queue (for example, there are no bindings or
+none of the bindings match), the message is returned to the producer.
 
-The following code example demonstrates a message that is published as mandatory but cannot be routed (no bindings) and thus is returned back to the producer:
+The following code example demonstrates a message that is published as
+mandatory but cannot be routed (no bindings) and thus is returned back
+to the producer:
 
 ``` ruby
 #!/usr/bin/env ruby
@@ -768,14 +797,17 @@ conn.close
 
 ### Returned messages
 
-When a message is returned, the application that produced it can handle that message in different ways:
+When a message is returned, the application that produced it can
+handle that message in different ways:
 
  * Store it for later redelivery in a persistent store
  * Publish it to a different destination
  * Log the event and discard the message
 
-Returned messages contain information about the exchange they were published to. Bunny associates
-returned message callbacks with consumers. To handle returned messages, use `Bunny::Exchange#on_return`:
+Returned messages contain information about the exchange they were
+published to. Bunny associates returned message callbacks with
+consumers. To handle returned messages, use
+`Bunny::Exchange#on_return`:
 
 ``` ruby
 #!/usr/bin/env ruby
@@ -810,10 +842,10 @@ puts "Disconnecting..."
 conn.close
 ```
 
-
-
-A returned message handler has access to AMQP method (`basic.return`) information, message metadata and payload (as a byte array).
-The metadata and message body are returned without modifications so that the application can store the message for later redelivery.
+A returned message handler has access to AMQP method (`basic.return`)
+information, message metadata and payload (as a byte array).  The
+metadata and message body are returned without modifications so that
+the application can store the message for later redelivery.
 
 
 ### Publishing Persistent Messages
