@@ -149,10 +149,12 @@ The next line
 ch = conn.create_channel
 ```
 
-opens a new _channel_. AMQP 0.9.1 is a multi-channeled protocol that uses channels to multiplex a TCP connection.
+opens a new _channel_. AMQP 0.9.1 is a multi-channeled protocol that
+uses channels to multiplex a TCP connection.
 
-Channels are opened on a connection. `Bunny::Session#create_channel` will return only when Bunny
-receives a confirmation that the channel is open from RabbitMQ.
+Channels are opened on a connection. `Bunny::Session#create_channel`
+will return only when Bunny receives a confirmation that the channel
+is open from RabbitMQ.
 
 This line
 
@@ -160,8 +162,10 @@ This line
 q  = ch.queue("bunny.examples.hello_world", :auto_delete => true)
 ```
 
-declares a **queue** on the channel that we have just opened. Consumer applications get messages from queues. We declared this queue with
-the "auto-delete" parameter. Basically, this means that the queue will be deleted when there are no more processes consuming messages from it.
+declares a **queue** on the channel that we have just opened. Consumer
+applications get messages from queues. We declared this queue with the
+"auto-delete" parameter. Basically, this means that the queue will be
+deleted when there are no more processes consuming messages from it.
 
 The next line
 
@@ -169,9 +173,13 @@ The next line
 x  = ch.default_exchange
 ```
 
-instantiates an **exchange**. Exchanges receive messages that are sent by producers. Exchanges route messages to queues according to rules called **bindings**.
-In this particular example, there are no explicitly defined bindings. The exchange that we use is known as the **default exchange** and it has implied
-bindings to all queues. Before we get into that, let us see how we define a handler for incoming messages
+instantiates an **exchange**. Exchanges receive messages that are sent
+by producers. Exchanges route messages to queues according to rules
+called **bindings**.  In this particular example, there are no
+explicitly defined bindings. The exchange that we use is known as the
+**default exchange** and it has implied bindings to all queues. Before
+we get into that, let us see how we define a handler for incoming
+messages
 
 ``` ruby
 q.subscribe do |delivery_info, metadata, payload|
