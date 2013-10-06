@@ -211,12 +211,18 @@ to a little bit more sophisticated example.
 
 ## Blabblr: one-to-many publish/subscribe (pubsub) example
 
-The previous example demonstrated how a connection to a broker is made and how to do 1:1 communication using the default exchange. Now let us take a look
-at another common scenario: broadcast, or multiple consumers and one producer.
+The previous example demonstrated how a connection to a broker is made
+and how to do 1:1 communication using the default exchange. Now let us
+take a look at another common scenario: broadcast, or multiple
+consumers and one producer.
 
-A very well-known broadcast example is Twitter: every time a person tweets, followers receive a notification. Blabbr, our imaginary information network,
-models this scenario: every network member has a separate queue and publishes blabs to a separate exchange. Three Blabbr members, Joe, Aaron and Bob,
-follow the official NBA account on Blabbr to get updates about what is happening in the world of basketball. Here is the code:
+A very well-known broadcast example is Twitter: every time a person
+tweets, followers receive a notification. Blabbr, our imaginary
+information network, models this scenario: every network member has a
+separate queue and publishes blabs to a separate exchange. Three
+Blabbr members, Joe, Aaron and Bob, follow the official NBA account on
+Blabbr to get updates about what is happening in the world of
+basketball. Here is the code:
 
 ``` ruby
 require "rubygems"
