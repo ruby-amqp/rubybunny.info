@@ -380,17 +380,23 @@ The first line that is different from the Blabbr example is
 exchange = channel.topic("weathr", :auto_delete => true)
 ```
 
-We use a topic exchange here. Topic exchanges are used for [multicast](http://en.wikipedia.org/wiki/Multicast) messaging
-where consumers indicate which topics they are interested in (think of it as subscribing to a feed for an individual tag in
-your favourite blog as opposed to the full feed). Routing with a topic exchange is done by specifying a **routing pattern**
-on binding, for example:
+We use a topic exchange here. Topic exchanges are used for
+[multicast](http://en.wikipedia.org/wiki/Multicast) messaging where
+consumers indicate which topics they are interested in (think of it as
+subscribing to a feed for an individual tag in your favourite blog as
+opposed to the full feed). Routing with a topic exchange is done by
+specifying a **routing pattern** on binding, for example:
 
-``` ruby
-channel.queue("americas.south").bind(exchange, :routing_key => "americas.south.#").subscribe do |delivery_info, metadata, payload|
-  puts "An update for South America: #{payload}, routing key is #{delivery_info.routing_key}"
-end
-```
-Here we bind a queue with the name of "americas.south" to the topic exchange declared earlier using the `Bunny::Queue#bind` method.  This means that only messages with a routing key matching "americas.south.#" will be routed to that queue. A routing pattern consists of several words separated by dots, in a similar way to URI path segments joined by slashes. Here are a few examples:
+``` ruby channel.queue("americas.south").bind(exchange, :routing_key
+=> "americas.south.#").subscribe do |delivery_info, metadata, payload|
+puts "An update for South America: #{payload}, routing key is
+#{delivery_info.routing_key}" end ``` Here we bind a queue with the
+name of "americas.south" to the topic exchange declared earlier using
+the `Bunny::Queue#bind` method.  This means that only messages with a
+routing key matching "americas.south.#" will be routed to that
+queue. A routing pattern consists of several words separated by dots,
+in a similar way to URI path segments joined by slashes. Here are a
+few examples:
 
  * asia.southeast.thailand.bangkok
  * sports.basketball
