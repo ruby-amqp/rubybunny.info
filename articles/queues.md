@@ -347,12 +347,13 @@ end
 
 The block should accept three arguments:
 
- * Delivery information (can be used to acknowledge messages, for example; will be covered in more detail later)
+ * Delivery information (can be used to acknowledge messages, for example; will be covered later)
  * Message properties (metadata)
  * Message payload (body)
 
-Both delivery information and message properties can be treated as Hash-like objects or structures.
-For example, to get delivery tag, you can use either
+Both delivery information and message properties can be treated as
+Hash-like objects or structures.  For example, to get delivery tag,
+you can use either
 
 ``` ruby
 delivery_info[:delivery_tag]
@@ -366,15 +367,18 @@ delivery_info.delivery_tag
 
 #### Blocking or Non-Blocking Behavior
 
-The subscribe method will not block the calling thread by default. If you want to block the thread, pass `:block => true` to
-`Bunny::Queue#subscribe`. In Bunny 0.9.0 and later, network activity and dispatch of delivered messages
-to consumers happens in separate threads that Bunny maintains internally, so it does not have to
-block the thread that calls `Bunny::Queue#subscribe`. However, it may be convenient to do so
-in long-running consumer applications.
+The subscribe method will not block the calling thread by default. If
+you want to block the thread, pass `:block => true` to
+`Bunny::Queue#subscribe`. In Bunny 0.9.0 and later, network activity
+and dispatch of delivered messages to consumers happens in separate
+threads that Bunny maintains internally, so it does not have to block
+the thread that calls `Bunny::Queue#subscribe`. However, it may be
+convenient to do so in long-running consumer applications.
 
 ### Accessing Message Delivery Information
 
-The *delivery_info* parameter in the example above provides access to message delivery information:
+The *delivery_info* parameter in the example above provides access to
+message delivery information:
 
  * Consumer tag this delivery is for
  * Delivery tag
@@ -382,8 +386,8 @@ The *delivery_info* parameter in the example above provides access to message de
  * Name of exchange message came from
  * Message routing key
  
-Message delivery information can be treated as a Hash-like object or structure.
-For example, to get routing key, you can use either
+Message delivery information can be treated as a Hash-like object or
+structure.  For example, to get routing key, you can use either
 
 ``` ruby
 delivery_info[:routing_key]
@@ -397,7 +401,8 @@ delivery_info.routing_key
   
 ### Accessing Message Properties (Metadata)
 
-The *properties* parameter in the example above provides access to message metadata:
+The *properties* parameter in the example above provides access to
+message metadata:
 
  * Message content type
  * Message content encoding
@@ -516,7 +521,9 @@ The full list of message properties parameters (**note** that most of them are o
 
 ### Consumer Instances
 
-Bunny 0.9.0 introduces a new `Bunny::Consumer` class which takes the following positional arguments when instantiated:
+Starting with version 0.9, Bunny provides a new `Bunny::Consumer`
+class which takes the following positional arguments when
+instantiated:
 
  * `channel` _(mandatory)_
  * `queue` _(mandatory)_
@@ -559,11 +566,13 @@ If the `consumer_tag` is empty then Bunny will generate one that looks something
 consumer.consumer_tag = "another_example_consumer"
 ```
 
-`Bunny::Consumer` contains a *delivery handler* and when the consumer consumes a message then the delivery information, message properties (metadata) and body (payload) are
-passed to it. In order to process consumed messages a block is passed to the consumer:
+`Bunny::Consumer` implements a *delivery handler* and when the consumer
+consumes a message then the delivery information, message properties
+(metadata) and body (payload) are passed to it. In order to process
+consumed messages a block is passed to the consumer:
 
 ```ruby
-consumer.on_delivery() do |delivery_info, metadata, payload|
+consumer.on_delivery do |delivery_info, metadata, payload|
   puts payload
 end
 ```
@@ -647,11 +656,15 @@ q.subscribe_with(consumer, :block => true)
 
 ### Exclusive Consumers
 
-Consumers can request exclusive access to the queue (meaning only this consumer can access the queue). This is useful when you want a long-lived shared queue
-to be temporarily accessible by just one application (or thread, or process). If the application employing the exclusive consumer crashes or loses the
-TCP connection to the broker, then the channel is closed and the exclusive consumer is cancelled.
+Consumers can request exclusive access to the queue (meaning only this
+consumer can access the queue). This is useful when you want a
+long-lived shared queue to be temporarily accessible by just one
+application (or thread, or process). If the application employing the
+exclusive consumer crashes or loses the TCP connection to the broker,
+then the channel is closed and the exclusive consumer is cancelled.
 
-To exclusively receive messages from the queue, pass the `:exclusive` option to `Bunny::Queue#subscribe`:
+To exclusively receive messages from the queue, pass the `:exclusive`
+option to `Bunny::Queue#subscribe`:
 
 ``` ruby
 q = ch.queue("")
