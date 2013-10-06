@@ -403,27 +403,31 @@ few examples:
  * usa.nasdaq.aapl
  * tasks.search.indexing.accounts
 
-Now let us take a look at a few routing keys that match the "americas.south.#" pattern:
+Now let us take a look at a few routing keys that match the
+`"americas.south.#"` pattern:
 
- * americas.south
- * americas.south.*brazil*
- * americas.south.*brazil.saopaolo*
- * americas.south.*chile.santiago*
+ * `"americas.south"`
+ * `"americas.south.*brazil*"`
+ * `"americas.south.*brazil.saopaolo*"`
+ * `"americas.south.*chile.santiago*"`
 
-In other words, the "#" part of the pattern matches 0 or more words.
+In other words, the `"#"` part of the pattern matches 0 or more words.
 
-For a pattern like "americas.south.*", some matching routing keys would be:
+For a pattern like `"americas.south.*"`, some matching routing keys
+would be:
 
- * americas.south.*brazil*
- * americas.south.*chile*
- * americas.south.*peru*
+ * `"americas.south.*brazil*"`
+ * `"americas.south.*chile*"`
+ * `"americas.south.*peru*"`
 
 but not
 
- * americas.south
- * americas.south.chile.santiago
+ * `"americas.south"`
+ * `"americas.south.chile.santiago"`
 
-so "*" only matches a single word. The AMQP 0.9.1 specification says that topic segments (words) may contain the letters A-Z and a-z and digits 0-9.
+so `"*"` only matches a single word. The AMQP 0.9.1 specification says
+that topic segments (words) may contain the letters A-Z and a-z and
+digits 0-9.
 
 A (very simplistic) diagram to demonstrate topic exchange in action:
 
