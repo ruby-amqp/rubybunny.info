@@ -434,10 +434,12 @@ A (very simplistic) diagram to demonstrate topic exchange in action:
 ![Weathr Data Flow](https://github.com/ruby-amqp/amqp/raw/master/docs/diagrams/003_weathr_example_routing.png)
 
 
-As in the previous examples, the block that we pass to `Bunny::Queue#subscribe` takes multiple arguments:
-**delivery information**, **message metadata** (properties) and **message body** (often called the **payload**).
-Long story short, the metadata parameter lets you access metadata associated with the message. Some examples of message metadata
-attributes are:
+As in the previous examples, the block that we pass to
+`Bunny::Queue#subscribe` takes multiple arguments: **delivery
+information**, **message metadata** (properties) and **message body**
+(often called the **payload**).  Long story short, the metadata
+parameter lets you access metadata associated with the message. Some
+examples of message metadata attributes are:
 
  * message content type
  * message content encoding
