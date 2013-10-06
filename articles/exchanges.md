@@ -850,11 +850,16 @@ the application can store the message for later redelivery.
 
 ### Publishing Persistent Messages
 
-Messages potentially spend some time in the queues to which they were routed before they are consumed. During this period of time, the broker may crash or experience a restart.
-To survive it, messages must be persisted to disk. This has a negative effect on performance, especially with network attached storage like NAS devices and Amazon EBS.
-AMQP 0.9.1 lets applications trade off performance for durability, or vice versa, on a message-by-message basis.
+Messages potentially spend some time in the queues to which they were
+routed before they are consumed. During this period of time, the
+broker may crash or experience a restart.  To survive it, messages
+must be persisted to disk. This has a negative effect on performance,
+especially with network attached storage like NAS devices and Amazon
+EBS.  AMQP 0.9.1 lets applications trade off performance for
+durability, or vice versa, on a message-by-message basis.
 
-To publish a persistent message, use the `:persistent` option that `Bunny::Exchange#publish` accepts:
+To publish a persistent message, use the `:persistent` option that
+`Bunny::Exchange#publish` accepts:
 
 ``` ruby
 x.publish(data, :persistent => true)
@@ -867,35 +872,51 @@ x.publish(data, :persistent => true)
 ### Publishing In Multi-threaded Environments
 
 <div class="alert alert-error">
-When using Bunny in multi-threaded environments, the rule of thumb is: avoid sharing channels across threads.
+When using Bunny in multi-threaded
+environments, the rule of thumb is: avoid sharing channels across
+threads.
 </div>
 
-In other words, publishers in your application that publish from separate threads should use their own channels. The
-same is a good idea for consumers.
+In other words, publishers in your application that publish from
+separate threads should use their own channels. The same is a good
+idea for consumers.
 
 
 ## Headers exchanges
 
-Now that message attributes and publishing have been introduced, it is time to take a look at one more core exchange type in AMQP 0.9.1. It is called the *headers
-exchange type* and is quite powerful.
+Now that message attributes and publishing have been introduced, it is
+time to take a look at one more core exchange type in AMQP 0.9.1. It
+is called the *headers exchange type* and is quite powerful.
 
 ### How headers exchanges route messages
 
 #### An Example Problem Definition
 
-The best way to explain headers-based routing is with an example. Imagine a distributed [continuous integration](http://martinfowler.com/articles/continuousIntegration.html)
-system that distributes builds across multiple machines with different hardware architectures (x86, IA-64, AMD64, ARM family and so on) and operating systems.
-It strives to provide a way for a community to contribute machines to run tests on and a nice build matrix like [the one WebKit uses](http://build.webkit.org/waterfall?category=core).
-One key problem such systems face is build distribution. It would be nice if a messaging broker could figure out which machine has which OS, architecture or
-combination of the two and route build request messages accordingly.
+The best way to explain headers-based routing is with an
+example. Imagine a distributed [continuous
+integration](http://martinfowler.com/articles/continuousIntegration.html)
+system that distributes builds across multiple machines with different
+hardware architectures (x86, IA-64, AMD64, ARM family and so on) and
+operating systems.  It strives to provide a way for a community to
+contribute machines to run tests on and a nice build matrix like [the
+one WebKit uses](http://build.webkit.org/waterfall?category=core).
+One key problem such systems face is build distribution. It would be
+nice if a messaging broker could figure out which machine has which
+OS, architecture or combination of the two and route build request
+messages accordingly.
 
-A headers exchange is designed to help in situations like this by routing on multiple attributes that are more easily expressed as message metadata
-attributes (headers) rather than a routing key string.
+A headers exchange is designed to help in situations like this by
+routing on multiple attributes that are more easily expressed as
+message metadata attributes (headers) rather than a routing key
+string.
 
 #### Routing on Multiple Message Attributes
 
-Headers exchanges route messages based on message header matching. Headers exchanges ignore the routing key attribute. Instead, the attributes used for
-routing are taken from the "headers" attribute. When a queue is bound to a headers exchange, the `:arguments` attribute is used to define matching rules:
+Headers exchanges route messages based on message header
+matching. Headers exchanges ignore the routing key attribute. Instead,
+the attributes used for routing are taken from the "headers"
+attribute. When a queue is bound to a headers exchange, the
+`:arguments` attribute is used to define matching rules:
 
 ``` ruby
 q = ch.queue("hosts.ip-172-37-11-56")
@@ -904,8 +925,9 @@ x = ch.headers("requests")
 q.bind(x, :arguments => {"os" => "linux"})
 ```
 
-When matching on one header, a message is considered matching if the value of the header equals the value specified upon binding. An example
-that demonstrates headers routing:
+When matching on one header, a message is considered matching if the
+value of the header equals the value specified upon binding. An
+example that demonstrates headers routing:
 
 ``` ruby
 #!/usr/bin/env ruby
@@ -954,17 +976,22 @@ amq.gen-6O1oKjVd8QbKr7zyy7ssbg received 4 cores/Linux
 
 #### Matching All vs Matching One
 
-It is possible to bind a queue to a headers exchange using more than one header for matching. In this case, the broker needs one more piece of information
-from the application developer, namely, should it consider messages with any of the headers matching, or all of them? This is what the "x-match" binding argument is for.
+It is possible to bind a queue to a headers exchange using more than
+one header for matching. In this case, the broker needs one more piece
+of information from the application developer, namely, should it
+consider messages with any of the headers matching, or all of them?
+This is what the "x-match" binding argument is for.
 
-When the `"x-match"` argument is set to `"any"`, just one matching header value is sufficient. So in the example above, any message with a "cores" header value equal to
-8 will be considered matching.
+When the `"x-match"` argument is set to `"any"`, just one matching
+header value is sufficient. So in the example above, any message with
+a "cores" header value equal to 8 will be considered matching.
 
 
 
 ### Declaring a Headers Exchange
 
-There are two ways to declare a headers exchange, either instantiate `Bunny::Exchange` directly:
+There are two ways to declare a headers exchange, either instantiate
+`Bunny::Exchange` directly:
 
 ``` ruby
 x = Bunny::Exchange.new(ch, :headers, "matching")
@@ -978,14 +1005,20 @@ x = ch.headers("matching")
 
 ### Headers Exchange Routing
 
-When there is just one queue bound to a headers exchange, messages are routed to it if any or all of the message headers match those specified upon binding.
-Whether it is "any header" or "all of them" depends on the `"x-match"` header value. In the case of multiple queues, a headers exchange will deliver
-a copy of a message to each queue, just like direct exchanges do. Distribution rules between consumers on a particular queue are the same as for a direct exchange.
+When there is just one queue bound to a headers exchange, messages are
+routed to it if any or all of the message headers match those
+specified upon binding.  Whether it is "any header" or "all of them"
+depends on the `"x-match"` header value. In the case of multiple
+queues, a headers exchange will deliver a copy of a message to each
+queue, just like direct exchanges do. Distribution rules between
+consumers on a particular queue are the same as for a direct exchange.
 
 ### Headers Exchange Use Cases
 
-Headers exchanges can be looked upon as "direct exchanges on steroids" and because they route based on header values, they can be used as direct exchanges
-where the routing key does not have to be a string; it could be an integer or a hash (dictionary) for example.
+Headers exchanges can be looked upon as "direct exchanges on steroids"
+and because they route based on header values, they can be used as
+direct exchanges where the routing key does not have to be a string;
+it could be an integer or a hash (dictionary) for example.
 
 Some specific use cases:
 
@@ -995,17 +1028,24 @@ Some specific use cases:
 
 ### Pre-declared Headers Exchanges
 
-RabbitMQ implements a headers exchange type and pre-declares one instance with
-the name of `"amq.match"`. RabbitMQ also pre-declares one instance with the name of `"amq.headers"`. Applications can rely on those exchanges always being available to them.
-Each vhost has a separate instance of those exchanges and they are *not shared across vhosts* for obvious reasons.
+RabbitMQ implements a headers exchange type and pre-declares one
+instance with the name of `"amq.match"`. RabbitMQ also pre-declares
+one instance with the name of `"amq.headers"`. Applications can rely
+on those exchanges always being available to them.  Each vhost has a
+separate instance of those exchanges and they are *not shared across
+vhosts* for obvious reasons.
 
 ## Custom Exchange Types
 
 ### consistent-hash
 
-The [consistent hashing AMQP exchange type](https://github.com/rabbitmq/rabbitmq-consistent-hash-exchange) is a custom exchange type
-developed as a RabbitMQ plugin. It uses [consistent hashing](http://michaelnielsen.org/blog/consistent-hashing/) to route messages
-to queues. This helps distribute messages between queues more or less evenly.
+The [consistent hashing AMQP exchange
+type](https://github.com/rabbitmq/rabbitmq-consistent-hash-exchange)
+is a custom exchange type developed as a RabbitMQ plugin. It uses
+[consistent
+hashing](http://michaelnielsen.org/blog/consistent-hashing/) to route
+messages to queues. This helps distribute messages between queues more
+or less evenly.
 
 A quote from the project README:
 
@@ -1029,13 +1069,16 @@ A quote from the project README:
 
 ### x-random
 
-The [x-random AMQP exchange type](https://github.com/jbrisbin/random-exchange) is a custom exchange type developed as a RabbitMQ plugin by Jon Brisbin.
-A quote from the project README:
+The [x-random AMQP exchange
+type](https://github.com/jbrisbin/random-exchange) is a custom
+exchange type developed as a RabbitMQ plugin by Jon Brisbin.  A quote
+from the project README:
 
 > It is basically a direct exchange, with the exception that, instead of each consumer bound to that exchange with the same routing key
 > getting a copy of the message, the exchange type randomly selects a queue to route to.
 
-This plugin is licensed under [Mozilla Public License 1.1](http://www.mozilla.org/MPL/MPL-1.1.html), same as RabbitMQ.
+This plugin is licensed under [Mozilla Public License
+1.1](http://www.mozilla.org/MPL/MPL-1.1.html), same as RabbitMQ.
 
 ## Using the Publisher Confirms Extension
 
@@ -1044,12 +1087,18 @@ Please refer to [RabbitMQ Extensions guide](/articles/extensions.html)
 
 ### Message Acknowledgements and Their Relationship to Transactions and Publisher Confirms
 
-Consumer applications (applications that receive and process messages) may occasionally fail to process individual messages, or might just crash. Additionally,
-network issues might be experienced. This raises a question - "when should the RabbitMQ remove messages from queues?" This topic is covered
-in depth in the [Queues guide](/articles/queues.html), including prefetching and examples.
+Consumer applications (applications that receive and process messages)
+may occasionally fail to process individual messages, or might just
+crash. Additionally, network issues might be experienced. This raises
+a question - "when should the RabbitMQ remove messages from queues?"
+This topic is covered in depth in the [Queues
+guide](/articles/queues.html), including prefetching and examples.
 
-In this guide, we will only mention how message acknowledgements are related to AMQP transactions and the Publisher Confirms extension. Let us consider
-a publisher application (P) that communications with a consumer (C) using AMQP 0.9.1. Their communication can be graphically represented like this:
+In this guide, we will only mention how message acknowledgements are
+related to AMQP transactions and the Publisher Confirms extension. Let
+us consider a publisher application (P) that communications with a
+consumer (C) using AMQP 0.9.1. Their communication can be graphically
+represented like this:
 
 <pre>
 -----       -----       -----
@@ -1068,12 +1117,16 @@ lightweight Publisher Confirms, a RabbitMQ-specific extension.
 
 ## Binding Queues to Exchanges
 
-Queues are bound to exchanges using `Bunny::Queue#bind`. This topic is described in detail in the [Queues and Consumers guide](/articles/queues.html).
+Queues are bound to exchanges using `Bunny::Queue#bind`. This topic is
+described in detail in the [Queues and Consumers
+guide](/articles/queues.html).
 
 
 ## Unbinding Queues from Exchanges
 
-Queues are unbound from exchanges using `Bunny::Queue#unbind`. This topic is described in detail in the [Queues and Consumers guide](/articles/queues.html).
+Queues are unbound from exchanges using `Bunny::Queue#unbind`. This
+topic is described in detail in the [Queues and Consumers
+guide](/articles/queues.html).
 
 ## Deleting Exchanges
 
@@ -1088,7 +1141,8 @@ x.delete
 
 ### Auto-deleted exchanges
 
-Exchanges can be *auto-deleted*. To declare an exchange as auto-deleted, use the `:auto_delete` option on declaration:
+Exchanges can be *auto-deleted*. To declare an exchange as
+auto-deleted, use the `:auto_delete` option on declaration:
 
 ``` ruby
 ch.topic("groups.013c6a65a1de9b15658446c6570ec39ff615ba15", :auto_delete => true)
@@ -1117,9 +1171,11 @@ Most functions related to exchanges and publishing are found in two Bunny classe
 
 ## What to Read Next
 
-The documentation is organized as [a number of guides](/articles/guides.html), covering various topics.
+The documentation is organized as [a number of
+guides](/articles/guides.html), covering various topics.
 
-We recommend that you read the following guides first, if possible, in this order:
+We recommend that you read the following guides first, if possible, in
+this order:
 
  * [Bindings](/articles/bindings.html)
  * [RabbitMQ Extensions to AMQP 0.9.1](/articles/rabbitmq_extensions.html)
@@ -1132,6 +1188,10 @@ We recommend that you read the following guides first, if possible, in this orde
 
 ## Tell Us What You Think!
 
-Please take a moment to tell us what you think about this guide [on Twitter](http://twitter.com/rubyamqp) or the [Bunny mailing list](https://groups.google.com/forum/#!forum/ruby-amqp)
+Please take a moment to tell us what you think about this guide [on
+Twitter](http://twitter.com/rubyamqp) or the [Bunny mailing
+list](https://groups.google.com/forum/#!forum/ruby-amqp)
 
-Let us know what was unclear or what has not been covered. Maybe you do not like the guide style or grammar or discover spelling mistakes. Reader feedback is key to making the documentation better.
+Let us know what was unclear or what has not been covered. Maybe you
+do not like the guide style or grammar or discover spelling
+mistakes. Reader feedback is key to making the documentation better.
