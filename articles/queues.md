@@ -700,17 +700,23 @@ consumer = ExampleConsumer.new(ch, q, "", false, true)
 q.subscribe_with(consumer)
 ```
 
-Attempts to register another consumer on a queue that already has an exclusive consumer will
-result in a channel-level exception with reply code `403 (ACCESS_REFUSED)` and a reply message similar to this: 
+Attempts to register another consumer on a queue that already has an
+exclusive consumer will result in a channel-level exception with reply
+code `403 (ACCESS_REFUSED)` and a reply message similar to this:
 
     ACCESS_REFUSED - queue 'queue name' in vhost '/' in exclusive use (Bunny::AccessRefused)
 
-It is not possible to register an exclusive consumer on a queue that already has consumers.
+It is not possible to register an exclusive consumer on a queue that
+already has consumers.
 
 
 ### Cancelling a Consumer
 
-Sometimes there may be a requirement to cancel a consumer directly without deleting the queue that it is subscribed to. In AMQP 0.9.1 parlance, "cancelling a consumer" is often referred to as "unsubscribing". The `Bunny::Consumer#cancel` method can be used to do this. Here is a usage example :
+Sometimes there may be a requirement to cancel a consumer directly
+without deleting the queue that it is subscribed to. In AMQP 0.9.1
+parlance, "cancelling a consumer" is often referred to as
+"unsubscribing". The `Bunny::Consumer#cancel` method can be used to do
+this. Here is a usage example :
 
 ``` ruby
 require 'bunny'
@@ -737,34 +743,47 @@ puts "Consumer: #{cancel_ok.consumer_tag} cancelled"
 ch.close
 ```
 
-In the above example, you can see that the `Bunny::Consumer#cancel` method returns a *cancel_ok* reply from RabbitMQ which contains the consumer tag of the cancelled consumer.
+In the above example, you can see that the `Bunny::Consumer#cancel`
+method returns a *cancel_ok* reply from RabbitMQ which contains the
+consumer tag of the cancelled consumer.
 
-Once a consumer is cancelled, messages will
-no longer be delivered to it, however, due to the asynchronous nature of the protocol, it is possible for "in flight" messages to be received
-after this call completes.
+Once a consumer is cancelled, messages will no longer be delivered to
+it, however, due to the asynchronous nature of the protocol, it is
+possible for "in flight" messages to be received after this call
+completes.
 
 ### Message Acknowledgements
 
-Consumer applications — applications that receive and process messages ‚ may occasionally fail to process individual messages, or will just crash.
-There is also the possibility of network issues causing problems. This raises a question — "When should the AMQP broker remove messages from queues?"
+Consumer applications — applications that receive and process messages
+‚ may occasionally fail to process individual messages, or will just
+crash.  There is also the possibility of network issues causing
+problems. This raises a question — "When should the AMQP broker remove
+messages from queues?"
 
 The AMQP 0.9.1 specification proposes two choices:
 
  * After broker sends a message to an application (using either basic.deliver or basic.get-ok methods).
  * After the application sends back an acknowledgement (using basic.ack AMQP method).
 
-The former choice is called the *automatic acknowledgement model*, while the latter is called the *explicit acknowledgement model*.
-With the explicit model, the application chooses when it is time to send an acknowledgement. It can be right after receiving a message,
-or after persisting it to a data store before processing, or after fully processing the message (for example, successfully fetching a Web page,
+The former choice is called the *automatic acknowledgement model*,
+while the latter is called the *explicit acknowledgement model*.  With
+the explicit model, the application chooses when it is time to send an
+acknowledgement. It can be right after receiving a message, or after
+persisting it to a data store before processing, or after fully
+processing the message (for example, successfully fetching a Web page,
 processing and storing it into some persistent data store).
 
 ![Message Acknowledgements](https://github.com/ruby-amqp/amqp/raw/master/docs/diagrams/006_amqp_091_message_acknowledgements.png)
 
-If a consumer dies without sending an acknowledgement, the AMQP broker will redeliver it to another consumer, or, if none are available at the time,
-the broker will wait until at least one consumer is registered for the same queue before attempting redelivery.
+If a consumer dies without sending an acknowledgement, the AMQP broker
+will redeliver it to another consumer, or, if none are available at
+the time, the broker will wait until at least one consumer is
+registered for the same queue before attempting redelivery.
 
-The acknowledgement model is chosen when a new consumer is registered for a queue. By default, `Bunny::Queue#subscribe` will use the *automatic* model.
-To switch to the *explicit* model, the `:ack` option should be used:
+The acknowledgement model is chosen when a new consumer is registered
+for a queue. By default, `Bunny::Queue#subscribe` will use the
+*automatic* model.  To switch to the *explicit* model, the `:ack`
+option should be used:
 
 ``` ruby
 q = ch.queue("", :exclusive => true).subscribe(:ack => true) do |delivery_info, properties, payload|
@@ -772,7 +791,8 @@ q = ch.queue("", :exclusive => true).subscribe(:ack => true) do |delivery_info, 
 end
 ```
 
-To demonstrate how redelivery works, let us have a look at the following code example:
+To demonstrate how redelivery works, let us have a look at the
+following code example:
 
 ``` ruby
 require "bunny"
@@ -849,16 +869,24 @@ connection2.close
 connection3.close
 ```
 
-So what is going on here? This example uses three AMQP connections to imitate three applications, one producer and two consumers.
-Each AMQP connection opens a single channel. The consumers share a queue and the producer publishes messages to the queue periodically using an `amq.direct` exchange.
+So what is going on here? This example uses three AMQP connections to
+imitate three applications, one producer and two consumers.  Each
+connection opens a single channel. The consumers share a queue and the
+producer publishes messages to the queue periodically using an
+`amq.direct` exchange.
 
-Both "applications" subscribe to receive messages using the explicit acknowledgement model. The RabbitMQ broker by default will send each message to
-the next consumer in sequence (this kind of load balancing is known as *round-robin*). This means that some messages will be delivered
-to consumer #1 and some to consumer #2.
+Both "applications" subscribe to receive messages using the explicit
+acknowledgement model. The RabbitMQ broker by default will send each
+message to the next consumer in sequence (this kind of load balancing
+is known as *round-robin*). This means that some messages will be
+delivered to consumer #1 and some to consumer #2.
 
-To demonstrate message redelivery we make consumer #1 randomly select which messages to acknowledge. After 4 seconds we disconnect it (to imitate a crash).
-When that happens, the RabbitMQ broker redelivers unacknowledged messages to consumer #2 which acknowledges them unconditionally. After 10 seconds, this example
-closes all outstanding connections and exits.
+To demonstrate message redelivery we make consumer #1 randomly select
+which messages to acknowledge. After 4 seconds we disconnect it (to
+imitate a crash).  When that happens, the RabbitMQ broker redelivers
+unacknowledged messages to consumer #2 which acknowledges them
+unconditionally. After 10 seconds, this example closes all outstanding
+connections and exits.
 
 An extract of output produced by this example:
 
@@ -907,23 +935,34 @@ To acknowledge a message use `Bunny::Channel#acknowledge`:
 ch1.acknowledge(delivery_info.delivery_tag, false)
 ```
 
-`Bunny::Channel#acknowledge` takes two arguments: a message *delivery tag* and a flag that indicates whether or not we want to acknowledge multiple messages at once.
-Delivery tag is simply a channel-specific increasing number that the server uses to identify deliveries.
+`Bunny::Channel#acknowledge` takes two arguments: a message *delivery
+tag* and a flag that indicates whether or not we want to acknowledge
+multiple messages at once.  Delivery tag is simply a channel-specific
+increasing number that the server uses to identify deliveries.
 
-When acknowledging multiple messages at once, the delivery tag is treated as "up to and including". For example, if delivery tag = 5 that would mean "acknowledge messages 1, 2, 3, 4 and 5".
+When acknowledging multiple messages at once, the delivery tag is
+treated as "up to and including". For example, if delivery tag = 5
+that would mean "acknowledge messages 1, 2, 3, 4 and 5".
 
-**Please note:** Acknowledgements are channel-specific. Applications MUST NOT receive messages on one channel and acknowledge them on another.
+**Please note:** Acknowledgements are channel-specific. Applications
+  MUST NOT receive messages on one channel and acknowledge them on
+  another.
 
-Also, a message MUST NOT be acknowledged more than once. Doing so will result in a channel-level exception with code `406 (PRECONDITION_FAILED)`
-being raised. The reply text will be similar to this:
+Also, a message MUST NOT be acknowledged more than once. Doing so will
+result in a channel-level exception with code `406
+(PRECONDITION_FAILED)` being raised. The reply text will be similar to
+this:
 
     PRECONDITION_FAILED - unknown delivery tag
 
 
 ### Rejecting messages
 
-When a consumer application receives a message, processing of that message may or may not succeed. An application can indicate to the broker that message
-processing has failed (or cannot be accomplished at the time) by rejecting a message. When rejecting a message, an application can ask the broker to discard or requeue it.
+When a consumer application receives a message, processing of that
+message may or may not succeed. An application can indicate to the
+broker that message processing has failed (or cannot be accomplished
+at the time) by rejecting a message. When rejecting a message, an
+application can ask the broker to discard or requeue it.
 
 To reject a message use the `Bunny::Channel#reject` method:
 
@@ -931,8 +970,9 @@ To reject a message use the `Bunny::Channel#reject` method:
 ch1.reject(delivery_info.delivery_tag)
 ```
 
-in the example above, messages are rejected without requeueing (broker will simply discard them). To requeue a rejected message, use the second argument
-that `Bunny::Queue#reject` takes:
+in the example above, messages are rejected without requeueing (broker
+will simply discard them). To requeue a rejected message, use the
+second argument that `Bunny::Queue#reject` takes:
 
 ``` ruby
 ch1.reject(delivery_info.delivery_tag, true)
@@ -940,51 +980,76 @@ ch1.reject(delivery_info.delivery_tag, true)
 
 ### Negative acknowledgements
 
-Messages are rejected with the `basic.reject` AMQP method. However, there is one notable limitation that `basic.reject` has:
-there is no way to reject multiple messages, as you can do with acknowledgements. However, if you are using [RabbitMQ](http://rabbitmq.com), then there is a solution.
-RabbitMQ provides an AMQP 0.9.1 extension known as [negative acknowledgements](http://www.rabbitmq.com/extensions.html#negative-acknowledgements) (nacks) and
-Bunny supports this extension. For more information, please refer to the [RabbitMQ Extensions guide](/articles/rabbitmq_extensions.html).
+Messages are rejected with the `basic.reject` AMQP method. However,
+there is one notable limitation that `basic.reject` has: there is no
+way to reject multiple messages, as you can do with
+acknowledgements. However, if you are using
+[RabbitMQ](http://rabbitmq.com), then there is a solution.  RabbitMQ
+provides an AMQP 0.9.1 extension known as [negative
+acknowledgements](http://www.rabbitmq.com/extensions.html#negative-acknowledgements)
+(nacks) and Bunny supports this extension. For more information,
+please refer to the [RabbitMQ Extensions
+guide](/articles/rabbitmq_extensions.html).
 
 ### QoS — Prefetching messages
 
-For cases when multiple consumers share a queue, it is useful to be able to specify how many messages each consumer can be sent at once before sending the next acknowledgement.
-This can be used as a simple load balancing technique  to improve throughput if messages tend to be published in batches. For example, if a producing application
-sends messages every minute because of the nature of the work it is doing.
+For cases when multiple consumers share a queue, it is useful to be
+able to specify how many messages each consumer can be sent at once
+before sending the next acknowledgement.  This can be used as a simple
+load balancing technique to improve throughput if messages tend to be
+published in batches. For example, if a producing application sends
+messages every minute because of the nature of the work it is doing.
 
-Imagine a website that takes data from social media sources like Twitter or Facebook during the Champions League (european soccer) final (or the Superbowl),
-and then calculates how many tweets mentioned a particular team during the last minute. The site could be structured as 3 applications:
+Imagine a website that takes data from social media sources like
+Twitter or Facebook during the Champions League (european soccer)
+final (or the Superbowl), and then calculates how many tweets
+mentioned a particular team during the last minute. The site could be
+structured as 3 applications:
 
  * A crawler that uses streaming APIs to fetch tweets/statuses, normalizes them and sends them in JSON for processing by other applications ("app A").
  * A calculator that detects what team is mentioned in a message, updates statistics and pushes an update to the Web UI once a minute ("app B").
  * A Web UI that fans visit to see the stats ("app C").
 
-In this imaginary example, the "tweets per second" rate will vary, but to improve the throughput of the system and to decrease the maximum number of messages
-that the AMQP broker has to hold in memory at once, applications can be designed in such a way that application "app B", the "calculator",
-receives 5000 messages and then acknowledges them all at once. The broker will not send message 5001 unless it receives an acknowledgement.
+In this imaginary example, the "tweets per second" rate will vary, but
+to improve the throughput of the system and to decrease the maximum
+number of messages that the AMQP broker has to hold in memory at once,
+applications can be designed in such a way that application "app B",
+the "calculator", receives 5000 messages and then acknowledges them
+all at once. The broker will not send message 5001 unless it receives
+an acknowledgement.
 
-In AMQP parlance this is known as *QoS* or *message prefetching*. Prefetching is configured on a per-channel basis.
-To configure prefetching use the `Bunny::Channel#prefetch` method like so:
+In AMQP 0.9.1 parlance this is known as *QoS* or *message
+prefetching*. Prefetching is configured on a per-channel basis.  To
+configure prefetching use the `Bunny::Channel#prefetch` method like
+so:
 
 ``` ruby
 ch1 = connection1.create_channel
 ch1.prefetch(10)
 ```
 
-**Note** that the prefetch setting is ignored for consumers that do not use explicit acknowledgements.
+**Note** that the prefetch setting is ignored for consumers that do
+  not use explicit acknowledgements.
 
 
 ## How Message Acknowledgements Relate to Transactions and Publisher Confirms
 
-In cases where you cannot afford to lose a single message, AMQP 0.9.1 applications can use one or a combination of the following protocol features:
+In cases where you cannot afford to lose a single message, AMQP 0.9.1
+applications can use one or a combination of the following protocol
+features:
 
  * Publisher confirms (a RabbitMQ-specific extension to AMQP 0.9.1)
  * Publishing messages as immediate
  * Transactions (noticeable overhead)
 
-This topic is covered in depth in the [Working With Exchanges](/articles/exchanges.html) guide. In this guide, we will only mention how
-message acknowledgements are related to AMQP transactions and the Publisher Confirms extension.
+This topic is covered in depth in the [Working With
+Exchanges](/articles/exchanges.html) guide. In this guide, we will
+only mention how message acknowledgements are related to AMQP
+transactions and the Publisher Confirms extension.
 
-Let us consider a publisher application (P) that communications with a consumer (C) using AMQP 0.9.1. Their communication can be graphically represented like this:
+Let us consider a publisher application (P) that communications with a
+consumer (C) using AMQP 0.9.1. Their communication can be graphically
+represented like this:
 
 <pre>
 -----       -----       -----
@@ -994,17 +1059,23 @@ Let us consider a publisher application (P) that communications with a consumer 
 -----       -----       -----
 </pre>
 
-We have two network segments, S1 and S2, either of which might fail. P is concerned with making sure that messages cross S1, while brokers B and C are concerned with ensuring
-that messages cross S2 and are only removed from the queue when they are processed successfully.
+We have two network segments, S1 and S2, either of which might fail. P
+is concerned with making sure that messages cross S1, while brokers B
+and C are concerned with ensuring that messages cross S2 and are only
+removed from the queue when they are processed successfully.
 
-Message acknowledgements cover reliable delivery over S2 as well as successful processing. For S1, P has to use transactions (a heavyweight solution) or the more lightweight
-Publisher Confirms RabbitMQ extension.
+Message acknowledgements cover reliable delivery over S2 as well as
+successful processing. For S1, P has to use transactions (a
+heavyweight solution) or the more lightweight Publisher Confirms
+RabbitMQ extension.
 
 
 ## Fetching messages when needed ("pull API")
 
-The AMQP 0.9.1 specification also provides a way for applications to fetch (pull) messages from the queue only when necessary.
-For that, use the `Bunny::Queue#pop` function which returns a triple of `[delivery_info, properties, payload]`:
+The AMQP 0.9.1 specification also provides a way for applications to
+fetch (pull) messages from the queue only when necessary.  For that,
+use the `Bunny::Queue#pop` function which returns a triple of
+`[delivery_info, properties, payload]`:
 
 ``` ruby
 delivery_info, properties, payload = q.pop
@@ -1050,15 +1121,19 @@ To unbind a queue from an exchange use the `Bunny::Queue#unbind` function:
 q.unbind(x)
 ```
 
-**Note** that trying to unbind a queue from an exchange that the queue was never bound to will
-result in a channel-level exception.
+**Note** that trying to unbind a queue from an exchange that the queue
+was never bound to will result in a channel-level exception.
 
 ## Querying the Number of Messages and Consumers for a Queue
 
-It is possible to query the number of messages in a queue and the number of consumers it has by declaring the queue
-with the `:passive` attribute set.
-The response (`queue.declare-ok` AMQP method) will include the number of messages along with
-the number of consumers. However, Bunny provides a convenience method, `Bunny::Queue#status`, that returns a hash containing `:message_count` and `:consumer_count`. There are two further convenience methods that provide both pieces of information individually -
+It is possible to query the number of messages in a queue and the
+number of consumers it has by declaring the queue with the `:passive`
+attribute set.  The response (`queue.declare-ok` AMQP method) will
+include the number of messages along with the number of
+consumers. However, Bunny provides a convenience method,
+`Bunny::Queue#status`, that returns a hash containing `:message_count`
+and `:consumer_count`. There are two further convenience methods that
+provide both pieces of information individually
 
  * `Bunny::Queue#message_count`
  * `Bunny::Queue#consumer_count`
@@ -1099,19 +1174,26 @@ q = ch.queue("")
 q.purge
 ```
 
-**Note** that this example purges a newly declared queue with a unique server-generated name. When a queue is declared,
-it is empty, so for server-named queues, there is no need to purge them before they are used.
+**Note** that this example purges a newly declared queue with a unique
+server-generated name. When a queue is declared, it is empty, so for
+server-named queues, there is no need to purge them before they are
+used.
 
 ## Deleting Queues
 
-Queues can be deleted either indirectly or directly. To delete a queue indirectly you can include either of the following two arguments in the queue declaration:
+Queues can be deleted either indirectly or directly. To delete a queue
+indirectly you can include either of the following two arguments in
+the queue declaration:
 
   * `:exclusive => true`
   * `:auto_delete => true`
   
-If the *exclusive* flag is set to true then the queue will be deleted when the connection that was used to declare it is closed.
+If the *exclusive* flag is set to true then the queue will be deleted
+when the connection that was used to declare it is closed.
 
-If the *auto_delete* flag is set to true then the queue will be deleted when there are no more consumers subscribed to it. The queue will remain in existence until at least one consumer accesses it.
+If the *auto_delete* flag is set to true then the queue will be
+deleted when there are no more consumers subscribed to it. The queue
+will remain in existence until at least one consumer accesses it.
 
 To delete a queue directly, use the `Bunny::Queue#delete` method:
 
@@ -1144,9 +1226,10 @@ See [RabbitMQ Extensions guide](/articles/rabbitmq_extensions.html)
 
 ## Wrapping Up
 
-AMQP queues can be client-named or server-named. It is possible to either subscribe for
-messages to be pushed to consumers (register a consumer) or pull messages from the client
-as needed. Consumers are identified by consumer tags.
+In RabbitMQ, queues can be client-named or server-named. It is
+possible to either subscribe for messages to be pushed to consumers
+(register a consumer) or pull messages from the client as
+needed. Consumers are identified by consumer tags.
 
 For messages to be routed to queues, queues need to be bound to exchanges.
 
