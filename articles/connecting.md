@@ -47,6 +47,8 @@ Map options that Bunny will recognize are
  * `:threaded` (boolean): switches to single-threaded connections when set to `false`. Only recommended for apps that only publish messages.
  * `:continuation_timeout` (integer): timeout for client operations that expect a response (e.g. `Bunny::Queue#get`), in *milliseconds*. Default is `4000` ms.
 
+plus TLS connection parameters covered in [Using TLS (SSL) Connections](/articles/tls.html).
+
 To connect to RabbitMQ with a map of parameters, pass them to `Bunny.new`. The connection
 will be established when `Bunny::Session#start` is called:
 
