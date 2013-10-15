@@ -110,6 +110,21 @@ It is, however, safe to process deliveries in multiple threads
 if multi-message acknowledgements are not used.
 
 
+## Mutex Reentrancy
+
+Standard Ruby mutex implementation is not reentrant. This is highly
+annoying to many developers. Standard Ruby library provides
+a reentrant mutex implementation: `Monitor`. Monitors are reentrant
+at the cost of about 5-6% lower throughput on most workloads.
+
+It is possible to switch to the original mutex implementation, `Mutex`:
+
+``` ruby
+conn = Bunny.new(;mutex_impl => Mutex)
+```
+
+
+
 ## Wrapping Up
 
 TBD
