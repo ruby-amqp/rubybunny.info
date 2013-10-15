@@ -91,6 +91,16 @@ This guide covers:
  * Durability of messages
 
 
+### [Concurrency Considerations](/articles/concurrency.html)
+
+This guide covers:
+
+ * Concurrency in Bunny
+ * Correctness and concurrency safety of key public API classes and methods
+ * Other topics related to concurrency
+
+
+
 ### [RabbitMQ Extensions to AMQP 0.9.1](/articles/extensions.html)
 
 This guide covers [RabbitMQ extensions](http://www.rabbitmq.com/extensions.html) and how they are used in Bunny:
