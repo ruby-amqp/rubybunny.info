@@ -39,6 +39,7 @@ This means several things:
  * Parts of the library that previously were not concurrent now provide
    concurrency controls.
 
+
 ### Reader (I/O) Loop
 
 Unlike [amqp gem](http://rubyamqp.info), Bunny does not depend on any
@@ -49,7 +50,6 @@ passing over to the connection that instantiated the loop.
 
 Communication between I/O loop and connection is almost completely
 uni-directional. Writes do not happen in I/O loop thread.
-
 
 
 ## Consumer Work Pools
