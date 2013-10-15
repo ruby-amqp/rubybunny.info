@@ -39,9 +39,16 @@ This means several things:
  * Parts of the library that previously were not concurrent now provide
    concurrency controls.
 
-### I/O Activity Loop
+### Reader (I/O) Loop
 
-TBD
+Unlike [amqp gem](http://rubyamqp.info), Bunny does not depend on any
+opinionated networking library. Instead, it maintains its own I/O
+activity loop in a separate thread, one per connection. The loop is
+responsible for reading data from the socket, deserializing it and
+passing over to the connection that instantiated the loop.
+
+Communication between I/O loop and connection is almost completely
+uni-directional. Writes do not happen in I/O loop thread.
 
 
 
