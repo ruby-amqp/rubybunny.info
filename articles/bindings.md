@@ -5,10 +5,14 @@ layout: article
 
 ## About This Guide
 
-This guide covers bindings in AMQP 0.9.1, what they are, what role they play and how to accomplish typical operations using Bunny.
+This guide covers bindings in AMQP 0.9.1, what they are, what role
+they play and how to accomplish typical operations using Bunny.
 
-This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License</a>
-(including images and stylesheets). The source is available [on Github](https://github.com/ruby-amqp/rubybunny.info).
+This work is licensed under a <a rel="license"
+href="http://creativecommons.org/licenses/by/3.0/">Creative Commons
+Attribution 3.0 Unported License</a> (including images and
+stylesheets). The source is available [on
+Github](https://github.com/ruby-amqp/rubybunny.info).
 
 
 ## What version of Bunny does this guide cover?
@@ -18,7 +22,9 @@ This guide covers Bunny 0.10.x and later versions.
 
 ## Bindings in AMQP 0.9.1
 
-Learn more about how bindings fit into the AMQP Model in the [AMQP 0.9.1 Model Concepts](http://www.rabbitmq.com/tutorials/amqp-concepts.html) guide.
+Learn more about how bindings fit into the AMQP Model in the [AMQP
+0.9.1 Model
+Concepts](http://www.rabbitmq.com/tutorials/amqp-concepts.html) guide.
 
 
 ## What Are AMQP 0.9.1 Bindings
