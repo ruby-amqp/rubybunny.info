@@ -23,7 +23,26 @@ This guide covers Bunny 0.10.x and later versions.
 
 ## Concurrency in Bunny Design
 
+Starting with Bunny 0.9, Bunny is developed with concurrency in mind.
+This means several things:
+
+ * Bunny avoids some well known concurrency problems in [amqp gem](http://rubyamqp.info),
+   most notably long running operations in message handlers blocking event loop and thus all
+   I/O activity in the library.
+
+ * Connection (`Bunny::Session`) assumes there will be concurrent publishers
+   and consumers.
+
+ * Parts of the library can take advantage of parallelism on runtimes that
+   provide it.
+
+ * Parts of the library that previously were not concurrent now provide
+   concurrency controls.
+
+### I/O Activity Loop
+
 TBD
+
 
 
 ## Consumer Work Pools
