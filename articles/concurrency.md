@@ -89,7 +89,25 @@ a shared connection from multiple threads is safe but
 
 ## Sharing Channels Between Threads
 
-TBD
+Channels should not be shared between threads.
+When client publishes a message, at least 2 (typically 3) frames
+are send on the wire:
+
+ * AMQP 0.9.1 method, `basic.publish`
+ * Message metadata
+ * Message payload
+
+This means that without synchronization on, publishing from multiple
+threads on a shared channel may result in frames being sent
+to RabbitMQ out of order, e.g.:
+
+```
+[basic.publish 1][basic.publish 2][content metadata 1][content body 1][content metadata 2][content metadata 2]
+```
+
+There are other potential conflicts arising from frame interleaving.
+It is, however, safe to process deliveries in multiple threads
+if multi-message acknowledgements are not used.
 
 
 ## Wrapping Up
