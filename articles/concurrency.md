@@ -81,7 +81,10 @@ heavy request/reply (RPC) communication.
 
 ## Synchronized Writes
 
-TBD
+Connections in Bunny will synchronize writes both for messages
+and at the socket level. This means that publishing on
+a shared connection from multiple threads is safe but
+**only if every publishing thread uses a separate channel**.
 
 
 ## Sharing Channels Between Threads
