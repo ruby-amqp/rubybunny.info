@@ -120,7 +120,7 @@ at the cost of about 5-6% lower throughput on most workloads.
 It is possible to switch to the original mutex implementation, `Mutex`:
 
 ``` ruby
-conn = Bunny.new(;mutex_impl => Mutex)
+conn = Bunny.new(:mutex_impl => Mutex)
 ```
 
 
