@@ -57,6 +57,11 @@ uni-directional. Writes do not happen in I/O loop thread.
 TBD
 
 
+## Synchronized Writes
+
+TBD
+
+
 ## Sharing Channels Between Threads
 
 TBD
