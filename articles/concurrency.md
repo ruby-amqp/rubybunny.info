@@ -54,7 +54,29 @@ uni-directional. Writes do not happen in I/O loop thread.
 
 ## Consumer Work Pools
 
-TBD
+Every channel maintains a fixed size thread pool used to dispatch
+deliveries (messages pushed by RabbitMQ to consumers). By default
+every pool has size of 1 to guarantee ordered message processing
+by default.
+
+Applications can provide alternative consumer pool size:
+
+``` ruby
+# nil will cause channel id to be allocated automatically.
+# 16 is consumer work pool size.
+ch = conn.create_channel(nil, 16)
+```
+
+Consumer work pool is not started by default and will be
+created when the first consumer is added on the channel.
+When the last consumer is cancelled, consumer work pool
+will be shut down. This ensures that channels that
+are only used to publish messages do keep around threads
+that do nothing.
+
+It also reduces the amount of time it takes to open
+a channel, which is desirable for applications doing
+heavy request/reply (RPC) communication.
 
 
 ## Synchronized Writes
