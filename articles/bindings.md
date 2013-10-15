@@ -29,9 +29,13 @@ Concepts](http://www.rabbitmq.com/tutorials/amqp-concepts.html) guide.
 
 ## What Are AMQP 0.9.1 Bindings
 
-Bindings are rules that exchanges use (among other things) to route messages to queues. To instruct an exchange E to route messages to a queue Q, Q has to _be bound_ to E.
-Bindings may have an optional _routing key_ attribute used by some exchange types. The purpose of the routing key is to selectively match only specific (matching) messages
-published to an exchange to the bound queue. In other words, the routing key acts like a filter.
+Bindings are rules that exchanges use (among other things) to route
+messages to queues. To instruct an exchange E to route messages to a
+queue Q, Q has to _be bound_ to E.  Bindings may have an optional
+_routing key_ attribute used by some exchange types. The purpose of
+the routing key is to selectively match only specific (matching)
+messages published to an exchange to the bound queue. In other words,
+the routing key acts like a filter.
 
 To draw an analogy:
 
@@ -39,11 +43,15 @@ To draw an analogy:
  * Exchange is like JFK airport
  * Bindings are routes from JFK to your destination. There may be no way, or more than one way, to reach it
 
-Some exchange types use routing keys while some others do not (routing messages unconditionally or based on message metadata). If an AMQP message cannot be routed to any
-queue (for example, because there are no bindings for the exchange it was published to), it is either dropped or returned to the publisher, depending on the message
+Some exchange types use routing keys while some others do not (routing
+messages unconditionally or based on message metadata). If an AMQP
+message cannot be routed to any queue (for example, because there are
+no bindings for the exchange it was published to), it is either
+dropped or returned to the publisher, depending on the message
 attributes that the publisher has set.
 
-If an application wants to connect a queue to an exchange, it needs to _bind_ them. The opposite operation is called _unbinding_.
+If an application wants to connect a queue to an exchange, it needs to
+_bind_ them. The opposite operation is called _unbinding_.
 
 ## Binding Queues to Exchanges
 
