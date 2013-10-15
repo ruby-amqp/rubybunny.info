@@ -55,8 +55,11 @@ _bind_ them. The opposite operation is called _unbinding_.
 
 ## Binding Queues to Exchanges
 
-In order to receive messages, a queue needs to be bound to at least one exchange. Most of the time binding is explcit (done by applications).
-To bind a queue to an exchange, use `Bunny::Queue#bind` where the argument passed can be either an `Bunny::Exchange` instance or a string.
+In order to receive messages, a queue needs to be bound to at least
+one exchange. Most of the time binding is explcit (done by
+applications).  To bind a queue to an exchange, use
+`Bunny::Queue#bind` where the argument passed can be either an
+`Bunny::Exchange` instance or a string.
 
 ``` ruby
 q.bind(x)
@@ -81,14 +84,17 @@ q.unbind(x)
 
 ## Exchange-to-Exchange Bindings
 
-Exchange-to-Exchange bindings is a RabbitMQ extension to AMQP 0.9.1. It is covered in the [RabbitMQ extensions guide](/articles/extensions.html).
+Exchange-to-Exchange bindings is a RabbitMQ extension to AMQP
+0.9.1. It is covered in the [RabbitMQ extensions
+guide](/articles/extensions.html).
 
 
 ## Bindings, Routing and Returned Messages
 
 ### How RabbitMQ Routes Messages
 
-After an AMQP message reaches RabbitMQ and before it reaches a consumer, several things happen:
+After a message reaches RabbitMQ and before it reaches a consumer,
+several things happen:
 
  * RabbitMQ needs to find one or more queues that the message needs to be routed to, depending on type of exchange
  * RabbitMQ puts a copy of the message into each of those queues or decides to return the message to the publisher
@@ -102,15 +108,22 @@ A more in-depth description is this:
  * If the message was published as mandatory, but there are no active consumers for it, it is returned to the publisher (step 2b)
  * If there are active consumers on those queues and the basic.qos setting permits, message is pushed to those consumers (step 3)
 
-The important thing to take away from this is that messages may or may not be routed and it is important for applications to handle unroutable messages.
+The important thing to take away from this is that messages may or may
+not be routed and it is important for applications to handle
+unroutable messages.
 
 ### Handling of Unroutable Messages
 
-Unroutable messages are either dropped or returned to producers. RabbitMQ extensions can provide additional ways of handling unroutable messages: for example,
-RabbitMQ's [Alternate Exchanges extension](http://www.rabbitmq.com/ae.html) makes it possible to route unroutable messages to another exchange.
-Bunny support for it is documented in the [RabbitMQ Extensions guide](/articles/extensions.html).
+Unroutable messages are either dropped or returned to
+producers. RabbitMQ extensions can provide additional ways of handling
+unroutable messages: for example, RabbitMQ's [Alternate Exchanges
+extension](http://www.rabbitmq.com/ae.html) makes it possible to route
+unroutable messages to another exchange.  Bunny support for it is
+documented in the [RabbitMQ Extensions
+guide](/articles/extensions.html).
 
-Bunny provides a way to handle returned messages with the `Bunny::Exchange#on_return` method:
+Bunny provides a way to handle returned messages with the
+`Bunny::Exchange#on_return` method:
 
 ``` ruby
 x.on_return do |basic_return, properties, payload|
@@ -118,7 +131,9 @@ x.on_return do |basic_return, properties, payload|
 end
 ```
 
-[Exchanges and Publishing](/articles/exchanges.html) documentation guide provides more information on the subject, including full code examples.
+[Exchanges and Publishing](/articles/exchanges.html) documentation
+guide provides more information on the subject, including full code
+examples.
 
 
 ## What to Read Next
