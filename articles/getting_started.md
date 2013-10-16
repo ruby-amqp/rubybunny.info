@@ -508,6 +508,7 @@ We recommend that you read the following guides next, if possible, in this order
  * [Queues and Consumers](/articles/queues.html). This guide focuses on features that consumer applications use heavily.
  * [Exchanges and Publishers](/articles/exchanges.html). This guide focuses on features that producer applications use heavily.
  * [Error Handling and Recovery](/articles/error_handling.html). This guide explains how to handle protocol errors, network failures and other things that may go wrong in real world projects.
+ * [Concurrency Considerations](/articles/concurrency.html)
 
 
 ## Tell Us What You Think!
