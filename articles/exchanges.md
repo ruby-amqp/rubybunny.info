@@ -1148,6 +1148,9 @@ auto-deleted, use the `:auto_delete` option on declaration:
 ch.topic("groups.013c6a65a1de9b15658446c6570ec39ff615ba15", :auto_delete => true)
 ```
 
+An auto-deleted exchange is removed when the last queue bound to it
+is unbound.
+
 
 ## Exchange durability vs Message durability
 
