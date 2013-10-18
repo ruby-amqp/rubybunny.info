@@ -23,10 +23,10 @@ recent version (e.g. R16B) is recommended.
 
 To use TLS with RabbitMQ, you need a few things:
 
- * Client certificate (public key) and key (private key)
- * Server certificate and key
+ * Server certificate and private key
  * [Configure RabbitMQ to use TLS](http://www.rabbitmq.com/ssl.html)
- * If server certificate is self-signed, issuing CA's certificate
+ * CA certificate that signs the server certificate
+ * Client certificate and private (optional if peer verification is disabled)
 
 
 ## Generating Certificates For Development
