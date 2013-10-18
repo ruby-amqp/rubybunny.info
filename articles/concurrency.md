@@ -127,7 +127,15 @@ conn = Bunny.new(:mutex_impl => Mutex)
 
 ## Wrapping Up
 
-TBD
+Bunny 0.9+ was created to be used in concurrent applications. While
+Bunny tries to do a reasonably well job of protecting the user from
+concurrency hazards in common scenarios, some usage scenarios
+(primarily sharing channels between publishing threads) should
+be avoided.
+
+Especially for message consumers, Bunny can take advantage of
+parallelism on runtimes that support it. More parts of the library
+may be parallized over time.
 
 
 ## What to Read Next
