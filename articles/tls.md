@@ -196,6 +196,38 @@ c = Bunny.new("amqps://bunny_gem:bunny_password@127.0.0.1/bunny_testbed",
 c.start
 ```
 
+### Disabling Peer Verification
+
+In some situations it is reasonable to disable peer verification
+(authentication). This means TLS will only be used for encryption
+and not authentication.
+
+To do so with Bunny, use `:verify_peer`:
+
+``` ruby
+c = Bunny.new("amqps://bunny_gem:bunny_password@127.0.0.1/bunny_testbed",
+        :tls_cert              => "spec/tls/client_cert.pem",
+        :tls_key               => "spec/tls/client_key.pem",
+        :tls_ca_certificates   => ["./spec/tls/cacert.pem"],
+        :verify_peer           => false)
+c.start
+```
+
+When disabling peer verification, make sure RabbitMQ is also
+configured to not verify peer. In such case, it is possible
+to forego providing client certificate and private key:
+
+``` ruby
+c = Bunny.new("amqps://bunny_gem:bunny_password@127.0.0.1/bunny_testbed",
+        :tls_ca_certificates   => ["./spec/tls/cacert.pem"],
+        :verify_peer           => false)
+c.start
+```
+
+Disabling peer verification is not recommended for production.
+
+
+
 ## Default Paths for TLS/SSL CA's
 
 ### CA Certificate Paths Inference
