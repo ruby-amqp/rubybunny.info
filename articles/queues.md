@@ -257,6 +257,22 @@ Exclusive queues will be deleted when the connection they were
 declared on is closed.
 
 
+## Checking of an Queue Exists
+
+Sometimes it's convenient to check if an queue exists. To do so, at the protocol
+level you use `queue.declare` with `passive` seto to `true`. In response
+RabbitMQ responds with a channel exception if the queue does not exist.
+
+Bunny provides a convenience method, `Bunny::Session#queue_exists?`, to do this:
+
+``` ruby
+conn = Bunny.new
+conn.start
+
+conn.queue_exists?("logs.info")
+```
+
+
 ## Binding Queues to Exchanges
 
 In order to receive messages, a queue needs to be bound to at least
