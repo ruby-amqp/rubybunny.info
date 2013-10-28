@@ -552,6 +552,22 @@ The previous sections on specific exchange types (direct, fanout,
 headers, etc.) provide plenty of examples of how these methods can be
 used.
 
+## Checking of an Exchange Exists
+
+Sometimes it's convenient to check if an exchange exists. To do so, at the protocol
+level you use `exchange.declare` with `passive` seto to `true`. In response
+RabbitMQ responds with a channel exception if the exchange does not exist.
+
+Bunny provides a convenience method, `Bunny::Session#exchange_exists?`, to do this:
+
+``` ruby
+conn = Bunny.new
+conn.start
+
+conn.exchange_exists?("logs")
+```
+
+
 ## Publishing messages
 
 To publish a message to an exchange, use `Bunny::Exchange#publish`:
