@@ -52,7 +52,7 @@ rescue Bunny::TCPConnectionFailed => e
 end
 ```
 
-`Bunny::Session#start`) will raise `Bunny::TCPConnectionFailed` if a
+`Bunny::Session#start` will raise `Bunny::TCPConnectionFailed` if a
 connection fails. Code that catches it can write to a log about the
 issue or use retry to execute the begin block one more time. Because
 initial connection failures are due to misconfiguration or network
