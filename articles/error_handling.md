@@ -83,6 +83,11 @@ before AMQP connection is open. In practice, however, when broker
 closes TCP connection between successful TCP connection and before
 AMQP connection is open, it means that authentication has failed.
 
+RabbitMQ 3.2 introduces [authentication failure notifications](http://www.rabbitmq.com/auth-notification.html)
+which Bunny supports. When connecting to RabbitMQ 3.2 or later, Bunny will
+raise `Bunny::AuthenticationFailureError` when it receives a proper
+authentication failure notification.
+
 
 ## Network Connection Failures
 
@@ -95,6 +100,9 @@ you.
 When Bunny detects TCP connection failure, it will try to reconnect
 every 5 seconds. Currently there is no limit on the number of reconnection
 attempts.
+
+To disable automatic connection recovery, pass `:automatic_recovery => false`
+to `Bunny.new`.
 
 
 ### Automatic Recovery
