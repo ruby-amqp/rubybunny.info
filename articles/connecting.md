@@ -198,6 +198,92 @@ ch.close
 When connecting in Web apps, the rule of thumb is: do it in an
 initializer, not controller actions or request handlers.
 
+### Using Bunny with Unicorn
+
+[Unicorn](http://unicorn.bogomips.org) is a pre-forking server. That
+means it forks worker processes that serve HTTP requests. The
+"[ork(2)](http://en.wikipedia.org/wiki/Fork_(operating_system)) system
+call has several gotchas associated with it:
+
+ * Unintentional file descriptor sharing
+ * The fact that a [forked child process only inherits one thread](http://bit.ly/fork-and-threads) and therefore the EventMachine thread is not inherited
+
+To avoid both problems, start the EventMachine reactor and AMQP
+connection *after* the master process forks workers. The master
+Unicorn process never serves HTTP requests and usually does not need
+to hold a RabbitMQ connection. Next, let us see how to connect to the
+broker after Unicorn forks a worker.
+
+Unicorn lets you specify a configuration file to use. In that file you
+define a callback that Unicorn runs after it forks worker process(es):
+
+``` ruby
+ENV["FORKING"] = "true"
+
+listen 3000
+
+worker_processes 1
+timeout          30
+
+preload_app true
+
+after_fork do |server, worker|
+  require "amqp"
+
+  # the following is *required* for Rails + "preload_app true",
+  defined?(ActiveRecord::Base) and
+    ActiveRecord::Base.establish_connection
+
+    $rabbitmq_connection = Bunny.new
+    $rabbitmq_connection.start
+
+    $rabbitmq_channel    = $rabbitmq_connection.create_channel
+ end
+end
+```
+
+In the example above we connect to RabbitMQ after Unicorn has forked off
+child processes.
+
+Note that a configuration file can easily be used in development
+environments because, other than the fact that Unicorn runs in the
+foreground, it gives you exactly the same application boot behavior as
+in QA and production environments.
+
+
+### Using Bunny with Passenger
+
+[Phusion Passenger](http://www.modrails.com) is also a pre-forking
+server, and just as with Unicorn, clients should connect to RabbitMQ
+**after** it forks worker processes. The Passenger documentation has
+[a section](http://bit.ly/passenger-forking-gotchas) that explains how
+to avoid problems related to the behavior of the fork(2) system call,
+namely:
+
+ * Unintentional file descriptor sharing
+ * The fact that a [forked child process only inherits one thread](http://bit.ly/fork-and-threads) and therefore network I/O loop thread is not inherited.
+
+#### Using Event Handler to Spawn One Connection Per Worker Process
+
+Passenger provides a hook that you should use for spawning RabbitMQ
+connections:
+
+``` ruby
+if defined?(PhusionPassenger) # otherwise it breaks rake commands if you put this in an initializer
+  PhusionPassenger.on_event(:starting_worker_process) do |forked|
+    if forked
+       # We’re in a smart spawning mode
+       # Now is a good time to connect to RabbitMQ
+       $rabbitmq_connection = Bunny.new; $rabbitmq_connection.start
+       $rabbitmq_channel    = $rabbitmq_connection.create_channel
+    end
+  end
+end
+```
+
+Basically, the recommended default smart spawn mode works exactly the
+same as in Unicorn.
+
 ### Ruby on Rails
 
 Currently Bunny does not have integration points for Rails (e.g. a
