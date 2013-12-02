@@ -206,7 +206,7 @@ means it forks worker processes that serve HTTP requests. The
 call has several gotchas associated with it:
 
  * Unintentional file descriptor sharing
- * The fact that a [forked child process only inherits one thread](http://bit.ly/fork-and-threads) and therefore the EventMachine thread is not inherited
+ * The fact that a [forked child process only inherits one thread](http://bit.ly/fork-and-threads) and therefore the network I/O thread is not inherited
 
 To avoid both problems, connect to RabbitMQ *after* the master process
 forks workers. The master Unicorn process never serves HTTP requests
