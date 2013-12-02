@@ -208,11 +208,10 @@ call has several gotchas associated with it:
  * Unintentional file descriptor sharing
  * The fact that a [forked child process only inherits one thread](http://bit.ly/fork-and-threads) and therefore the EventMachine thread is not inherited
 
-To avoid both problems, start the EventMachine reactor and AMQP
-connection *after* the master process forks workers. The master
-Unicorn process never serves HTTP requests and usually does not need
-to hold a RabbitMQ connection. Next, let us see how to connect to the
-broker after Unicorn forks a worker.
+To avoid both problems, connect to RabbitMQ *after* the master process
+forks workers. The master Unicorn process never serves HTTP requests
+and usually does not need to hold a RabbitMQ connection. Next, let us
+see how to connect to the broker after Unicorn forks a worker.
 
 Unicorn lets you specify a configuration file to use. In that file you
 define a callback that Unicorn runs after it forks worker process(es):
