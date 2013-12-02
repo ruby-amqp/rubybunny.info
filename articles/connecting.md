@@ -202,7 +202,7 @@ initializer, not controller actions or request handlers.
 
 [Unicorn](http://unicorn.bogomips.org) is a pre-forking server. That
 means it forks worker processes that serve HTTP requests. The
-"[ork(2)](http://en.wikipedia.org/wiki/Fork_(operating_system)) system
+"[fork(2)](http://en.wikipedia.org/wiki/Fork_(operating_system)) system
 call has several gotchas associated with it:
 
  * Unintentional file descriptor sharing
@@ -228,7 +228,7 @@ timeout          30
 preload_app true
 
 after_fork do |server, worker|
-  require "amqp"
+  require "bunny"
 
   # the following is *required* for Rails + "preload_app true",
   defined?(ActiveRecord::Base) and
