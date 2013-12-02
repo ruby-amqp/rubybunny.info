@@ -387,10 +387,13 @@ subscribing to a feed for an individual tag in your favourite blog as
 opposed to the full feed). Routing with a topic exchange is done by
 specifying a **routing pattern** on binding, for example:
 
-``` ruby channel.queue("americas.south").bind(exchange, :routing_key
+``` ruby
+channel.queue("americas.south").bind(exchange, :routing_key
 => "americas.south.#").subscribe do |delivery_info, metadata, payload|
 puts "An update for South America: #{payload}, routing key is
-#{delivery_info.routing_key}" end ``` Here we bind a queue with the
+#{delivery_info.routing_key}" end
+```
+Here we bind a queue with the
 name of "americas.south" to the topic exchange declared earlier using
 the `Bunny::Queue#bind` method.  This means that only messages with a
 routing key matching "americas.south.#" will be routed to that
