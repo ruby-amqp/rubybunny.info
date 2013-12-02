@@ -217,8 +217,6 @@ Unicorn lets you specify a configuration file to use. In that file you
 define a callback that Unicorn runs after it forks worker process(es):
 
 ``` ruby
-ENV["FORKING"] = "true"
-
 listen 3000
 
 worker_processes 1
