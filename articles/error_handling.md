@@ -9,7 +9,7 @@ Development of a robust application, be it message publisher or
 message consumer, involves dealing with multiple kinds of failures:
 protocol exceptions, network failures, broker failures and so
 on. Correct error handling and recovery is not easy. This guide
-explains how the amqp gem helps you in dealing with issues like
+explains how the library helps you in dealing with issues like
 
  * Initial connection failures
  * Network connection failures
