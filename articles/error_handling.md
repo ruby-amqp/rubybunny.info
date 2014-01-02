@@ -193,7 +193,7 @@ A few channel-level exceptions are common and deserve more attention.
     </ul>
   </dd>
   <dt>Example RabbitMQ error message</dt>
-  <dd>RESOURCE_LOCKED - cannot obtain exclusive access to locked queue 'amqpgem.examples.queue' in vhost '/'</dd>
+  <dd>RESOURCE_LOCKED - cannot obtain exclusive access to locked queue 'bunny.examples.queue' in vhost '/'</dd>
 </dl>
 
 #### 404 Not Found
