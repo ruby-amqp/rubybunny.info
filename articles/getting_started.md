@@ -25,7 +25,7 @@ GitHub](https://github.com/ruby-amqp/rubybunny.info).
 
 ## Which versions of Bunny does this guide cover?
 
-This guide covers Bunny 0.10.x and later versions.
+This guide covers Bunny 1.0.x and later versions.
 
 ## Installing RabbitMQ
 
