@@ -229,7 +229,7 @@ basketball. Here is the code:
 require "rubygems"
 require "bunny"
 
-conn = Bunny.new("amqp://guest:guest@localhost:55672")
+conn = Bunny.new("amqp://guest:guest@localhost:5672")
 conn.start
 
 ch  = conn.create_channel
