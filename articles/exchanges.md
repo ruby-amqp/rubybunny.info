@@ -200,7 +200,7 @@ Because a fanout exchange delivers a copy of a message to every queue bound to i
  * Massively multiplayer online (MMO) games can use it for leaderboard updates or other global events
  * Sport news sites can use fanout exchanges for distributing score updates to mobile clients in near real-time
  * Distributed systems can broadcast various state and configuration updates
- * Group chats can distribute messages between participants using a fanout exchange (although AMQP does not have a built-in concept of presence, so [XMPP](http://xmpp.org may be a better choice))
+ * Group chats can distribute messages between participants using a fanout exchange (although AMQP does not have a built-in concept of presence, so [XMPP](http://xmpp.org) may be a better choice)
 
 ### Pre-declared fanout exchanges
 
