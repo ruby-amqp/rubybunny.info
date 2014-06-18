@@ -25,7 +25,7 @@ GitHub](https://github.com/ruby-amqp/rubybunny.info).
 
 ## Which versions of Bunny does this guide cover?
 
-This guide covers Bunny 1.2.x and later versions.
+This guide covers Bunny 1.3.x and later versions.
 
 ## Installing RabbitMQ
 
@@ -59,8 +59,8 @@ this guide).</div>
 
 This guide assumes that you have installed one of the following supported Ruby implementations:
 
- * Ruby v2.1.0
- * Ruby v2.0.0
+ * Ruby v2.1.x
+ * Ruby v2.0.x
  * Ruby v1.9.3
  * Ruby v1.9.2
  * Rubinius v2.0+
@@ -68,7 +68,7 @@ This guide assumes that you have installed one of the following supported Ruby i
  * Ruby v1.8.7
 
 Bunny works sufficiently well on JRuby but there are known
-JRuby bugs that cause high CPU burn. JRuby users should
+JRuby bugs that can cause high CPU burn. JRuby users should
 use [March Hare](http://rubymarchhare.info).
 
 
@@ -93,7 +93,7 @@ irb -rubygems
 :001 > require "bunny"
 => true
 :002 > Bunny::VERSION
-=> "1.2.1"
+=> "1.3.0"
 ```
 
 ## "Hello, world" example
