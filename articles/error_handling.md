@@ -121,6 +121,18 @@ such as recovery of server-named queues with consumers.
 
 Currently the automatic recovery mode is not configurable.
 
+Note, however, that automatic recovery *does not* cover timeout errors.
+
+In case you need to try to send a message without crashing the app on failure, it might look like this:
+
+```ruby
+def try_send_message
+  do_send_message
+rescue Bunny::Exception, Timeout::Error => e
+  # log and move on
+end
+```
+
 
 ## Channel-level Exceptions
 
