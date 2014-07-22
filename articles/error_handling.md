@@ -11,6 +11,7 @@ protocol exceptions, network failures, broker failures and so
 on. Correct error handling and recovery is not easy. This guide
 explains how the library helps you in dealing with issues like
 
+ * Client exceptions
  * Initial connection failures
  * Network connection failures
  * AMQP 0.9.1 connection-level exceptions
@@ -32,6 +33,54 @@ Github](https://github.com/ruby-amqp/rubybunny.info).
 ## What version of Bunny does this guide cover?
 
 This guide covers Bunny 1.3.x and later versions.
+
+
+## Client Exceptions
+
+Here is the break-down of exceptions that can be raised by Bunny:
+
+    StandardError
+      Bunny::Exception
+        Bunny::ChannelAlreadyClosed
+
+        Bunny::ChannelLevelException
+          Bunny::AccessRefused
+          Bunny::ForcedChannelCloseError
+          Bunny::NotFound
+          Bunny::PreconditionFailed
+          Bunny::ResourceLocked
+
+        Bunny::ConnectionClosedError
+
+        Bunny::ConnectionLevelException
+          Bunny::ChannelError
+          Bunny::CommandInvalid
+          Bunny::ConnectionForced
+          Bunny::ForcedConnectionCloseError
+          Bunny::FrameError
+          Bunny::InternalError
+          Bunny::ResourceError
+          Bunny::UnexpectedFrame
+
+        Bunny::InconsistentDataError
+          Bunny::BadLengthError
+          Bunny::NoFinalOctetError
+
+        Bunny::NetworkFailure
+        Bunny::NotAllowedError
+
+        Bunny::PossibleAuthenticationFailureError
+          Bunny::AuthenticationFailureError
+
+        Bunny::ShutdownSignal
+        Bunny::TCPConnectionFailed
+
+    Timeout::Error
+      Bunny::ClientTimeout
+      Bunny::ConnectionTimeout
+
+The rest of the document describes the most common ones.
+See [Bunny exception definitions](https://raw.githubusercontent.com/ruby-amqp/bunny/master/lib/bunny/exceptions.rb) for more details.
 
 
 ## Initial RabbitMQ Connection Failures
@@ -120,18 +169,6 @@ after connection recovery, while taking care of some of the more tricky details
 such as recovery of server-named queues with consumers.
 
 Currently the automatic recovery mode is not configurable.
-
-Note, however, that automatic recovery *does not* cover timeout errors.
-
-In case you need to try to send a message without crashing the app on failure, it might look like this:
-
-```ruby
-def try_send_message
-  do_send_message
-rescue Bunny::Exception, Timeout::Error => e
-  # log and move on
-end
-```
 
 
 ## Channel-level Exceptions
