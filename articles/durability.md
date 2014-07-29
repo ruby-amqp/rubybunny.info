@@ -13,7 +13,7 @@ This work is licensed under a <a rel="license" href="http://creativecommons.org/
 
 ## What version of Bunny does this guide cover?
 
-This guide covers Bunny 1.3.x and later versions.
+This guide covers Bunny 1.4.x and later versions.
 
 ## Entity durability and message persistence
 
