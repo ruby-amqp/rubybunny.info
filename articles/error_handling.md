@@ -168,7 +168,10 @@ Bunny provides a feature known as "automatic recovery" that performs these steps
 after connection recovery, while taking care of some of the more tricky details
 such as recovery of server-named queues with consumers.
 
-Currently the automatic recovery mode is not configurable.
+Currently the topology recovery strategy is not configurable.
+
+When automatic recovery is disabled, Bunny will raise
+exceptions on the thread `Bunny::Session` was instantiated on.
 
 
 ## Channel-level Exceptions
