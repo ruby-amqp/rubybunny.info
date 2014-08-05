@@ -146,6 +146,10 @@ following exceptions:
 
  * `Bunny::PossibleAuthenticationFailureException` indicates an authentication issue or that connection to RabbitMQ was closed before successfully finishing connection negotiation
  * `Bunny::TCPConnectionFailed` indicates that connection to the host has failed. Either the address is not reachable or DNS entry does not exist. Often may suggest a misconfiguration.
+ * `Bunny::NetworkFailure` for other exceptions in the I/O thread.
+
+When [automatic connection recovery mode](/articles/error_handling.html) is disabled,
+Bunny will raise exceptions on the thread `Bunny::Session` was instantiated.
 
 
 ## PaaS Environments
