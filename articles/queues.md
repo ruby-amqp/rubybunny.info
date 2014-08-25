@@ -1124,10 +1124,6 @@ The message properties are the same as those provided for delivery handlers (see
 
 If the queue is empty, then `[nil, nil, nil]` will be returned.
 
-There is another method, `Bunny::Queue#pop_as_hash`, that returns the message attributes as a hash -
-
-`{:header => properties, :payload => content, :delivery_details => delivery_info}`
-
 
 ## Unbinding Queues From Exchanges
 
