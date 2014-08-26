@@ -62,7 +62,7 @@ This guide covers:
  * Exchange types
  * How to declare AMQP exchanges with Bunny
  * How to publish messages
- * Exchange propreties
+ * Exchange properties
  * Fanout exchanges
  * Direct exchanges
  * Topic exchanges
