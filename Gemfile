@@ -1,7 +1,6 @@
 source "https://rubygems.org"
 
-gem "jekyll", "~> 1.4.2"
-gem "redcarpet"
+gem "jekyll", "~> 2.4"
 # with Ruby 2.0 on OS X, you may need to install
 # it manually with --with-iconv-dir:
 #
