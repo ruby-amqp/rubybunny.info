@@ -34,7 +34,7 @@ On Mac OS X, the fastest way to install RabbitMQ is with [Homebrew](http://mxcl.
 
     brew install rabbitmq
 
-then run it:
+then run it (after ensuring that `/usr/local/sbin` is in your `$PATH`):
 
     rabbitmq-server
 
