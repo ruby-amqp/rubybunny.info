@@ -265,7 +265,7 @@ or `:tls_ca_certificates`.
 ## TLS/SSL Versions Support
 
 Bunny will use TLSv1 through TLSv1.2 when available, and fall back
-to insecure SSLv3 if that's the only version supported.
+to [insecure](https://www.openssl.org/~bodo/ssl-poodle.pdf) SSLv3 if that's the only version supported.
 
 Note that **RabbitMQ will reject SSLv3 connections** unless configured otherwise,
 starting with 3.4.0.
