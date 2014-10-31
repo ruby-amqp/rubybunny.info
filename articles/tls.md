@@ -21,8 +21,8 @@ This guide covers Bunny 1.6.x and later versions.
 
 ## TLS Support in RabbitMQ
 
-RabbitMQ version 2.x and 3.x support TLS/SSL on Erlang R13B or later. Using the most
-recent version (e.g. R16B) is recommended.
+RabbitMQ version 3.x supports TLS/SSL on Erlang R16B03 or later. Using the most
+recent version (e.g. `17.1` or `17.1`) is recommended.
 
 To use TLS with RabbitMQ, you need a few things:
 
@@ -260,6 +260,15 @@ Bunny will use the following TLS/SSL CA's paths on Linux by default:
 
 and will log a warning if no CA files are available via default paths
 or `:tls_ca_certificates`.
+
+
+## TLS/SSL Versions Support
+
+Bunny will use TLSv1 through TLSv1.2 when available, and fall back
+to insecure SSLv3 if that's the only version supported.
+
+Note that **RabbitMQ will reject SSLv3 connections** unless configured otherwise,
+starting with 3.4.0.
 
 
 ## What to Read Next
