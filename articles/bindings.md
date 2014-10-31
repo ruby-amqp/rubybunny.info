@@ -17,7 +17,7 @@ Github](https://github.com/ruby-amqp/rubybunny.info).
 
 ## What version of Bunny does this guide cover?
 
-This guide covers Bunny 1.5.x and later versions.
+This guide covers Bunny 1.6.x and later versions.
 
 
 ## Bindings in AMQP 0.9.1
