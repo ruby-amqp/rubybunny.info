@@ -40,8 +40,9 @@ Map options that Bunny will recognize are
  * `:pass` or `:password`
  * `:vhost` or `virtual_host`
  * `:heartbeat` or `:heartbeat_interval`, in seconds, default is 0 (no heartbeats). `:server` means "use the value from RabbitMQ config"
- * `:log_level` (symbol or integer, default: `Logger::WARN`): log level to use.
- * `:log_file` (string or `IO`): log file or `IO` object to use. Defaults to `STDOUT`.
+ * `:logger` (Logger): The logger.  If missing, one is created using `:log_file` and `:log_level`.
+ * `:log_level` (symbol or integer, default: `Logger::WARN`): Log level to use when creating a logger.
+ * `:log_file` (string or `IO`, default: `STDOUT`): log file or `IO` object to use when creating a logger
  * `:automatically_recover` (boolean, default: `true`): when `false`, will disable automatic network failure recovery
  * `:network_recovery_interval` (number, default: ``): interval between reconnection attempts
  * `:threaded` (boolean): switches to single-threaded connections when set to `false`. Only recommended for apps that only publish messages.
