@@ -271,6 +271,78 @@ Note that **RabbitMQ will reject SSLv3 connections** unless configured otherwise
 starting with 3.4.0.
 
 
+## Known TLS Vulnerabilities: POODLE, BEAST, etc
+
+### POODLE
+              
+[POODLE](https://www.openssl.org/~bodo/ssl-poodle.pdf) is a known
+SSL/TLS attack that originally compromised SSLv3.  Starting with
+version 3.4.0, RabbitMQ server refuses to accept SSLv3 connections. In
+December 2014, a modified version of the POODLE attack that affects
+TLSv1.0 was [announced](https://www.imperialviolet.org/2014/12/08/poodleagain.html).
+It is therefore recommended to disable TLSv1.0 support (see below)
+when possible.
+
+### BEAST
+
+[BEAST attack](http://en.wikipedia.org/wiki/Transport_Layer_Security#BEAST_attack)
+is a known vulnerability that affects TLSv1.0. To mitigate it, disable
+TLSv1.0 support (see below).
+
+## Disabling SSL/TLS Versions via Configuration
+
+To limit enabled SSL/TLS protocol versions, use the `versions` option in RabbitMQ
+configuration:
+
+```
+%% Disable SSLv3.0 support, leaves TLSv1.0 enabled.
+[
+ {ssl, [{versions, ['tlsv1.2', 'tlsv1.1', tlsv1]}]},
+ {rabbit, [
+           {ssl_listeners, [5671]},
+           {ssl_options, [{cacertfile,"/path/to/ca_certificate.pem"},
+                          {certfile,  "/path/to/server_certificate.pem"},
+                          {keyfile,   "/path/to/server_key.pem"},
+                          {versions, ['tlsv1.2', 'tlsv1.1', tlsv1]}
+                         ]}
+          ]}
+].
+```
+
+```
+%% Disable SSLv3.0 and TLSv1.0 support.
+[
+ {ssl, [{versions, ['tlsv1.2', 'tlsv1.1']}]},
+ {rabbit, [
+           {ssl_listeners, [5671]},
+           {ssl_options, [{cacertfile,"/path/to/ca_certificate.pem"},
+                          {certfile,  "/path/to/server_certificate.pem"},
+                          {keyfile,   "/path/to/server_key.pem"},
+                          {versions, ['tlsv1.2', 'tlsv1.1']}
+                         ]}
+          ]}
+].
+```
+
+to verify, use `openssl s_client`:
+
+```
+# connect using SSLv3
+openssl s_client -connect 127.0.0.1:5671 -ssl3
+```
+
+```
+# connect using TLSv1.0 through v1.2
+openssl s_client -connect 127.0.0.1:5671 -tls1
+```
+
+and look for the following in the output:
+
+```
+SSL-Session:
+  Protocol  : TLSv1
+```
+
 ## What to Read Next
 
 The documentation is organized as [a number of
