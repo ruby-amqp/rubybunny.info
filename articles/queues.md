@@ -448,7 +448,7 @@ connection = Bunny.new
 connection.start
 
 ch = connection.create_channel
-q = connection.queue('', :exclusive => true)
+q = ch.queue('', :exclusive => true)
 x  = ch.default_exchange
 
 # set up the consumer
