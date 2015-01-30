@@ -88,12 +88,13 @@ Learn more in the [RabbitMQ TLS/SSL guide](http://www.rabbitmq.com/ssl.html).
 
 ## Connecting to RabbitMQ from Bunny Using TLS/SSL
 
-There are 3 options `Bunny.new` takes:
+There are several options `Bunny.new` takes:
 
  * `:tls` which, when set to `true`, will set SSL context up and switch to TLS port (5671)
  * `:tls_cert` which is a string path to the client certificate (public key) in PEM format
  * `:tls_key` which is a string path to the client key (private key) in PEM format
  * `:tls_ca_certificates` which is an array of string paths to CA certificates in PEM format
+ * `:verify_peer` which determines if TLS peer authentication (verification) is performed
 
 An example:
 
@@ -101,7 +102,9 @@ An example:
 conn = Bunny.new(:tls                   => true,
                  :tls_cert              => "examples/tls/client_cert.pem",
                  :tls_key               => "examples/tls/client_key.pem",
-                 :tls_ca_certificates   => ["./examples/tls/cacert.pem"])
+                 :tls_ca_certificates   => ["./examples/tls/cacert.pem"],
+                 # convenient for dev/QA, please enable in production
+                 :verify_peer           => false)
 ```
 
 If you configure RabbitMQ to accept TLS connections on a separate port, you need to
@@ -113,7 +116,9 @@ conn = Bunny.new(:tls                   => true,
                  :port                  => 6778,
                  :tls_cert              => "examples/tls/client_cert.pem",
                  :tls_key               => "examples/tls/client_key.pem",
-                 :tls_ca_certificates   => ["./examples/tls/cacert.pem"])
+                 :tls_ca_certificates   => ["./examples/tls/cacert.pem"],
+                 # convenient for dev/QA, please enable in production
+                 :verify_peer           => false)
 ```
 
 Paths can be relative but it's recommended to use absolute paths and no symlinks
@@ -179,7 +184,9 @@ EOS
 conn = Bunny.new(:tls                   => true,
                  :tls_cert              => cert,
                  :tls_key               => key,
-                 :tls_ca_certificates   => ["./examples/tls/cacert.pem"])
+                 :tls_ca_certificates   => ["./examples/tls/cacert.pem"],
+                 # convenient for dev/QA, please enable in production
+                 :verify_peer           => false)
 ```
 
 
@@ -192,17 +199,21 @@ options, e.g. to provide TLS certificate and key paths:
 c = Bunny.new("amqps://bunny_gem:bunny_password@127.0.0.1/bunny_testbed",
         :tls_cert              => "spec/tls/client_cert.pem",
         :tls_key               => "spec/tls/client_key.pem",
-        :tls_ca_certificates   => ["./spec/tls/cacert.pem"])
+        :tls_ca_certificates   => ["./spec/tls/cacert.pem"],
+        # convenient for dev/QA, please enable in production
+        :verify_peer           => false)
 c.start
 ```
 
-### Disabling Peer Verification
+### Peer Verification
 
 In some situations it is reasonable to disable peer verification
-(authentication). This means TLS will only be used for encryption
-and not authentication.
+(authentication), which is enabled by default. This means TLS will only be used for encryption
+and not authentication, enabling man-in-the-middle (MITM) attacks. This
+is a reasonable thing to do in development but **we highly recommend using
+peer verification in production environments**.
 
-To do so with Bunny, use `:verify_peer`:
+To disable peer with Bunny, use `:verify_peer`:
 
 ``` ruby
 c = Bunny.new("amqps://bunny_gem:bunny_password@127.0.0.1/bunny_testbed",
