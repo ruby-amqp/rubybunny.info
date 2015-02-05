@@ -94,7 +94,7 @@ There are several options `Bunny.new` takes:
  * `:tls_cert` which is a string path to the client certificate (public key) in PEM format
  * `:tls_key` which is a string path to the client key (private key) in PEM format
  * `:tls_ca_certificates` which is an array of string paths to CA certificates in PEM format
- * `:verify_peer` which determines if TLS peer authentication (verification) is performed
+ * `:verify_peer` which determines if TLS peer authentication (verification) is performed, `true` by default
 
 An example:
 
