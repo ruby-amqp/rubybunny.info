@@ -62,9 +62,7 @@ This guide assumes that you have installed one of the following supported Ruby i
  * Ruby v2.1.x
  * Ruby v2.0.x
  * Ruby v1.9.3
- * Ruby v1.9.2
  * Rubinius v2.0+
- * Ruby Enterprise Edition
  * Ruby v1.8.7
 
 Bunny works sufficiently well on JRuby but there are known
