@@ -25,7 +25,7 @@ GitHub](https://github.com/ruby-amqp/rubybunny.info).
 
 ## Which versions of Bunny does this guide cover?
 
-This guide covers Bunny 1.6.x and later versions.
+This guide covers Bunny 1.7.x and later versions.
 
 ## Installing RabbitMQ
 
@@ -80,7 +80,7 @@ use [March Hare](http://rubymarchhare.info).
 ``` ruby
 source "https://rubygems.org"
 
-gem "bunny", ">= 1.6.2"
+gem "bunny", ">= 1.7.0"
 ```
 
 ### Verifying your installation
@@ -92,7 +92,7 @@ irb -rubygems
 :001 > require "bunny"
 => true
 :002 > Bunny::VERSION
-=> "1.6.2"
+=> "1.7.0"
 ```
 
 ## "Hello, world" example
