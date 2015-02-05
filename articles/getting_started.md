@@ -59,6 +59,7 @@ this guide).</div>
 
 This guide assumes that you have installed one of the following supported Ruby implementations:
 
+ * Ruby v2.2.x
  * Ruby v2.1.x
  * Ruby v2.0.x
  * Ruby v1.9.3
