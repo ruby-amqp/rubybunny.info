@@ -50,6 +50,10 @@ activity loop in a separate thread, one per connection. The loop is
 responsible for reading data from the socket, deserializing it and
 passing over to the connection that instantiated the loop.
 
+Not depending on a global event loop allows Bunny-based applications
+that consume messages to have long running delivery handlers that
+do not affect other network activity.
+
 Communication between I/O loop and connection is almost completely
 uni-directional. Writes do not happen in I/O loop thread.
 
