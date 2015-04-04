@@ -33,6 +33,8 @@ This means several things:
  * Connection (`Bunny::Session`) assumes there will be concurrent publishers
    and consumers.
 
+ * Parts of the library (most notably `Bunny::Channel`) are designed to assume they are **not shared between threads**.
+
  * Parts of the library can take advantage of parallelism on runtimes that
    provide it.
 
@@ -40,7 +42,7 @@ This means several things:
    concurrency controls.
 
 
-### Reader (I/O) Loop
+## Enabling Long Running Delivery Handlers
 
 Unlike [amqp gem](http://rubyamqp.info), Bunny does not depend on any
 opinionated networking library. Instead, it maintains its own I/O
@@ -50,6 +52,37 @@ passing over to the connection that instantiated the loop.
 
 Communication between I/O loop and connection is almost completely
 uni-directional. Writes do not happen in I/O loop thread.
+
+
+## Synchronized Writes
+
+Connections in Bunny will synchronize writes both for messages
+and at the socket level. This means that publishing on
+a shared connection from multiple threads is safe but
+**only if every publishing thread uses a separate channel**.
+
+
+## Sharing Channels Between Threads
+
+Channels **must not** be shared between threads.
+When client publishes a message, at least 2 (typically 3) frames
+are send on the wire:
+
+ * AMQP 0.9.1 method, `basic.publish`
+ * Message metadata
+ * Message payload
+
+This means that without synchronization on, publishing from multiple
+threads on a shared channel may result in frames being sent
+to RabbitMQ out of order, e.g.:
+
+```
+[basic.publish 1][basic.publish 2][content metadata 1][content body 1][content metadata 2][content metadata 2]
+```
+
+There are other potential conflicts arising from frame interleaving.
+It is, however, safe to process deliveries in multiple threads
+if multi-message acknowledgements are not used.
 
 
 ## Consumer Work Pools
@@ -77,37 +110,6 @@ that do nothing.
 It also reduces the amount of time it takes to open
 a channel, which is desirable for applications doing
 heavy request/reply (RPC) communication.
-
-
-## Synchronized Writes
-
-Connections in Bunny will synchronize writes both for messages
-and at the socket level. This means that publishing on
-a shared connection from multiple threads is safe but
-**only if every publishing thread uses a separate channel**.
-
-
-## Sharing Channels Between Threads
-
-Channels should not be shared between threads.
-When client publishes a message, at least 2 (typically 3) frames
-are send on the wire:
-
- * AMQP 0.9.1 method, `basic.publish`
- * Message metadata
- * Message payload
-
-This means that without synchronization on, publishing from multiple
-threads on a shared channel may result in frames being sent
-to RabbitMQ out of order, e.g.:
-
-```
-[basic.publish 1][basic.publish 2][content metadata 1][content body 1][content metadata 2][content metadata 2]
-```
-
-There are other potential conflicts arising from frame interleaving.
-It is, however, safe to process deliveries in multiple threads
-if multi-message acknowledgements are not used.
 
 
 ## Mutex Reentrancy
