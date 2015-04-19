@@ -10,7 +10,7 @@ RabbitMQ and [Bunny](http://github.com/ruby-amqp/bunny).  It should
 take about 20 minutes to read and study the provided code
 examples. This guide covers:
 
- * Installing RabbitMQ, a mature popular messaging broker server.
+ * Installing RabbitMQ, a mature multi-protocol messaging broker.
  * Installing Bunny via [Rubygems](http://rubygems.org) and [Bundler](http://gembundler.com).
  * Running a "Hello, world" messaging example that is a simple demonstration of 1:1 communication.
  * Creating a "Twitter-like" publish/subscribe example with one publisher and four subscribers that demonstrates 1:n communication.
