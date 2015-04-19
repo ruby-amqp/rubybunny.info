@@ -40,7 +40,7 @@ then run it (after ensuring that `/usr/local/sbin` is in your `$PATH`):
 
 On Debian and Ubuntu, you can either [download the RabbitMQ .deb
 package](http://www.rabbitmq.com/server.html) and install it with
-[dpkg](http://www.debian.org/doc/FAQ/ch-pkgtools.en.html) or make use
+[dpkg](http://www.debian.org/doc/FAQ/ch-pkgtools.en.html) or use
 of the [apt repository](http://www.rabbitmq.com/debian.html#apt_) that
 the RabbitMQ team provides.
 
