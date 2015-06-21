@@ -885,6 +885,16 @@ x.publish(data, :persistent => true)
 
 [Durability and Message Persistence](/articles/durability.html) provides more information on the subject.
 
+### Message Priority
+
+Starting with RabbitMQ 3.5, queues can be [instructed to support
+message priorities](https://www.rabbitmq.com/priority.html).
+
+To specify a priority on a message, pass the `:priority` key to
+`Bunny::Exchange#publish`. Note that priority queues have certain
+[limitations listed in the RabbitMQ documentation](https://www.rabbitmq.com/priority.html).
+
+
 ### Publishing In Multi-threaded Environments
 
 <div class="alert alert-error">
