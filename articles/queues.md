@@ -678,6 +678,23 @@ distributed between them according to prefetch levels of their channels (more on
 guide). If prefetch values are equal for all consumers, each consumer will get about the same number of messages.
 
 
+### Consumer Priorities
+
+As of RabbitMQ 3.2, [consumers that share a channel can have priorities](http://www.rabbitmq.com/consumer-priority.html).
+
+To specify a priority with Bunny, use the `:arguments` option that `Bunny::Queue#subscribe`
+and `Bunny::Queue#subscribe_with` take:
+
+``` ruby
+q = ch.queue("")
+q.subscribe(:manual_ack => true, :arguments => {"x-priority" => 5}) do |delivery_info, properties, payload|
+  # ...
+end
+q.subscribe(:manual_ack => true, :arguments => {"x-priority" => 2}) do |delivery_info, properties, payload|
+  # ...
+end
+```
+
 
 ### Exclusive Consumers
 
