@@ -686,7 +686,7 @@ To specify a priority with Bunny, use the `:arguments` option that `Bunny::Queue
 and `Bunny::Queue#subscribe_with` take:
 
 ``` ruby
-q = ch.queue("")
+q = ch.queue("a.queue")
 q.subscribe(:manual_ack => true, :arguments => {"x-priority" => 5}) do |delivery_info, properties, payload|
   # ...
 end
