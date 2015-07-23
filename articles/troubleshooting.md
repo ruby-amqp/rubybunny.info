@@ -157,7 +157,7 @@ ERROR: failed to load application os_mon: {"no such file or directory","os_mon.a
 suggests that the *erlang-os-mon* package is not installed.
 
 
-## asn1 Issue on Erlang R16B01
+## asn1 Issue with Erlang R16B01
 
 ```
 BOOT FAILED
