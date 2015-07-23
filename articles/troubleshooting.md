@@ -137,7 +137,11 @@ reasons, but it is a good idea to check these two things first:
 
 ### Connecting to localhost on VPN
 
-Using VPN almost certainly changes your DNS server configuration which may affect connections to `localhost` as well as to remote hosts. If you keep getting `Got an exception when receiving data: IO timeout when reading 7 bytes (Timeout::Error)` errors and you're on VPN try switching VPN off.
+Using VPN almost certainly changes your DNS server configuration which
+may affect connections to `localhost` as well as to remote hosts. If
+you keep getting `Got an exception when receiving data: IO timeout
+when reading 7 bytes (Timeout::Error)` errors and you're on VPN try
+switching VPN off.
 
 
 ## RabbitMQ Startup Issues
