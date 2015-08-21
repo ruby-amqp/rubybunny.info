@@ -108,7 +108,7 @@ Consumer work pool is not started by default and will be
 created when the first consumer is added on the channel.
 When the last consumer is cancelled, consumer work pool
 will be shut down. This ensures that channels that
-are only used to publish messages do keep around threads
+are only used to publish messages do not keep around threads
 that do nothing.
 
 It also reduces the amount of time it takes to open
