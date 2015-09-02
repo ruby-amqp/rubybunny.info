@@ -156,8 +156,9 @@ to `Bunny.new`.
 ### Server-Initiated `connection.close`
 
 Server-initiated `connection.close` (issued due to an unrecoverable client
-issue or when a connection is forced to close via RabbitMQ management UI/HTTP API)
-will result in an exception on the thread `Bunny::Session` was instantiated.
+issue or when a connection is forced to close via RabbitMQ management UI/HTTP API
+or when a server is shutting down)will result in an exception on the thread
+`Bunny::Session` was instantiated.
 
 Bunny can be instructed from such exceptions (see Automatic Recovery below).
 
@@ -181,10 +182,8 @@ Currently the topology recovery strategy is not configurable.
 When automatic recovery is disabled, Bunny will raise
 exceptions on the thread `Bunny::Session` was instantiated on.
 
-Bunny can be instructed to recover from server-sent `connection.close` by
-passing the `:recover_from_connection_close` to `Bunny.new`. While this is useful
-in test environments, this will make it impossible to force a client to disconnect,
-so use this feature with consideration.
+Bunny will recover from server-sent `connection.close`, if you don't want it to do
+so then pass `recover_from_connection_close: false` to `Bunny.new`. 
 
 
 ## Channel-level Exceptions
