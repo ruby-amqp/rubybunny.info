@@ -341,7 +341,7 @@ One way to define a handler is:
 
 ``` ruby
 q = ch.queue("", :exclusive => true)
-q.subscribe(:block => true, :ack => true) do |delivery_info, properties, payload|
+q.subscribe(:block => true, :manual_ack => true) do |delivery_info, properties, payload|
   puts "Received #{payload}, message properties are #{properties.inspect}"
 end
 ```
@@ -356,7 +356,7 @@ conn.start
 
 ch   = conn.create_channel
 q = ch.queue("", :exclusive => true)
-q.subscribe(:block => true, :ack => true) do |delivery_info, properties, payload|
+q.subscribe(:block => true, :manual_ack => true) do |delivery_info, properties, payload|
   puts "Received #{payload}, message properties are #{properties.inspect}"
 end
 ```
@@ -452,7 +452,7 @@ q = connection.queue('', :exclusive => true)
 x  = ch.default_exchange
 
 # set up the consumer
-q.subscribe(:exclusive => true, :ack => false) do |delivery_info, properties, payload|
+q.subscribe(:exclusive => true, :manual_ack => false) do |delivery_info, properties, payload|
   puts properties.content_type # => "application/octet-stream"
   puts properties.priority     # => 8
 
@@ -710,7 +710,7 @@ option to `Bunny::Queue#subscribe`:
 
 ``` ruby
 q = ch.queue("")
-q.subscribe(:block => true, :ack => true, :exclusive => true) do |delivery_info, properties, payload|
+q.subscribe(:block => true, :manual_ack => true, :exclusive => true) do |delivery_info, properties, payload|
   # ...
 end
 ```
@@ -815,11 +815,11 @@ registered for the same queue before attempting redelivery.
 
 The acknowledgement model is chosen when a new consumer is registered
 for a queue. By default, `Bunny::Queue#subscribe` will use the
-*automatic* model.  To switch to the *explicit* model, the `:ack`
+*automatic* model.  To switch to the *explicit* model, the `:manual_ack`
 option should be used:
 
 ``` ruby
-q = ch.queue("", :exclusive => true).subscribe(:ack => true) do |delivery_info, properties, payload|
+q = ch.queue("", :exclusive => true).subscribe(:manual_ack => true) do |delivery_info, properties, payload|
   # ...
 end
 ```
@@ -852,7 +852,7 @@ x   = ch3.direct("amq.direct")
 q1  = ch1.queue("bunny.examples.acknowledgements.explicit", :auto_delete => false)
 q1.purge
 
-q1.bind(x).subscribe(:ack => true, :block => false) do |delivery_info, properties, payload|
+q1.bind(x).subscribe(:manual_ack => true, :block => false) do |delivery_info, properties, payload|
   # do some work
   sleep(0.2)
 
@@ -869,7 +869,7 @@ q1.bind(x).subscribe(:ack => true, :block => false) do |delivery_info, propertie
 end
 
 q2   = ch2.queue("bunny.examples.acknowledgements.explicit", :auto_delete => false)
-q2.bind(x).subscribe(:ack => true, :block => false) do |delivery_info, properties, payload|
+q2.bind(x).subscribe(:manual_ack => true, :block => false) do |delivery_info, properties, payload|
   # do some work
   sleep(0.2)
 

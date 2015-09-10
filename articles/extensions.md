@@ -218,7 +218,7 @@ q    = ch.queue("", :exclusive => true)
 end
 
 20.times do
-  delivery_info, _, _ = q.pop(:ack => true)
+  delivery_info, _, _ = q.pop(:manual_ack => true)
 
   if delivery_info.delivery_tag == 20
     # requeue them all at once with basic.nack
@@ -632,7 +632,7 @@ dlq  = ch.queue("", :exclusive => true).bind(dlx)
 x.publish("")
 sleep 0.2
 
-delivery_info, _, _ = q.pop(:ack => true)
+delivery_info, _, _ = q.pop(:manual_ack => true)
 puts "#{dlq.message_count} messages dead lettered so far"
 puts "Rejecting a message"
 ch.nack(delivery_info.delivery_tag, false)
