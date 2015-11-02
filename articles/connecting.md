@@ -255,7 +255,7 @@ in QA and production environments.
 [Phusion Passenger](http://www.modrails.com) is also a pre-forking
 server, and just as with Unicorn, clients should connect to RabbitMQ
 **after** it forks worker processes. The Passenger documentation has
-[a section](http://bit.ly/passenger-forking-gotchas) that explains how
+[a section](https://www.phusionpassenger.com/library/indepth/ruby/spawn_methods/#unintentional-file-descriptor-sharing) that explains how
 to avoid problems related to the behavior of the fork(2) system call,
 namely:
 
