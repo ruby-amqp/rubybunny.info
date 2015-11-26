@@ -565,7 +565,7 @@ connection = Bunny.new
 connection.start
 
 ch = connection.create_channel
-q = connection.queue("testq")
+q = ch.queue("testq")
 
 consumer = ExampleConsumer.new(ch, q, "my_example_consumer", false, false, {:test_arg => 'test'})
 ```
