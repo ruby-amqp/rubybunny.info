@@ -103,6 +103,8 @@ Let us begin with the classic "Hello, world" example. First, here is the code:
 require "rubygems"
 require "bunny"
 
+STDOUT.sync = true
+
 conn = Bunny.new
 conn.start
 
@@ -229,6 +231,8 @@ basketball. Here is the code:
 require "rubygems"
 require "bunny"
 
+STDOUT.sync = true
+
 conn = Bunny.new("amqp://guest:guest@localhost:5672")
 conn.start
 
@@ -331,6 +335,8 @@ Here is the code:
 
 require "rubygems"
 require "bunny"
+
+STDOUT.sync = true
 
 connection = Bunny.new
 connection.start
