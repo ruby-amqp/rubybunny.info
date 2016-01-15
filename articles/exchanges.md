@@ -426,7 +426,7 @@ specifying a *routing pattern* to the `Bunny::Queue#bind` method, for
 example:
 
 ``` ruby
-x    = ch.topic("weathr", :auto_delete => true)
+x    = ch.topic("weather", :auto_delete => true)
 
 q = ch.queue("americas.south", :auto_delete => true).bind(x, :routing_key => "americas.south.#")
 q.subscribe do |delivery_info, properties, payload|
@@ -483,7 +483,7 @@ connection.start
 
 channel  = connection.create_channel
 # topic exchange name can be any string
-exchange = channel.topic("weathr", :auto_delete => true)
+exchange = channel.topic("weather", :auto_delete => true)
 
 # Subscribers.
 channel.queue("americas.north").bind(exchange, :routing_key => "americas.north.#").subscribe do |delivery_info, properties, payload|
