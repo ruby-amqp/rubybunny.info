@@ -18,7 +18,7 @@ Github](https://github.com/ruby-amqp/rubybunny.info).
 
 ## What version of Bunny does this guide cover?
 
-This guide covers Bunny 1.3.x and later versions.
+This guide covers Bunny 2.2.x and later versions.
 
 
 ## Concurrency in Bunny Design
@@ -70,7 +70,7 @@ a shared connection from multiple threads is safe but
 
 Channels **must not** be shared between threads.
 When client publishes a message, at least 2 (typically 3) frames
-are send on the wire:
+are sent on the wire:
 
  * AMQP 0.9.1 method, `basic.publish`
  * Message metadata
