@@ -16,7 +16,7 @@ Github](https://github.com/ruby-amqp/rubybunny.info).
 
 ## What version of Bunny does this guide cover?
 
-This guide covers Bunny 2.2.x and later versions.
+This guide covers Bunny 2.3.x and later versions.
 
 
 ## TLS Support in RabbitMQ
