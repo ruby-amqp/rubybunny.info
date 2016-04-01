@@ -49,12 +49,12 @@ Bindings of durable queues to durable exchanges are automatically durable and ar
 
 Messages may be published as persistent and this, in conjunction with queue durability, is what makes an AMQP broker persist them to disk. If the server is restarted, the system ensures that received persistent messages in durable queues are not lost. Simply publishing a message to a durable exchange or the fact that a queue to which a message is routed is durable does not make that message persistent. Message persistence depends on the persistence mode of the message itself.
 
-**Note** that publishing persistent messages affects performance (just like with data stores, durability comes at a certain cost to performance).
+**Note** that the default mode is to publish messages as persistent, however publishing persistent messages affects performance (just like with data stores, durability comes at a certain cost to performance).
 
-Pass the `:persistent => true` argument to the `Bunny::Exchange#publish` method to publish your message as persistent:
+If required you can pass the `:persistent => false` argument to the `Bunny::Exchange#publish` method to publish your message without persistence:
 
 ``` ruby
-exch.publish("My message", :persistent => true)
+exch.publish("My message", :persistent => false)
 ```
 
 ### Clustering and High Availability
