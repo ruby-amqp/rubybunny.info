@@ -369,11 +369,11 @@ exchange.publish("San Diego update", :routing_key => "americas.north.us.ca.sandi
   publish("Berkeley update",         :routing_key => "americas.north.us.ca.berkeley").
   publish("San Francisco update",    :routing_key => "americas.north.us.ca.sanfrancisco").
   publish("New York update",         :routing_key => "americas.north.us.ny.newyork").
-  publish("São Paolo update",        :routing_key => "americas.south.brazil.saopaolo").
+  publish("São Paulo update",        :routing_key => "americas.south.brazil.saopaulo").
   publish("Hong Kong update",        :routing_key => "asia.southeast.hk.hongkong").
   publish("Kyoto update",            :routing_key => "asia.southeast.japan.kyoto").
   publish("Shanghai update",         :routing_key => "asia.southeast.prc.shanghai").
-  publish("Rome update",             :routing_key => "europe.italy.roma").
+  publish("Rome update",             :routing_key => "europe.italy.rome").
   publish("Paris update",            :routing_key => "europe.france.paris")
 
 sleep 1.0
@@ -418,7 +418,7 @@ Now let us take a look at a few routing keys that match the
 
  * `"americas.south"`
  * `"americas.south.*brazil*"`
- * `"americas.south.*brazil.saopaolo*"`
+ * `"americas.south.*brazil.saopaulo*"`
  * `"americas.south.*chile.santiago*"`
 
 In other words, the `"#"` part of the pattern matches 0 or more words.
