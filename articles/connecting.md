@@ -273,7 +273,9 @@ if defined?(PhusionPassenger) # otherwise it breaks rake commands if you put thi
     if forked
        # We’re in a smart spawning mode
        # Now is a good time to connect to RabbitMQ
-       $rabbitmq_connection = Bunny.new; $rabbitmq_connection.start
+       $rabbitmq_connection = Bunny.new
+       $rabbitmq_connection.start
+       
        $rabbitmq_channel    = $rabbitmq_connection.create_channel
     end
   end
