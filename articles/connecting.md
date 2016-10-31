@@ -275,8 +275,14 @@ if defined?(PhusionPassenger) # otherwise it breaks rake commands if you put thi
        # Now is a good time to connect to RabbitMQ
        $rabbitmq_connection = Bunny.new
        $rabbitmq_connection.start
-       
+
        $rabbitmq_channel    = $rabbitmq_connection.create_channel
+    end
+  end
+
+  PhusionPassenger.on_event(:stopping_worker_process) do
+    if $rabbitmq_connection
+      $rabbitmq_connection.close
     end
   end
 end
