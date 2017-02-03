@@ -59,6 +59,7 @@ this guide).</div>
 
 This guide assumes that you have installed one of the following supported Ruby implementations:
 
+ * Ruby v2.4
  * Ruby v2.3
  * Ruby v2.2
  * Ruby v2.1
@@ -78,7 +79,7 @@ use [March Hare](http://rubymarchhare.info).
 ``` ruby
 source "https://rubygems.org"
 
-gem "bunny", ">= 2.6.0"
+gem "bunny", ">= 2.6.3"
 ```
 
 ### Verifying your installation
@@ -90,7 +91,7 @@ irb -rubygems
 :001 > require "bunny"
 => true
 :002 > Bunny::VERSION
-=> "2.6.0"
+=> "2.6.3"
 ```
 
 ## "Hello, world" example
