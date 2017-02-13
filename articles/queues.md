@@ -178,7 +178,7 @@ created between applications is not an issue.
 Another example of a well-known long-lived service is a distributed
 metadata/directory/locking server like [Apache
 Zookeeper](http://zookeeper.apache.org), [Google's
-Chubby](http://labs.google.com/papers/chubby.html) or DNS. Services
+Chubby](https://research.google.com/archive/chubby.html) or DNS. Services
 like this benefit from using well-known, not server-generated, queue
 names and so do any other applications that use them.
 
