@@ -693,7 +693,7 @@ x.publish("hello",
 
   <dt>:user_id</dt>
   <dd>
-  Sender's identifier. Note that RabbitMQ will check that the [value of this attribute is the same as username AMQP connection was authenticated with](http://www.rabbitmq.com/validated-user-id.html), it SHOULD NOT be used to transfer, for example, other application user ids or be used as a basis for some kind of Single Sign-On solution.
+  Sender's identifier. Note that RabbitMQ will check that the <a href="http://www.rabbitmq.com/validated-user-id.html">value of this attribute is the same as username AMQP connection was authenticated with</a>, it SHOULD NOT be used to transfer, for example, other application user ids or be used as a basis for some kind of Single Sign-On solution.
   </dd>
 
   <dt>:app_id</dt>
