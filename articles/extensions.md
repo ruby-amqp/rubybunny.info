@@ -381,7 +381,7 @@ q.subscribe_with(c)
 
 require "bunny"
 
-puts "=> Using dead letter exchange"
+puts "=> Using consumer cancellation"
 puts
 
 conn = Bunny.new
