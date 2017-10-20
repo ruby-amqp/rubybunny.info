@@ -39,7 +39,7 @@ Map options that Bunny will recognize are
  * `:user` or `:username`
  * `:pass` or `:password`
  * `:vhost` or `virtual_host`
- * `:heartbeat` or `:heartbeat_interval`, in seconds, default is 0 (no heartbeats). `:server` means "use the value from RabbitMQ config"
+ * `:heartbeat` or `:heartbeat_interval`, in seconds, default is `:server`. `:server` means "use the value from RabbitMQ config". 0 means no heartbeats (not recommended). 
  * `:logger` (Logger): The logger.  If missing, one is created using `:log_file` and `:log_level`.
  * `:log_level` (symbol or integer, default: `Logger::WARN`): Log level to use when creating a logger.
  * `:log_file` (string or `IO`, default: `STDOUT`): log file or `IO` object to use when creating a logger
