@@ -48,6 +48,7 @@ Map options that Bunny will recognize are
  * `:threaded` (boolean): switches to single-threaded connections when set to `false`. Only recommended for apps that only publish messages.
  * `:continuation_timeout` (integer): timeout for client operations that expect a response (e.g. `Bunny::Queue#get`), in *milliseconds*. Default is `4000` ms.
  * `:auth_mechanism` (string, default: `PLAIN`): Mechanism to authenticate with the server. Currently supporting `PLAIN` and `EXTERNAL`.
+ * `:frame_max` (integer, default: `131072`): maximum permissible size of a frame (in bytes) to negotiate with clients. Setting to 0 means "unlimited" but will trigger a bug in some QPid clients. Setting a larger value may improve throughput; setting a smaller value may improve latency.
 
 plus TLS connection parameters covered in [Using TLS (SSL) Connections](/articles/tls.html).
 
