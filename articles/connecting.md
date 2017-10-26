@@ -34,20 +34,21 @@ on) can be passed in two forms:
 
 Map options that Bunny will recognize are
 
- * `:host`
- * `:port`
- * `:user` or `:username`
- * `:pass` or `:password`
- * `:vhost` or `virtual_host`
- * `:heartbeat` or `:heartbeat_interval`, in seconds, default is `:server`. `:server` means "use the value from RabbitMQ config". 0 means no heartbeats (not recommended). 
- * `:logger` (Logger): The logger.  If missing, one is created using `:log_file` and `:log_level`.
+ * `:host` (string, default: `"127.0.0.1"`)
+ * `:port` (integer, default: `5672`)
+ * `:user` or `:username` (string, default: `"guest"`)
+ * `:pass` or `:password` (string, default: `"guest"`)
+ * `:vhost` or `virtual_host` (string, default: `'/'`)
+ * `:heartbeat` or `:heartbeat_interval` (string or integer, default: `:server`): standard RabbitMQ server heartbeat. `:server` means "use the value from RabbitMQ config". `0` means no heartbeats (not recommended).
+ * `:logger` (Logger): The logger. If missing, one is created using `:log_file` and `:log_level`.
  * `:log_level` (symbol or integer, default: `Logger::WARN`): Log level to use when creating a logger.
  * `:log_file` (string or `IO`, default: `STDOUT`): log file or `IO` object to use when creating a logger
  * `:automatically_recover` (boolean, default: `true`): when `false`, will disable automatic network failure recovery
- * `:network_recovery_interval` (number, default: ``): interval between reconnection attempts
- * `:threaded` (boolean): switches to single-threaded connections when set to `false`. Only recommended for apps that only publish messages.
- * `:continuation_timeout` (integer): timeout for client operations that expect a response (e.g. `Bunny::Queue#get`), in *milliseconds*. Default is `4000` ms.
- * `:auth_mechanism` (string, default: `PLAIN`): Mechanism to authenticate with the server. Currently supporting `PLAIN` and `EXTERNAL`.
+ * `:network_recovery_interval` (number, default: `5.0`): interval between reconnection attempts
+ * `:threaded` (boolean, default: `true`): switches to single-threaded connections when set to `false`. Only recommended for apps that only publish messages.
+ * `:continuation_timeout` (integer, default: `4000` ms): timeout for client operations that expect a response (e.g. `Bunny::Queue#get`), in *milliseconds*.
+ * `:frame_max` (integer, default: `131072`): maximum permissible size of a frame (in bytes) to negotiate with clients. Setting to 0 means "unlimited" but will trigger a bug in some QPid clients. Setting a larger value may improve throughput; setting a smaller value may improve latency.
+ * `:auth_mechanism` (string, default: `"PLAIN"`): Mechanism to authenticate with the server. Currently supporting `"PLAIN"` and `"EXTERNAL"`.
 
 plus TLS connection parameters covered in [Using TLS (SSL) Connections](/articles/tls.html).
 
