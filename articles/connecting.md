@@ -44,7 +44,7 @@ Map options that Bunny will recognize are
  * `:log_level` (symbol or integer, default: `Logger::WARN`): Log level to use when creating a logger.
  * `:log_file` (string or `IO`, default: `STDOUT`): log file or `IO` object to use when creating a logger
  * `:automatically_recover` (boolean, default: `true`): when `false`, will disable automatic network failure recovery
- * `:network_recovery_interval` (number, default: ``): interval between reconnection attempts
+ * `:network_recovery_interval` (number, default: `5.0`): interval between reconnection attempts
  * `:threaded` (boolean): switches to single-threaded connections when set to `false`. Only recommended for apps that only publish messages.
  * `:continuation_timeout` (integer): timeout for client operations that expect a response (e.g. `Bunny::Queue#get`), in *milliseconds*. Default is `4000` ms.
  * `:auth_mechanism` (string, default: `PLAIN`): Mechanism to authenticate with the server. Currently supporting `PLAIN` and `EXTERNAL`.
