@@ -59,11 +59,10 @@ this guide).</div>
 
 This guide assumes that you have installed one of the following supported Ruby implementations:
 
+ * Ruby v2.5
  * Ruby v2.4
  * Ruby v2.3
  * Ruby v2.2
- * Ruby v2.1
- * Ruby v2.0
 
 Bunny works sufficiently well on JRuby but there are known
 JRuby 1.7 bugs that can cause high CPU burn and other issues. JRuby users should
@@ -79,7 +78,7 @@ use [March Hare](http://rubymarchhare.info).
 ``` ruby
 source "https://rubygems.org"
 
-gem "bunny", ">= 2.6.3"
+gem "bunny", ">= 2.8.0"
 ```
 
 ### Verifying your installation
@@ -91,7 +90,7 @@ irb -rubygems
 :001 > require "bunny"
 => true
 :002 > Bunny::VERSION
-=> "2.6.3"
+=> "2.8.0"
 ```
 
 ## "Hello, world" example
