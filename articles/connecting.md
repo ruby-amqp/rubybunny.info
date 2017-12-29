@@ -168,10 +168,10 @@ b.heartbeat #=> 10
 b.transport.connect_timeout #=> 100
 b.channel_max #=> 1000
 b.ssl #=> true
-b.transport.instance_variable_get(:@verify_peer) #=> false
-b.transport.instance_variable_get(:@tls_ca_certificates) #=> "/examples/tls/cacert.pem"
-b.transport.instance_variable_get(:@tls_ca_certificates) #=> "/examples/tls/client_cert.pem"
-b.transport.instance_variable_get(:@tls_key_path) #=> "/examples/tls/client_key.pem"
+b.transport.verify_peer #=> false
+b.transport.tls_ca_certificates #=> "/examples/tls/cacert.pem"
+b.transport.tls_ca_certificates #=> "/examples/tls/client_cert.pem"
+b.transport.tls_key_path #=> "/examples/tls/client_key.pem"
 ```
 
 Pay attention that some attibutes are not allowed for specific scheme, particularly TLS options don't make sense for "amqp" scheme.
