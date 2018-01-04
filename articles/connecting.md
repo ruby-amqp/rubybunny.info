@@ -19,8 +19,6 @@ Github](https://github.com/ruby-amqp/rubybunny.info).
 
 This guide covers Bunny 2.6.x and later versions.
 
-
-
 ## Two ways to specify connection parameters
 
 With Bunny, connection parameters (host, port, username, vhost and so
@@ -48,7 +46,7 @@ Map options that Bunny will recognize are
  * `:threaded` (boolean, default: `true`): switches to single-threaded connections when set to `false`. Only recommended for apps that only publish messages.
  * `:continuation_timeout` (integer, default: `4000` ms): timeout for client operations that expect a response (e.g. `Bunny::Queue#get`), in *milliseconds*.
  * `:frame_max` (integer, default: `131072`): maximum permissible size of a frame (in bytes) to negotiate with clients. Setting to 0 means "unlimited" but will trigger a bug in some QPid clients. Setting a larger value may improve throughput; setting a smaller value may improve latency.
- * `:auth_mechanism` (string, default: `"PLAIN"`): Mechanism to authenticate with the server. Currently supporting `"PLAIN"` and `"EXTERNAL"`.
+ * `:auth_mechanism` (string or array, default: `"PLAIN"`): Mechanism to authenticate with the server. Currently supporting `"PLAIN"` and `"EXTERNAL"`.
 
 plus TLS connection parameters covered in [Using TLS (SSL) Connections](/articles/tls.html).
 
@@ -118,6 +116,7 @@ Here are some examples of valid AMQP URIs:
  * amqp://guest:guest@dev.rabbitmq.com:5672
  * amqp://hedgehog:t0ps3kr3t@hub.megacorp.internal/production
  * amqps://hub.megacorp.internal/%2Fvault
+ * amqps://rabbitmq.com/staging?heartbeat=10&channel_max=1000
 
 The URI scheme should be "amqp", or "amqps" if SSL is required.
 
@@ -142,6 +141,41 @@ AMQ::Settings.parse_amqp_url("amqp://dev.rabbitmq.com/production") # => vhost is
 AMQ::Settings.parse_amqp_url("amqp://dev.rabbitmq.com/a.b.c")      # => vhost is "a.b.c"
 AMQ::Settings.parse_amqp_url("amqp://dev.rabbitmq.com/foo/bar")    # => ArgumentError
 ```
+
+Bunny is able to parse [RabbitMQ URI query parameters](https://www.rabbitmq.com/uri-query-parameters.html), where you may specify some common client connection attributes:
+
+ * `auth_mechanism`
+ * `heartbeat`
+ * `connection_timout`
+ * `channel_max`
+ * `verify`
+ * `fail_if_no_peer_cert`
+ * `cacertfile`
+ * `certfile`
+ * `keyfile`
+ 
+ Here is an example:
+ 
+```ruby
+b = Bunny.new("amqps://rabbitmq?heartbeat=10&connection_timeout=100&channel_max=1000&verify=true&fail_if_no_peer_cert=true&cacertfile=/examples/tls/cacert.pem&certfile=/examples/tls/client_cert.pem&keyfile=/examples/tls/client_key.pem")
+b.start
+b.user #=> "guest"
+b.pass #=> "guest"
+b.hostname #=> "rabbitmq"
+b.port #=> 5671
+b.vhost #=> "/"
+b.heartbeat #=> 10
+b.transport.connect_timeout #=> 100
+b.channel_max #=> 1000
+b.ssl #=> true
+b.transport.verify_peer #=> false
+b.transport.tls_ca_certificates #=> "/examples/tls/cacert.pem"
+b.transport.tls_ca_certificates #=> "/examples/tls/client_cert.pem"
+b.transport.tls_key_path #=> "/examples/tls/client_key.pem"
+```
+
+Pay attention that some attibutes are not allowed for specific scheme, particularly TLS options don't make sense for "amqp" scheme.
+  
 
 ### Connection Failures
 
