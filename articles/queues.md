@@ -341,7 +341,7 @@ One way to define a handler is:
 
 ``` ruby
 q = ch.queue("", :exclusive => true)
-q.subscribe(:block => true, :manual_ack => true) do |delivery_info, properties, payload|
+q.subscribe(:manual_ack => true) do |delivery_info, properties, payload|
   puts "Received #{payload}, message properties are #{properties.inspect}"
 end
 ```
@@ -356,7 +356,7 @@ conn.start
 
 ch   = conn.create_channel
 q = ch.queue("", :exclusive => true)
-q.subscribe(:block => true, :manual_ack => true) do |delivery_info, properties, payload|
+q.subscribe(:manual_ack => true) do |delivery_info, properties, payload|
   puts "Received #{payload}, message properties are #{properties.inspect}"
 end
 ```
@@ -383,13 +383,18 @@ delivery_info.delivery_tag
 
 #### Blocking or Non-Blocking Behavior
 
-The subscribe method will not block the calling thread by default. If
-you want to block the thread, pass `:block => true` to
-`Bunny::Queue#subscribe`. In Bunny 0.9.0 and later, network activity
-and dispatch of delivered messages to consumers happens in separate
-threads that Bunny maintains internally, so it does not have to block
-the thread that calls `Bunny::Queue#subscribe`. However, it may be
-convenient to do so in long-running consumer applications.
+The subscribe method will not block the calling thread by default. If invoked
+from the main thread, it will not keep that thread running. That's a
+responsibility of application developer. It usually can be worked around
+with something like
+
+``` ruby
+loop { sleep 5 }
+```
+
+If blocking the calling thread is really necessary, pass `:block => true` to
+`Bunny::Queue#subscribe`. Note that this may affect topology
+recovery and is not recommended for production code.
 
 ### Accessing Message Delivery Information
 
@@ -664,12 +669,6 @@ sleep 2
 connection.close
 ```
 
-As with the `Bunny::Queue#subscribe` method, the `Bunny::Queue#subscribe_with` method can take a `:block` argument to block the calling thread:
-
-```ruby
-q.subscribe_with(consumer, :block => true)
-```
-
 
 ### Using Multiple Consumers Per Queue
 
@@ -710,7 +709,7 @@ option to `Bunny::Queue#subscribe`:
 
 ``` ruby
 q = ch.queue("")
-q.subscribe(:block => true, :manual_ack => true, :exclusive => true) do |delivery_info, properties, payload|
+q.subscribe(:manual_ack => true, :exclusive => true) do |delivery_info, properties, payload|
   # ...
 end
 ```
