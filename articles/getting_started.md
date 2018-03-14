@@ -78,7 +78,7 @@ use [March Hare](http://rubymarchhare.info).
 ``` ruby
 source "https://rubygems.org"
 
-gem "bunny", ">= 2.8.0"
+gem "bunny", ">= 2.9.2"
 ```
 
 ### Verifying your installation
@@ -90,7 +90,7 @@ irb -rubygems
 :001 > require "bunny"
 => true
 :002 > Bunny::VERSION
-=> "2.8.0"
+=> "2.9.2"
 ```
 
 ## "Hello, world" example
