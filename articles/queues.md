@@ -260,7 +260,7 @@ declared on is closed.
 ## Checking if a Queue Exists
 
 Sometimes it's convenient to check if a queue exists. To do so, at the protocol
-level you use `queue.declare` with `passive` seto to `true`. In response
+level you use `queue.declare` with `passive` set to `true`. In response
 RabbitMQ responds with a channel exception if the queue does not exist.
 
 Bunny provides a convenience method, `Bunny::Session#queue_exists?`, to do this:
