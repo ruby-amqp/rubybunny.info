@@ -17,7 +17,7 @@ Github](https://github.com/ruby-amqp/rubybunny.info).
 
 ## What version of Bunny does this guide cover?
 
-This guide covers Bunny 2.6.x and later versions.
+This guide covers Bunny 2.10.x and later versions.
 
 ## Two ways to specify connection parameters
 
