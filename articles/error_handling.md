@@ -32,7 +32,7 @@ Github](https://github.com/ruby-amqp/rubybunny.info).
 
 ## What version of Bunny does this guide cover?
 
-This guide covers Bunny 2.10.x and later versions.
+This guide covers Bunny 2.11.0 and later versions.
 
 
 ## Client Exceptions
