@@ -6,15 +6,11 @@ to use RabbitMQ client for Ruby.
 
 ## Install Dependencies
 
-To run the site generator yourself, you'll need to first have Ruby installed.
-Python is also required, as syntax-highlighting of code blocks is handled by pygments.
-
-If installing Ruby from source, a prerequisite is the libyaml dev package.
+Running the site generator locally requires a Ruby 2.5 installation with YAML support.
 
 To install dependencies with Bundler:
 
     bundle install --binstubs
-
 
 ## How to run a development server
 
