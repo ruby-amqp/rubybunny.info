@@ -513,7 +513,7 @@ handling.
 
 We recommend that you read the following guides next, if possible, in this order:
 
- * [AMQP 0.9.1 Model Explained](http://www.rabbitmq.com/tutorials/amqp-concepts.html). A simple 2 page long introduction to the AMQP Model concepts and features. Understanding the AMQP 0.9.1 Model
+ * [AMQP 0.9.1 Model Explained](http://www.rabbitmq.com/tutorials/amqp-concepts.html). A simple 2 page long introduction to the AMQP 0-9-1 Model concepts and features. Understanding the AMQP 0.9.1 Model
    will make a lot of other documentation, both for Bunny and RabbitMQ itself, easier to follow. With this guide, you don't have to waste hours of time reading the whole specification.
  * [Connecting to the broker](/articles/connecting.html). This guide explains how to connect to an RabbitMQ and how to integrate Bunny into standalone and Web applications.
  * [Queues and Consumers](/articles/queues.html). This guide focuses on features that consumer applications use heavily.
