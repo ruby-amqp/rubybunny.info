@@ -134,7 +134,7 @@ exception with reply code `403 (ACCESS_REFUSED)` and a reply message
 similar to this:
 
     ACCESS_REFUSED - queue name 'amq.queue' contains reserved prefix 'amq.*'
-    
+
 This error results in the channel that was used for the declaration
 being forcibly closed by RabbitMQ. If the program subsequently tries
 to communicate with RabbitMQ using the same channel without re-opening
@@ -323,7 +323,7 @@ Consumers have a number of events that they can react to:
  * Message delivery
  * Consumer registration confirmation
  * Consumer cancellation
- 
+
 #### Consumer Tags
 
 Consumers are identified by unique strings called *consumer tags*. The
@@ -381,9 +381,9 @@ or
 delivery_info.delivery_tag
 ```
 
-#### Blocking or Non-Blocking Behavior
+#### Asynchronous Consumers Don't Run on the Caller Thread
 
-The subscribe method will not block the calling thread by default. If invoked
+The subscribe method will not use the caller thread. If invoked
 from the main thread, it will not keep that thread running. That's a
 responsibility of application developer. It usually can be worked around
 with something like
@@ -391,10 +391,6 @@ with something like
 ``` ruby
 loop { sleep 5 }
 ```
-
-If blocking the calling thread is really necessary, pass `:block => true` to
-`Bunny::Queue#subscribe`. Note that this may affect topology
-recovery and is not recommended for production code.
 
 ### Accessing Message Delivery Information
 
@@ -406,7 +402,7 @@ message delivery information:
  * Whether or not message is redelivered
  * Name of exchange message came from
  * Message routing key
- 
+
 Message delivery information can be treated as a Hash-like object or
 structure.  For example, to get routing key, you can use either
 
@@ -419,7 +415,7 @@ or
 ``` ruby
 delivery_info.routing_key
 ```
-  
+
 ### Accessing Message Properties (Metadata)
 
 The *properties* parameter in the example above provides access to
@@ -520,7 +516,7 @@ The full list of message delivery information parameters is:
  * `:redelivered`
  * `:exchange`
  * `:routing_key`
- 
+
 The full list of message properties parameters (**note** that most of them are optional and may not be present) is:
 
  * `:content_type` _(always present)_
@@ -552,7 +548,7 @@ instantiated:
  * `no_ack` _(default = true)_
  * `exclusive` _(default = false)_
  * `arguments` _(default = {})_
- 
+
 To create a consumer object:
 
 ```ruby
@@ -615,7 +611,7 @@ To register a consumer and start consuming messages, pass a consumer object to t
 require 'bunny'
 
 # Define consumer subclass
-class ExampleConsumer < Bunny::Consumer 
+class ExampleConsumer < Bunny::Consumer
   def cancelled?
     @cancelled
   end
@@ -637,12 +633,12 @@ t = Thread.new do
   q = ch2.queue("testq")
 
   consumer = ExampleConsumer.new(ch2, q)
-  
+
   # Pass block to consumer delivery handler
   consumer.on_delivery() do |delivery_info, metadata, payload|
     puts payload
   end
-  
+
   # Register the consumer
   q.subscribe_with(consumer)
 end
@@ -693,6 +689,18 @@ q.subscribe(:manual_ack => true, :arguments => {"x-priority" => 2}) do |delivery
   # ...
 end
 ```
+
+### Exception Handling in Consumers
+
+Consumers are expected to handle any exceptions that arise during handling of deliveries
+or any other consumer operations. Such exceptions should be logged, collected and ignored.
+
+Unhandled exceptions will kill consumer dispatch pool threads and eventually lead to Bunny
+being unable to dispatch/process deliveries.
+
+If a consumer cannot process deliveries due to a dependency not being available or similar reasons
+it should clearly log so and cancel itself until it is capable of processing deliveries again.
+This will make the consumer's unavailability visible to RabbitMQ and [monitoring systems](https://rabbitmq.com/monitoring.html).
 
 
 ### Exclusive Consumers
@@ -1215,7 +1223,7 @@ the queue declaration:
 
   * `:exclusive => true`
   * `:auto_delete => true`
-  
+
 If the *exclusive* flag is set to true then the queue will be deleted
 when the connection that was used to declare it is closed.
 
