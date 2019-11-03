@@ -12,7 +12,8 @@ examples. This guide covers:
 
  * Installing RabbitMQ, a mature multi-protocol messaging broker.
  * Installing Bunny via [Rubygems](http://rubygems.org) and [Bundler](http://gembundler.com).
- * Running a "Hello, world" messaging example that is a simple demonstration of 1:1 communication.
+ * Running a "Hello, world" messaging example that is a simple demonstration of 1:1 communication between
+   a [publisher](https://www.rabbitmq.com/publishers.html) and a [consumer](https://www.rabbitmq.com/consumers.html)
  * Creating a "Twitter-like" publish/subscribe example with one publisher and four subscribers that demonstrates 1:n communication.
  * Creating a topic routing example with two publishers and eight subscribers showcasing n:m communication when subscribers only receive messages that they are interested in.
 
@@ -30,7 +31,7 @@ This guide covers Bunny 2.11.0 and later versions.
 ## Installing RabbitMQ
 
 The [RabbitMQ site](http://rabbitmq.com) has a good [installation guide](http://www.rabbitmq.com/install.html) that addresses many operating systems.
-On Mac OS X, the fastest way to install RabbitMQ is with [Homebrew](http://mxcl.github.com/homebrew/):
+On MacOS, the fastest way to install RabbitMQ is with [Homebrew](http://mxcl.github.com/homebrew/):
 
     brew install rabbitmq
 
@@ -62,7 +63,6 @@ This guide assumes that you have installed one of the following supported Ruby i
  * Ruby v2.6
  * Ruby v2.5
  * Ruby v2.4
- * Ruby v2.3
 
 Bunny works sufficiently well on JRuby but there are known
 JRuby 1.7 bugs that can cause high CPU burn and other issues. JRuby users should
@@ -78,7 +78,7 @@ use [March Hare](http://rubymarchhare.info).
 ``` ruby
 source "https://rubygems.org"
 
-gem "bunny", ">= 2.14.1"
+gem "bunny", ">= 2.14.3"
 ```
 
 ### Verifying your installation
@@ -90,7 +90,7 @@ irb -rubygems
 :001 > require "bunny"
 => true
 :002 > Bunny::VERSION
-=> "2.14.1"
+=> "2.14.3"
 ```
 
 ## "Hello, world" example

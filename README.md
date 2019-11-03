@@ -25,6 +25,6 @@ then navigate to [localhost:4000](http://localhost:4000)
 
 ## License & Copyright
 
-Copyright (C) 2012-2018 Michael S. Klishin.
+Copyright (C) 2012-2019 Michael S. Klishin.
 
 Distributed under the MIT License.
