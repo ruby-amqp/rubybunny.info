@@ -347,7 +347,7 @@ them. Each vhost has separate instances of those exchanges, they are
 
 The default exchange is a direct exchange with no name (Bunny refers
 to it using an empty string) pre-declared by the broker. It has one
-special property that makes it very useful for simple applications,
+special property that makes it very useful for smaller applications,
 namely that *every queue is automatically bound to it with a routing
 key which is the same as the queue name*.
 

@@ -143,7 +143,7 @@ authentication failure notification.
 Detecting network connections is nearly useless if an application
 cannot recover from them. Recovery is the hard part in "error handling
 and recovery". Fortunately, the recovery process for many applications
-follows one simple scheme that Bunny can perform automatically for
+follows a common scheme that Bunny can perform automatically for
 you.
 
 When Bunny detects TCP connection failure, it will try to reconnect

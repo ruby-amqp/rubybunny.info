@@ -12,7 +12,7 @@ examples. This guide covers:
 
  * Installing RabbitMQ, a mature multi-protocol messaging broker.
  * Installing Bunny via [Rubygems](http://rubygems.org) and [Bundler](http://gembundler.com).
- * Running a "Hello, world" messaging example that is a simple demonstration of 1:1 communication between
+ * Running a "Hello, world" messaging example that is a demonstration of 1:1 communication between
    a [publisher](https://www.rabbitmq.com/publishers.html) and a [consumer](https://www.rabbitmq.com/consumers.html)
  * Creating a "Twitter-like" publish/subscribe example with one publisher and four subscribers that demonstrates 1:n communication.
  * Creating a topic routing example with two publishers and eight subscribers showcasing n:m communication when subscribers only receive messages that they are interested in.
@@ -513,7 +513,7 @@ handling.
 
 We recommend that you read the following guides next, if possible, in this order:
 
- * [AMQP 0.9.1 Model Explained](http://www.rabbitmq.com/tutorials/amqp-concepts.html). A simple 2 page long introduction to the AMQP 0-9-1 Model concepts and features. Understanding the AMQP 0.9.1 Model
+ * [AMQP 0.9.1 Model Explained](http://www.rabbitmq.com/tutorials/amqp-concepts.html). A 2 page long introduction to the AMQP 0-9-1 Model concepts and features. Understanding the AMQP 0.9.1 Model
    will make a lot of other documentation, both for Bunny and RabbitMQ itself, easier to follow. With this guide, you don't have to waste hours of time reading the whole specification.
  * [Connecting to the broker](/articles/connecting.html). This guide explains how to connect to an RabbitMQ and how to integrate Bunny into standalone and Web applications.
  * [Queues and Consumers](/articles/queues.html). This guide focuses on features that consumer applications use heavily.

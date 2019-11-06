@@ -105,7 +105,7 @@ Handling and logging them will likely reveal an issue when it arises.
 
 ### Testing Network Connection with RabbitMQ using Telnet
 
-One simple way to check network connection between a particular network node and a RabbitMQ node is to use `telnet`:
+One way to check network connection between a particular network node and a RabbitMQ node is to use `telnet`:
 
 ```
 telnet [host or ip] 5672
