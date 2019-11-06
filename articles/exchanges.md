@@ -1207,7 +1207,7 @@ We recommend that you read the following guides first, if possible, in
 this order:
 
  * [Bindings](/articles/bindings.html)
- * [RabbitMQ Extensions to AMQP 0.9.1](/articles/rabbitmq_extensions.html)
+ * [RabbitMQ Extensions to AMQP 0.9.1](/articles/extensions.html)
  * [Durability and Related Matters](/articles/durability.html)
  * [Error Handling and Recovery](/articles/error_handling.html)
  * [Concurrency Considerations](/articles/concurrency.html)

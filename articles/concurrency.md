@@ -152,7 +152,7 @@ guides](/articles/guides.html), covering various topics.
 We recommend that you read the following guides first, if possible, in
 this order:
 
- * [RabbitMQ Extensions to AMQP 0.9.1](/articles/rabbitmq_extensions.html)
+ * [RabbitMQ Extensions to AMQP 0.9.1](/articles/extensions.html)
  * [Error Handling and Recovery](/articles/error_handling.html)
  * [Troubleshooting](/articles/troubleshooting.html)
  * [Using TLS (SSL) Connections](/articles/tls.html)

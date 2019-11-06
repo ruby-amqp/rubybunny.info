@@ -7,8 +7,8 @@ layout: article
 
 [Bunny has a mailing list](https://groups.google.com/group/ruby-amqp). We
 encourage you to also join the
-[rabbitmq-discuss](https://lists.rabbitmq.com/cgi-bin/mailman/listinfo/rabbitmq-discuss)
-mailing list. Feel free to ask any questions that you may have.
+[Ruby RabbitMQ Libraries](https://groups.google.com/forum/#!forum/ruby-amqp)
+google group. Feel free to ask any questions that you may have.
 
 
 ## IRC

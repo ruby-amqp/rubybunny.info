@@ -104,7 +104,7 @@ In some situations it is essential that messages are reliably delivered to the R
 
 The [Publisher Confirms AMQP extension](http://www.rabbitmq.com/blog/2011/02/10/introducing-publisher-confirms/) was designed to solve the reliable publishing problem in a more lightweight way compared to transactions.
 
-Publisher confirms are similar to message acknowledgements (documented in the [Queues and Consumers](/articles/queues/) guide), but involve
+Publisher confirms are similar to message acknowledgements (documented in the [Queues and Consumers](/articles/queues.html) guide), but involve
 a publisher and a RabbitMQ node instead of a consumer and a RabbitMQ node.
 
 ![RabbitMQ Message Acknowledgements](https://github.com/ruby-amqp/amqp/raw/master/docs/diagrams/006_amqp_091_message_acknowledgements.png)

@@ -1029,7 +1029,7 @@ provides an AMQP 0.9.1 extension known as [negative
 acknowledgements](http://www.rabbitmq.com/extensions.html#negative-acknowledgements)
 (nacks) and Bunny supports this extension. For more information,
 please refer to the [RabbitMQ Extensions
-guide](/articles/rabbitmq_extensions.html).
+guide](/articles/extensions.html).
 
 ### QoS — Prefetching messages
 
@@ -1257,7 +1257,7 @@ See [Durability guide](/articles/durability.html)
 
 ## RabbitMQ Extensions Related to Queues
 
-See [RabbitMQ Extensions guide](/articles/rabbitmq_extensions.html)
+See [RabbitMQ Extensions guide](/articles/extensions.html)
 
 
 ## Wrapping Up
@@ -1286,7 +1286,7 @@ this order:
 
  * [Exchanges and Publishing](/articles/exchanges.html)
  * [Bindings](/articles/bindings.html)
- * [RabbitMQ Extensions to AMQP 0.9.1](/articles/rabbitmq_extensions.html)
+ * [RabbitMQ Extensions to AMQP 0.9.1](/articles/extensions.html)
  * [Durability and Related Matters](/articles/durability.html)
  * [Error Handling and Recovery](/articles/error_handling.html)
  * [Concurrency Considerations](/articles/concurrency.html)
