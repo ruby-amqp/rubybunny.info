@@ -372,7 +372,7 @@ this order:
  * [Queues and Consumers](/articles/queues.html)
  * [Exchanges and Publishing](/articles/exchanges.html)
  * [Bindings](/articles/bindings.html)
- * [RabbitMQ Extensions to AMQP 0.9.1](/articles/rabbitmq_extensions.html)
+ * [RabbitMQ Extensions to AMQP 0.9.1](/articles/extensions.html)
  * [Durability and Related Matters](/articles/durability.html)
  * [Error Handling and Recovery](/articles/error_handling.html)
  * [Troubleshooting](/articles/troubleshooting.html)
