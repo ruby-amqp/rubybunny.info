@@ -13,7 +13,7 @@ This work is licensed under a <a rel="license"
 href="http://creativecommons.org/licenses/by/3.0/">Creative Commons
 Attribution 3.0 Unported License</a> (including images and
 stylesheets). The source is available [on
-Github](https://github.com/ruby-amqp/rubybunny.info).
+GitHub](https://github.com/ruby-amqp/rubybunny.info).
 
 
 ## What version of Bunny does this guide cover?
@@ -105,7 +105,7 @@ Handling and logging them will likely reveal an issue when it arises.
 
 ### Testing Network Connection with RabbitMQ using Telnet
 
-One simple way to check network connection between a particular network node and a RabbitMQ node is to use `telnet`:
+One way to check network connection between a particular network node and a RabbitMQ node is to use `telnet`:
 
 ```
 telnet [host or ip] 5672

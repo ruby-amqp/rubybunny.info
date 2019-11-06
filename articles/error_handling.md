@@ -27,7 +27,7 @@ This work is licensed under a <a rel="license"
 href="http://creativecommons.org/licenses/by/3.0/">Creative Commons
 Attribution 3.0 Unported License</a> (including images and
 stylesheets). The source is available [on
-Github](https://github.com/ruby-amqp/rubybunny.info).
+GitHub](https://github.com/ruby-amqp/rubybunny.info).
 
 
 ## What version of Bunny does this guide cover?
@@ -143,7 +143,7 @@ authentication failure notification.
 Detecting network connections is nearly useless if an application
 cannot recover from them. Recovery is the hard part in "error handling
 and recovery". Fortunately, the recovery process for many applications
-follows one simple scheme that Bunny can perform automatically for
+follows a common scheme that Bunny can perform automatically for
 you.
 
 When Bunny detects TCP connection failure, it will try to reconnect
