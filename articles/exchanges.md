@@ -426,7 +426,7 @@ specifying a *routing pattern* to the `Bunny::Queue#bind` method, for
 example:
 
 ``` ruby
-x    = ch.topic("weathr", :auto_delete => true)
+x    = ch.topic("weather", :auto_delete => true)
 
 q = ch.queue("americas.south", :auto_delete => true).bind(x, :routing_key => "americas.south.#")
 q.subscribe do |delivery_info, properties, payload|
@@ -450,7 +450,7 @@ The following routing keys match the "americas.south.#" pattern:
 
  * americas.south
  * americas.south.*brazil*
- * americas.south.*brazil.saopaolo*
+ * americas.south.*brazil.saopaulo*
  * americas.south.*chile.santiago*
 
 In other words, the "#" part of the pattern matches 0 or more words.
@@ -483,7 +483,7 @@ connection.start
 
 channel  = connection.create_channel
 # topic exchange name can be any string
-exchange = channel.topic("weathr", :auto_delete => true)
+exchange = channel.topic("weather", :auto_delete => true)
 
 # Subscribers.
 channel.queue("americas.north").bind(exchange, :routing_key => "americas.north.#").subscribe do |delivery_info, properties, payload|
@@ -509,7 +509,7 @@ exchange.publish("San Diego update", :routing_key => "americas.north.us.ca.sandi
   publish("Berkeley update",         :routing_key => "americas.north.us.ca.berkeley").
   publish("San Francisco update",    :routing_key => "americas.north.us.ca.sanfrancisco").
   publish("New York update",         :routing_key => "americas.north.us.ny.newyork").
-  publish("São Paolo update",        :routing_key => "americas.south.brazil.saopaolo").
+  publish("São Paulo update",        :routing_key => "americas.south.brazil.saopaulo").
   publish("Hong Kong update",        :routing_key => "asia.southeast.hk.hongkong").
   publish("Kyoto update",            :routing_key => "asia.southeast.japan.kyoto").
   publish("Shanghai update",         :routing_key => "asia.southeast.prc.shanghai").
@@ -552,7 +552,7 @@ The previous sections on specific exchange types (direct, fanout,
 headers, etc.) provide plenty of examples of how these methods can be
 used.
 
-## Checking of an Exchange Exists
+## Checking if an Exchange Exists
 
 Sometimes it's convenient to check if an exchange exists. To do so, at the protocol
 level you use `exchange.declare` with `passive` seto to `true`. In response

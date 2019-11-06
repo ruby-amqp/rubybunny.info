@@ -1035,15 +1035,15 @@ guide](/articles/rabbitmq_extensions.html).
 
 For cases when multiple consumers share a queue, it is useful to be
 able to specify how many messages each consumer can be sent at once
-before sending the next acknowledgement.  This can be used as a simple
+before sending the next acknowledgement.  This can be used as a sample
 load balancing technique to improve throughput if messages tend to be
 published in batches. For example, if a producing application sends
 messages every minute because of the nature of the work it is doing.
 
 Imagine a website that takes data from social media sources like
-Twitter or Facebook during the Champions League (european soccer)
-final (or the Superbowl), and then calculates how many tweets
-mentioned a particular team during the last minute. The site could be
+Twitter or Facebook during the Champions League (European soccer)
+final (or The Super Bowl), and then calculates how many tweets
+mention a particular team in the last minute. The site could be
 structured as 3 applications:
 
  * A crawler that uses streaming APIs to fetch tweets/statuses, normalizes them and sends them in JSON for processing by other applications ("app A").
