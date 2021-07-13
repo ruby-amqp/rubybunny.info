@@ -155,17 +155,3 @@ ERROR: failed to load application os_mon: {"no such file or directory","os_mon.a
 ```
 
 suggests that the *erlang-os-mon* package is not installed.
-
-
-## asn1 Issue with Erlang R16B01
-
-```
-BOOT FAILED
-===========
-
-Error description:
-    {error,{cannot_start_application,public_key,{not_started,asn1}}}
-```
-
-is an issue in RabbitMQ 3.1 on Erlang R16B01+. It is [resolved](http://rabbitmq.1065348.n5.nabble.com/Erlang-R16B01-and-SSL-td27526.html)
-in RabbitMQ 3.1.2 and later versions.
