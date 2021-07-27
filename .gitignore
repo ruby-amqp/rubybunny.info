@@ -6,6 +6,7 @@ bin
 source/tmp/*
 _site/*
 .sass-cache/*
+.jekyll-cache/*
 *.sassc
 *\#*
 ~*
