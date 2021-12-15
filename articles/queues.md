@@ -276,7 +276,7 @@ conn.queue_exists?("logs.info")
 ## Binding Queues to Exchanges
 
 In order to receive messages, a queue needs to be bound to at least
-one exchange. Most of the time binding is explcit (done by
+one exchange. Most of the time binding is explicit (done by
 applications). **Please note:** All queues are automatically bound to
 the default unnamed RabbitMQ direct exchange with a routing key that
 is the same as the queue name (see [Exchanges and
