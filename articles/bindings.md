@@ -56,7 +56,7 @@ _bind_ them. The opposite operation is called _unbinding_.
 ## Binding Queues to Exchanges
 
 In order to receive messages, a queue needs to be bound to at least
-one exchange. Most of the time binding is explcit (done by
+one exchange. Most of the time binding is explicit (done by
 applications).  To bind a queue to an exchange, use
 `Bunny::Queue#bind` where the argument passed can be either an
 `Bunny::Exchange` instance or a string.
