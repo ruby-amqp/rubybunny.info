@@ -30,7 +30,7 @@ This guide covers Bunny 2.11.0 and later versions.
 
 ## Installing RabbitMQ
 
-The [RabbitMQ site](http://rabbitmq.com) has a good [installation guide](http://www.rabbitmq.com/install.html) that addresses many operating systems.
+The [RabbitMQ site](http://rabbitmq.com) has a good [installation guide](https://www.rabbitmq.com/download.html) that addresses many operating systems.
 On MacOS, the fastest way to install RabbitMQ is with [Homebrew](http://mxcl.github.com/homebrew/):
 
     brew install rabbitmq
